@@ -136,7 +136,7 @@ def ingredient_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def ingredient_detail(request, pk):
     try:
@@ -148,8 +148,8 @@ def ingredient_detail(request, pk):
         serializer = IngredientSerializer(ingredient)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = IngredientSerializer(ingredient, data=request.data)
+    elif request.method in ['PUT', 'PATCH']:
+        serializer = IngredientSerializer(ingredient, data=request.data, partial=request.method == 'PATCH')
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
