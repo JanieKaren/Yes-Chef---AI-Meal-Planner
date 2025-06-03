@@ -17,21 +17,38 @@
       <div v-if="ingredientsStore.ingredients.length === 0" class="no-items">
         No Fridge Items Found
       </div>
-      <div v-else class="ingredients-grid">
-        <div v-for="ingredient in ingredientsStore.ingredients" :key="ingredient.id" class="ingredient-card">
-          <div class="ingredient-header">
-            <h3>{{ ingredient.name }}</h3>
-            <div class="ingredient-actions">
-              <button @click="editIngredient(ingredient)" class="btn-icon">✏️</button>
-              <button @click="deleteIngredient(ingredient.id)" class="btn-icon">🗑️</button>
-            </div>
-          </div>
-          <div class="ingredient-details">
-            <p><strong>Category:</strong> {{ ingredient.category }}</p>
-            <p><strong>Quantity:</strong> {{ ingredient.quantity }} {{ ingredient.unit }}</p>
-            <p><strong>Expires:</strong> {{ formatDate(ingredient.expiration_date) }}</p>
-          </div>
-        </div>
+      <div v-else class="ingredients-table-container">
+        <table class="ingredients-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Quantity</th>
+              <th>Expiration Date</th>
+              <th>Condition</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ingredient in ingredientsStore.ingredients" :key="ingredient.id">
+              <td>{{ ingredient.name }}</td>
+              <td>{{ getCategoryLabel(ingredient.category) }}</td>
+              <td>{{ ingredient.quantity }} {{ ingredient.unit }}</td>
+              <td>{{ formatDate(ingredient.expiration_date) }}</td>
+              <td>
+                <span :class="getConditionClass(ingredient.expiration_date)">
+                  {{ getConditionText(ingredient.expiration_date) }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <button @click="editIngredient(ingredient)" class="btn-icon">✏️</button>
+                  <button @click="deleteIngredient(ingredient.id)" class="btn-icon">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -187,6 +204,33 @@ const handleSubmit = async () => {
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString()
 }
+
+const getCategoryLabel = (categoryValue: string) => {
+  const category = categories.find(([value]) => value === categoryValue)
+  return category ? category[1] : categoryValue
+}
+
+const getConditionText = (expirationDate: string) => {
+  const today = new Date()
+  const expDate = new Date(expirationDate)
+  const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  
+  if (daysUntilExpiration < 0) return 'Expired'
+  if (daysUntilExpiration <= 3) return 'Expiring Soon'
+  if (daysUntilExpiration <= 7) return 'Expiring This Week'
+  return 'Good'
+}
+
+const getConditionClass = (expirationDate: string) => {
+  const today = new Date()
+  const expDate = new Date(expirationDate)
+  const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  
+  if (daysUntilExpiration < 0) return 'condition-expired'
+  if (daysUntilExpiration <= 3) return 'condition-warning'
+  if (daysUntilExpiration <= 7) return 'condition-caution'
+  return 'condition-good'
+}
 </script>
 
 <style scoped>
@@ -210,29 +254,45 @@ const formatDate = (date: string) => {
   margin-bottom: 2rem;
 }
 
-.ingredients-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+.ingredients-table-container {
+  overflow-x: auto;
+  margin: 1rem 0;
 }
 
-.ingredient-card {
+.ingredients-table {
+  width: 100%;
+  border-collapse: collapse;
   background-color: white;
-  border-radius: 8px;
-  padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.ingredient-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+.ingredients-table th,
+.ingredients-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.ingredient-actions {
+.ingredients-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.ingredients-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.actions-cell {
+  white-space: nowrap;
+  text-align: right;
+  width: 100px;
+}
+
+.action-buttons {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .btn-icon {
@@ -241,10 +301,31 @@ const formatDate = (date: string) => {
   cursor: pointer;
   font-size: 1.2rem;
   padding: 0.25rem;
+  transition: transform 0.2s;
 }
 
-.ingredient-details p {
-  margin: 0.5rem 0;
+.btn-icon:hover {
+  transform: scale(1.1);
+}
+
+.condition-expired {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.condition-warning {
+  color: #e67e22;
+  font-weight: bold;
+}
+
+.condition-caution {
+  color: #f1c40f;
+  font-weight: bold;
+}
+
+.condition-good {
+  color: #27ae60;
+  font-weight: bold;
 }
 
 .modal {
