@@ -221,20 +221,7 @@ const getConditionClass = (expirationDate: string) => {
   font-weight: bold;
 }
 
-.btn-primary {
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-}
 
-.btn-primary:hover {
-  background-color: #34495e;
-}
 
 .loading, .error {
   text-align: center;

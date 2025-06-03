@@ -203,29 +203,5 @@ label {
   margin-top: 2rem;
 }
 
-.btn-primary {
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
-.btn-secondary {
-  background-color: #95a5a6;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #34495e;
-}
-
-.btn-secondary:hover {
-  background-color: #7f8c8d;
-}
 </style> 
