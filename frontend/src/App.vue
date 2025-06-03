@@ -17,15 +17,17 @@ const handleLogout = async () => {
 </script>
 
 <template>
- <nav class="navbar">
+  <div class="app">
+    <nav class="navbar">
       <div class="navbar-brand">
+        
         <router-link to="/" class="navbar-item">
+          <img src="@/assets/images/logo.png" alt="Logo" class="logo" />
           Yes, Chef!
         </router-link>
       </div>
       <div class="navbar-menu">
-        <div class="navbar-end">
-          <template v-if="userStore.isAuthenticated">
+        <template v-if="userStore.isAuthenticated">
             <router-link to="/ingredients" class="navbar-item">Ingredients</router-link>
             <router-link to="/profile" class="navbar-item">Profile</router-link>
             <a @click="handleLogout" class="navbar-item">Logout</a>
@@ -34,13 +36,13 @@ const handleLogout = async () => {
             <router-link to="/login" class="navbar-item">Login</router-link>
             <router-link to="/register" class="navbar-item">Register</router-link>
           </template>
-        </div>
       </div>
     </nav>
-  <main class="main-content">
+
+    <main class="main-content">
       <router-view></router-view>
-  </main>
-  
+    </main>
+  </div>
 </template>
 
 <style scoped>
@@ -59,25 +61,43 @@ const handleLogout = async () => {
 }
 
 .navbar-brand {
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.logo {
+  height: 50px;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .navbar-item {
   color: white;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
   border-radius: 4px;
   transition: background-color 0.3s;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .navbar-item:hover {
   background-color: #34495e;
 }
 
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
 .main-content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
 }
 </style>
