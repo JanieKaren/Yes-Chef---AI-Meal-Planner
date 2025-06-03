@@ -3,12 +3,11 @@
   </div>
   <div class="ingredients-container">
     <div class="ingredients-header">
-      <h1>My Fridge</h1>
-      <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
-    </div>
-
+        <h1>My Fridge</h1>
+        <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
+      </div>
     <div v-if="ingredientsStore.loading" class="loading">
-      Loading ingredients...
+      Loading Fridge Items...
     </div>
     <div v-else-if="ingredientsStore.error" class="error">
       {{ ingredientsStore.error }}
@@ -135,8 +134,9 @@ const getConditionClass = (expirationDate: string) => {
 }
 
 .ingredients-container {
-  padding: 1rem;
+  padding: 0.5rem 4rem;
 }
+
 
 .ingredients-header {
   display: flex;
@@ -144,6 +144,7 @@ const getConditionClass = (expirationDate: string) => {
   align-items: center;
   margin-bottom: 2rem;
 }
+
 
 .ingredients-table-container {
   overflow-x: auto;

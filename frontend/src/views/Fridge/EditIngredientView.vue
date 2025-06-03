@@ -151,6 +151,11 @@ const goBack = () => {
 
 <style scoped>
 .edit-ingredient-container {
+  background-image: url("@/assets/images/grocerybag.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -165,6 +170,7 @@ const goBack = () => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 500px;
+  mask: conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/30px 100%;
 }
 
 h1 {
