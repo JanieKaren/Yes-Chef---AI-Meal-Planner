@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import UserSerializer, AccountSerializer
+from .models import Account
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -64,6 +65,10 @@ def login_view(request):
             {'error': 'Invalid credentials'},
             status=status.HTTP_401_UNAUTHORIZED
         )
+
+    # Ensure user has an account
+    if not hasattr(user, 'account'):
+        Account.objects.create(user=user)
 
     login(request, user)
 
