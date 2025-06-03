@@ -1,0 +1,60 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/user'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('../views/HomeView.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+      meta: { requiresGuest: true }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+      meta: { requiresGuest: true }
+    },
+    {
+      path: '/ingredients',
+      name: 'ingredients',
+      component: () => import('../views/IngredientsView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue'),
+      meta: { requiresAuth: true }
+    }
+  ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore()
+  
+  // Check authentication status if not already checked
+  if (!userStore.isAuthenticated && userStore.user === null) {
+    await userStore.checkAuth()
+  }
+
+  // Handle protected routes
+  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
+    next({ name: 'login' })
+  }
+  // Handle guest-only routes
+  else if (to.meta.requiresGuest && userStore.isAuthenticated) {
+    next({ name: 'home' })
+  }
+  else {
+    next()
+  }
+})
+
+export default router
