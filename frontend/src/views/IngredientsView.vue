@@ -1,7 +1,7 @@
 <template>
   <div class="ingredients-container">
     <div class="ingredients-header">
-      <h1>My Ingredients</h1>
+      <h1>My Fridge</h1>
       <button @click="showAddModal = true" class="btn-primary">Add Ingredient</button>
     </div>
 
@@ -11,19 +11,24 @@
     <div v-else-if="ingredientsStore.error" class="error">
       {{ ingredientsStore.error }}
     </div>
-    <div v-else class="ingredients-grid">
-      <div v-for="ingredient in ingredientsStore.ingredients" :key="ingredient.id" class="ingredient-card">
-        <div class="ingredient-header">
-          <h3>{{ ingredient.name }}</h3>
-          <div class="ingredient-actions">
-            <button @click="editIngredient(ingredient)" class="btn-icon">✏️</button>
-            <button @click="deleteIngredient(ingredient.id)" class="btn-icon">🗑️</button>
+    <div v-else>
+      <div v-if="ingredientsStore.ingredients.length === 0" class="no-items">
+        No Fridge Items Found
+      </div>
+      <div v-else class="ingredients-grid">
+        <div v-for="ingredient in ingredientsStore.ingredients" :key="ingredient.id" class="ingredient-card">
+          <div class="ingredient-header">
+            <h3>{{ ingredient.name }}</h3>
+            <div class="ingredient-actions">
+              <button @click="editIngredient(ingredient)" class="btn-icon">✏️</button>
+              <button @click="deleteIngredient(ingredient.id)" class="btn-icon">🗑️</button>
+            </div>
           </div>
-        </div>
-        <div class="ingredient-details">
-          <p><strong>Category:</strong> {{ ingredient.category }}</p>
-          <p><strong>Quantity:</strong> {{ ingredient.quantity }} {{ ingredient.unit }}</p>
-          <p><strong>Expires:</strong> {{ formatDate(ingredient.expiration_date) }}</p>
+          <div class="ingredient-details">
+            <p><strong>Category:</strong> {{ ingredient.category }}</p>
+            <p><strong>Quantity:</strong> {{ ingredient.quantity }} {{ ingredient.unit }}</p>
+            <p><strong>Expires:</strong> {{ formatDate(ingredient.expiration_date) }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -284,5 +289,11 @@ const formatDate = (date: string) => {
 
 .error {
   color: #e74c3c;
+}
+
+.no-items {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
 }
 </style> 

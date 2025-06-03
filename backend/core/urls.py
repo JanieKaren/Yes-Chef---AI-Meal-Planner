@@ -1,16 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from . import views, auth
-
-router = DefaultRouter()
-router.register(r'users', views.UserViewSet, basename='user')
-router.register(r'accounts', views.AccountViewSet, basename='account')
-router.register(r'ingredients', views.IngredientViewSet, basename='ingredient')
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('auth/register/', auth.register, name='register'),
-    path('auth/login/', auth.login_view, name='login'),
-    path('auth/logout/', auth.logout_view, name='logout'),
-    path('auth/user/', auth.user_view, name='user'),
+    path('auth/register/', views.register, name='register'),
+    path('auth/login/', views.login_view, name='login'),
+    path('auth/logout/', views.logout_view, name='logout'),
+    path('auth/user/', views.user_view, name='user'),
+    path('ingredients/', views.ingredient_list, name='ingredient-list'),
+    path('ingredients/<int:pk>/', views.ingredient_detail, name='ingredient-detail'),
 ] 

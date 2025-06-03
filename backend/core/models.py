@@ -83,6 +83,7 @@ class Ingredient(models.Model):
         ('can', 'Can'),
     ]
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ingredients', null=True, blank=True)
     name = models.CharField(max_length=100)
     icon_name = models.CharField(max_length=100, blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY)
@@ -92,3 +93,6 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.quantity} {self.unit})"
+
+    class Meta:
+        ordering = ['expiration_date']

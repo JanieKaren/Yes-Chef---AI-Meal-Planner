@@ -15,6 +15,9 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'dietary_preferences', 'saved_recipes', 'fridge_inventory')
 
 class IngredientSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'icon_name', 'category', 'expiration_date', 'quantity', 'unit') 
+        fields = ('id', 'user', 'name', 'icon_name', 'category', 'expiration_date', 'quantity', 'unit')
+        read_only_fields = ('user',) 
