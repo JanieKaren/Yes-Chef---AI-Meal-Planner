@@ -1,4 +1,6 @@
 <template>
+  <div class="fridge-header">
+  </div>
   <div class="ingredients-container">
     <div class="ingredients-header">
       <h1>My Fridge</h1>
@@ -188,6 +190,15 @@ const formatDate = (date: string) => {
 </script>
 
 <style scoped>
+.fridge-header {
+  background-image: url("@/assets/images/fridge-header.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  height: 20vh;
+  width: 100vw;
+}
 .ingredients-container {
   padding: 1rem;
 }
