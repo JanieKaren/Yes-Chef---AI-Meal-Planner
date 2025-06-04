@@ -1,19 +1,19 @@
 <script setup lang="ts">
+import { useUserStore } from '../stores/user'
 
+const userStore = useUserStore()
 </script>
 
 <template>
   <div class="homepage">
     <section class="ai-generator-section">
       <div class="ai-generator-content">
-        <h1>Looking for recipes? <br/> Let AI handle it1</h1>
+        <h1>Looking for recipes? <br/> Let AI handle it!</h1>
         <p>Tailored to your ingredients, diet, needs, and preferences — no guesswork needed.</p>
         <div class="cta">
-          <a href="/recipe-generator" class="btn">Generate Recipes</a>
+          <router-link to="/recipe-generator" class="btn">Generate Recipes</router-link>
         </div>
       </div>
-      <!-- <div class="orange-background"></div> -->
-
       <div class="image-wrapper">
         <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
       </div>
@@ -21,20 +21,20 @@
 
     <section class="cookbook">
       <div>
-        <h2><span class="highlight">The</span> <strong>Cookbook</strong></h2>
-        <p>Some of your favorite recipes saved in case you want to taste them again ></p>
+        <h2><span class="highlight">Your</span> <strong>Cookbook</strong></h2>
+        <p>Your favorite recipes saved for easy access</p>
         <div class="recipe-grid">
           <div class="recipe-card" v-for="i in 4" :key="i"></div>
         </div>
       </div>
       <div class="cta">
-        <a href="/recipe" class="btn">View Cookbook</a>
+        <router-link to="/recipe" class="btn">View Cookbook</router-link>
       </div>
     </section>
 
     <section class="fridge-section">
-      <h2><strong>The</strong> <span class="highlight">Fridge</span></h2>
-      <p>What's inside your fridge bla bla bla</p>
+      <h2><strong>Your</strong> <span class="highlight">Fridge</span></h2>
+      <p>Manage your ingredients and plan your meals</p>
       <div class="fridge-content">
         <div class="fridge-image"></div>
         <div class="fridge-list">
@@ -42,12 +42,10 @@
         </div>
       </div>
       <div class="cta">
-        <a href="/fridge" class="btn">Check Fridge</a>
+        <router-link to="/fridge" class="btn">Check Fridge</router-link>
       </div>
     </section>
-
   </div>
-
 </template>
 
 <style scoped>
@@ -224,6 +222,55 @@
     height: 40px;
     background: #d9d9d9;
     border-radius: 8px;
+  }
+
+  /* New styles for features section */
+  .features {
+    padding: 4rem 2rem;
+    background-color: #f8f8f8;
+  }
+
+  .features h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .feature-card h3 {
+    color: #497817;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card p {
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* Update existing styles */
+  .cta .btn {
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .cta:hover {
+    background-color: #3a5f12;
+    transition: background-color 0.3s ease;
   }
 
 </style>

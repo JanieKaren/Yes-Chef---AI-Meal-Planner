@@ -6,8 +6,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'landing',
+      component: () => import('../views/LandingPage.vue'),
+      meta: { requiresGuest: true }
+    },
+    {
+      path: '/home',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -81,7 +88,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Handle protected routes
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next({ name: 'login' })
+    next({ name: 'landing' })
   }
   // Handle guest-only routes
   else if (to.meta.requiresGuest && userStore.isAuthenticated) {
