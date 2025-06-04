@@ -17,6 +17,7 @@ const userStore = useUserStore()
       <div class="image-wrapper">
         <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
       </div>
+      <div class="orange-background"></div>
     </section>
 
     <section class="cookbook">
@@ -73,6 +74,7 @@ const userStore = useUserStore()
     flex-direction: column;
     align-items: start;
     gap: 2rem;
+    z-index: 2;
     /* max-width: 1100px; */
     width: 100%;
   }
@@ -113,6 +115,10 @@ const userStore = useUserStore()
   }
 
   .image-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
     width: 300px;
     height: 300px;
     border-radius: 50%;
