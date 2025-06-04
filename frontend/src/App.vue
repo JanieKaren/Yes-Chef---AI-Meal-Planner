@@ -28,7 +28,7 @@ const handleLogout = async () => {
       </div>
       <div class="navbar-menu">
         <template v-if="userStore.isAuthenticated">
-            <router-link to="/ingredients" class="navbar-item">Ingredients</router-link>
+            <router-link to="/fridge" class="navbar-item">Fridge</router-link>
             <router-link to="/profile" class="navbar-item">Profile</router-link>
             <a @click="handleLogout" class="navbar-item">Logout</a>
           </template>

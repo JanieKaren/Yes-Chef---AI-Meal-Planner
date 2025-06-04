@@ -71,6 +71,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+h1{
+  font-weight: bold;
+}
 
 /* Button Styles */
 .btn, .btn-primary, .btn-secondary  {
