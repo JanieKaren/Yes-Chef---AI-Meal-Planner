@@ -103,7 +103,7 @@ const userStore = useUserStore()
     border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
-    padding: 0.5rem 1.5rem;
+    /* padding: 0.5rem 1.5rem; */
     display: inline-block;
   }
 
