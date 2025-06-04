@@ -25,6 +25,7 @@
           <option value="good">Good</option>
         </select>
         <button @click="handleSearch" class="btn-primary">Search</button>
+        <button @click="resetFilters" class="btn-secondary">Show All</button>
       </div>
       <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
     </div>
@@ -125,6 +126,14 @@ const categories = [
 const searchQuery = ref('')
 const selectedCategory = ref('')
 const selectedCondition = ref('')
+
+const resetFilters = async () => {
+  searchQuery.value = ''
+  selectedCategory.value = ''
+  selectedCondition.value = ''
+  await router.push({ query: { page: '1' } })
+  await ingredientsStore.fetchIngredients(1)
+}
 
 const updatePage = async (page: number) => {
   await router.push({ query: { ...route.query, page: page.toString() } })
