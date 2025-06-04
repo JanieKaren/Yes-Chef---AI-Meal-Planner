@@ -2,6 +2,7 @@
   <div class="login-container">
     <form @submit.prevent="handleLogin" class="login-form">
       <h1>Login</h1>
+      <p>Don't have an Account? <router-link to="/register" style="color: orange; text-decoration: underline;">Sign Up</router-link></p>
       <div class="form-group">
         <label for="username">Username</label>
         <input
@@ -63,23 +64,34 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
+
 .login-container {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - 100px);
+  background-image: url("@/assets/images/login_background.jpg");
+  background-size: cover;
 }
 
 .login-form {
   background-color: white;
-  padding: 2rem;
+  padding: 3rem;
+  margin-left: 9rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 h1 {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+p {
   text-align: center;
   margin-bottom: 2rem;
   color: #2c3e50;
@@ -106,13 +118,14 @@ label {
 .btn-primary {
   width: 100%;
   padding: 0.75rem;
-  background-color: #2c3e50;
+  background-color: rgba(255, 192, 127, 1);
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: 2rem;
 }
 
 .btn-primary:hover {
