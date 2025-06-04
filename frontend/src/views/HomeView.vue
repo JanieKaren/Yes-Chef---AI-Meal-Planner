@@ -32,6 +32,20 @@
       </div>
     </section>
 
+    <section class="fridge-section">
+      <h2><strong>The</strong> <span class="highlight">Fridge</span></h2>
+      <p>What's inside your fridge bla bla bla</p>
+      <div class="fridge-content">
+        <div class="fridge-image"></div>
+        <div class="fridge-list">
+          <div class="fridge-item" v-for="i in 5" :key="i"></div>
+        </div>
+      </div>
+      <div class="cta">
+        <a href="/fridge" class="btn">Check Fridge</a>
+      </div>
+    </section>
+
   </div>
 
 </template>
@@ -163,4 +177,53 @@
     background: #d9d9d9;
     border-radius: 12px;
   }
+
+  .fridge-section {
+    padding: 2rem;
+    background: white;
+    color: #1e1e1e;
+  }
+
+  .fridge-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .fridge-section .highlight {
+    color: #ffb87d;
+    font-weight: 600;
+  }
+
+  .fridge-section p {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 1.5rem;
+  }
+
+  .fridge-content {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .fridge-image {
+    width: 180px;
+    height: 280px;
+    background: #d9d9d9;
+    border-radius: 8px;
+  }
+
+  .fridge-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .fridge-item {
+    height: 40px;
+    background: #d9d9d9;
+    border-radius: 8px;
+  }
+
 </style>
