@@ -66,10 +66,10 @@
               <td class="actions-cell">
                 <div class="action-buttons">
                   <router-link :to="{ name: 'edit-ingredient', params: { id: ingredient.id }}" class="btn-icon">
-                    <i class="fas fa-edit"></i>
+                    <span class="material-icons">edit</span>
                   </router-link>
                   <button @click="deleteIngredient(ingredient.id)" class="btn-icon">
-                    <i class="fas fa-trash-alt"></i>
+                    <span class="material-icons">delete</span>
                   </button>
                 </div>
               </td>
@@ -309,7 +309,7 @@ const getConditionClass = (expirationDate: string) => {
 
 .action-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   justify-content: flex-end;
 }
 
@@ -325,6 +325,8 @@ const getConditionClass = (expirationDate: string) => {
   justify-content: center;
   color: #6c757d;
   border-radius: 6px;
+  width: 36px;
+  height: 36px;
 }
 
 .btn-icon:hover {
@@ -333,16 +335,18 @@ const getConditionClass = (expirationDate: string) => {
   background-color: #f8f6f4;
 }
 
-.btn-icon i {
-  font-size: 1.1rem;
+.btn-icon .material-icons {
+  font-size: 20px;
 }
 
 .btn-icon:first-child:hover {
   color: #FFC07F;
+  background-color: rgba(255, 192, 127, 0.1);
 }
 
 .btn-icon:last-child:hover {
   color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
 }
 
 .condition-expired {

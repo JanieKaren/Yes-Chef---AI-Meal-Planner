@@ -1,118 +1,98 @@
 <template>
-  <div class="profile-container">
-    <h1>Profile</h1>
-    
-    <div class="profile-section">
-      <h2>User Information</h2>
+  <div class="background-container">
+    <div class="profile-container">
+      <div class="profile-header">
+      <!-- <h1>User Profile</h1> -->
+    </div>
+    <div class="information">
+      <div class="profile-section">
+      <h2>Account Information</h2>
       <div class="info-card">
-        <p><strong>Username:</strong> {{ userStore.user?.username }}</p>
-        <p><strong>Email:</strong> {{ userStore.user?.email }}</p>
-      </div>
-    </div>
-
-    <div class="profile-section">
-      <h2>Dietary Preferences</h2>
-      <div class="preferences-card">
-        <div class="preferences-list">
-          <div
-            v-for="preference in userStore.account?.dietary_preferences"
-            :key="preference"
-            class="preference-tag"
-          >
-            {{ preference }}
-          </div>
+        <div class="field">
+          <label>Firstname:</label>
+          <input v-if="isEditing" v-model="editableUser.first_name" />
+          <p v-else>{{ userStore.user?.first_name }}</p>
         </div>
-        <button @click="showPreferencesModal = true" class="btn-secondary">
-          Edit Preferences
-        </button>
-      </div>
-    </div>
-
-    <div class="profile-section">
-      <h2>Fridge Inventory</h2>
-      <div class="inventory-card">
-        <div class="inventory-list">
-          <div
-            v-for="item in userStore.account?.fridge_inventory"
-            :key="item"
-            class="inventory-item"
-          >
-            {{ item }}
-          </div>
+        <div class="field">
+          <label>Lastname:</label>
+          <input v-if="isEditing" v-model="editableUser.last_name" />
+          <p v-else>{{ userStore.user?.last_name }}</p>
         </div>
-        <button @click="showInventoryModal = true" class="btn-secondary">
-          Edit Inventory
-        </button>
-      </div>
-    </div>
-
-    <!-- Dietary Preferences Modal -->
-    <div v-if="showPreferencesModal" class="modal">
-      <div class="modal-content">
-        <h2>Edit Dietary Preferences</h2>
-        <div class="preferences-edit">
-          <div
-            v-for="preference in availablePreferences"
-            :key="preference"
-            class="preference-option"
-          >
-            <label>
-              <input
-                type="checkbox"
-                :value="preference"
-                v-model="selectedPreferences"
-              />
-              {{ preference }}
-            </label>
-          </div>
+        <div class="field">
+          <label>Username:</label>
+          <input v-if="isEditing" v-model="editableUser.username" />
+          <p v-else>{{ userStore.user?.username }}</p>
         </div>
-        <div class="modal-actions">
-          <button @click="showPreferencesModal = false" class="btn-secondary">
-            Cancel
+        <div class="field">
+          <label>Email:</label>
+          <input v-if="isEditing" v-model="editableUser.email" />
+          <p v-else>{{ userStore.user?.email }}</p>
+        </div>
+        <button @click="toggleEdit" class="btn-secondary">
+            {{ isEditing ? 'Cancel' : 'Edit' }}
           </button>
-          <button @click="savePreferences" class="btn-primary">Save</button>
-        </div>
+          <button v-if="isEditing" @click="saveChanges" class="btn-primary">Save</button>
+        
       </div>
     </div>
-
-    <!-- Fridge Inventory Modal -->
-    <div v-if="showInventoryModal" class="modal">
-      <div class="modal-content">
-        <h2>Edit Fridge Inventory</h2>
-        <div class="inventory-edit">
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="newInventoryItem"
-              placeholder="Add new item"
-              class="form-control"
-              @keyup.enter="addInventoryItem"
-            />
-          </div>
-          <div class="inventory-items">
+      <div class="user-preference">
+        <div class="profile-section">
+        <h2>Dietary Preferences</h2>
+        <div class="preferences-card">
+          <div class="preferences-list">
             <div
-              v-for="(item, index) in inventoryItems"
-              :key="index"
-              class="inventory-item-edit"
+              v-for="preference in userStore.account?.dietary_preferences"
+              :key="preference"
+              class="preference-tag"
             >
-              <span>{{ item }}</span>
-              <button @click="removeInventoryItem(index)" class="btn-icon">×</button>
+              {{ preference }}
             </div>
           </div>
-        </div>
-        <div class="modal-actions">
-          <button @click="showInventoryModal = false" class="btn-secondary">
-            Cancel
+          <button @click="showPreferencesModal = true" class="btn-secondary">
+            Edit Preferences
           </button>
-          <button @click="saveInventory" class="btn-primary">Save</button>
         </div>
       </div>
+
+      
+      <!-- Dietary Preferences Modal -->
+      <div v-if="showPreferencesModal" class="modal">
+        <div class="modal-content">
+          <h2>Edit Dietary Preferences</h2>
+          <div class="preferences-edit">
+            <div
+              v-for="preference in availablePreferences"
+              :key="preference"
+              class="preference-option"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  :value="preference"
+                  v-model="selectedPreferences"
+                />
+                {{ preference }}
+              </label>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button @click="showPreferencesModal = false" class="btn-secondary">
+              Cancel
+            </button>
+            <button @click="savePreferences" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+    </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
@@ -131,72 +111,134 @@ const availablePreferences = [
 ]
 
 const selectedPreferences = ref<string[]>([])
-const newInventoryItem = ref('')
-const inventoryItems = ref<string[]>([])
+
 
 onMounted(() => {
   selectedPreferences.value = userStore.account?.dietary_preferences || []
-  inventoryItems.value = userStore.account?.fridge_inventory || []
+  
 })
 
 const savePreferences = async () => {
-  await userStore.updateDietaryPreferences(selectedPreferences.value)
-  showPreferencesModal.value = false
+  const success = await userStore.updateDietaryPreferences(selectedPreferences.value)
+  if (success) {
+    showPreferencesModal.value = false
+  } else {
+    alert('Something went wrong while saving preferences.')
+
+  }
+  
 }
 
-const addInventoryItem = () => {
-  if (newInventoryItem.value.trim()) {
-    inventoryItems.value.push(newInventoryItem.value.trim())
-    newInventoryItem.value = ''
+
+const isEditing = ref(false)
+const editableUser = reactive({
+  first_name: '',
+  last_name: '',
+  username: '',
+  email: ''
+})
+
+function toggleEdit() {
+  isEditing.value = !isEditing.value
+  if (isEditing.value) {
+    Object.assign(editableUser, {
+      first_name: userStore.user?.first_name,
+      last_name: userStore.user?.last_name,
+      username: userStore.user?.username,
+      email: userStore.user?.email
+    })
   }
 }
 
-const removeInventoryItem = (index: number) => {
-  inventoryItems.value.splice(index, 1)
+async function saveChanges() {
+  if (isEditing.value && userStore.user) {
+    try {
+      const updatedUser = await userStore.updateUserInfo({ ...editableUser })
+      if (updatedUser) {
+        isEditing.value = false
+      }
+    } catch (error) {
+      console.error('Failed to update user info:', error)
+    }
+  }
 }
 
-const saveInventory = async () => {
-  await userStore.updateFridgeInventory(inventoryItems.value)
-  showInventoryModal.value = false
-}
 </script>
 
 <style scoped>
-.profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+.background-container {
+ padding: 2rem 1rem;
+ background-color: #fdfaf6;
+ min-height: calc(100vh - 100px);
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ background-image: url("@/assets/images/profile_background.jpg");
+ /* background-repeat: repeat; */
+ background-size: contain; /* or set to the exact size of the image */
+ background-position: top left;
 }
 
+.profile-container{
+  
+  padding: 20px;
+  border-radius: 8px;
+  /* background-color: rgb(247, 238, 221); */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-image: url("@/assets/images/notepad.png");
+  background-size: cover;
+}
+
+.information {
+  margin-top: 16rem;
+  max-width: 800px;
+  padding: 2rem;
+  padding-top: 0;
+  
+}
+
+.profile-header{
+ /* max-width: 800px; */
+ text-align: center;
+ width: 100%;
+}
+
+
 .profile-section {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
 }
 
 h1 {
   color: #2c3e50;
-  margin-bottom: 2rem;
+  
 }
 
 h2 {
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
-.info-card, .preferences-card, .inventory-card {
-  background-color: white;
+.info-card, .preferences-card {
+  background-color: rgb(245, 231, 204);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.preferences-list, .inventory-list {
+.user-preference{
+  margin-top: 10px;
+}
+
+.preferences-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.preference-tag, .inventory-item {
+.preference-tag {
   background-color: #e0e0e0;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -228,20 +270,6 @@ h2 {
 }
 
 .preference-option {
-  margin-bottom: 0.5rem;
-}
-
-.inventory-items {
-  margin-top: 1rem;
-}
-
-.inventory-item-edit {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
   margin-bottom: 0.5rem;
 }
 
@@ -279,6 +307,14 @@ h2 {
   color: white;
 }
 
+.info-card .btn-secondary {
+  margin-right: 20px;
+}
+
+.btn-primary:hover, .btn-secondary:hover{
+  background-color: orange;
+}
+
 .form-control {
   width: 100%;
   padding: 0.5rem;
@@ -286,4 +322,41 @@ h2 {
   border-radius: 4px;
   font-size: 1rem;
 }
+
+.user-info {
+ max-width: 500px;
+ margin: 2rem auto;
+ padding: 1.5rem;
+ border-radius: 12px;
+ background-color: #f9f9f9;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.profile-section h2 {
+ margin-bottom: 0.5rem;
+ font-size: 1.5rem;
+ color: #333;
+ 
+}
+.info-card .field {
+ display: flex;
+ flex-direction: column;
+ margin-bottom: 1rem;
+}
+.field label {
+ font-weight: 600;
+ margin-bottom: 0.3rem;
+ color: #555;
+}
+.field input {
+ padding: 0.5rem;
+ border: 1px solid #ccc;
+ border-radius: 6px;
+ font-size: 1rem;
+}
+.field p {
+ font-size: 1rem;
+ color: #2c3e50;
+}
+
+
 </style> 

@@ -22,6 +22,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
+    
+    def get_object(self):
+        return self.request.user
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
@@ -48,11 +51,13 @@ class AccountViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
+    firstname = request.data.get('firstname') 
+    lastname = request.data.get('lastname') 
     username = request.data.get('username')
     email = request.data.get('email')
     password = request.data.get('password')
 
-    if not all([username, email, password]):
+    if not all([firstname,lastname, username, email, password]):
         return Response(
             {'error': 'Please provide all required fields'},
             status=status.HTTP_400_BAD_REQUEST
@@ -70,7 +75,7 @@ def register(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    user = User.objects.create_user(username=username, email=email, password=password)
+    user = User.objects.create_user(first_name=firstname, last_name=lastname,username=username, email=email, password=password)
     login(request, user)
 
     return Response({
@@ -214,3 +219,4 @@ def ingredient_detail(request, pk):
     elif request.method == 'DELETE':
         ingredient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
