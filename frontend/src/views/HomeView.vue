@@ -1,7 +1,31 @@
 <script setup lang="ts">
 import { useUserStore } from '../stores/user'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
 const userStore = useUserStore()
+const ingredients = ref([])
+const loading = ref(true)
+
+const fetchIngredients = async () => {
+  try {
+    const response = await axios.get('/api/ingredients/', {
+      params: {
+        page: 1,
+        condition: 'good' // Only show non-expired items
+      }
+    })
+    ingredients.value = response.data.results.slice(0, 5) // Get only first 5 items
+  } catch (error) {
+    console.error('Error fetching ingredients:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchIngredients()
+})
 </script>
 
 <template>
@@ -38,11 +62,25 @@ const userStore = useUserStore()
         <h2><strong>Your</strong> <span class="highlight">Fridge</span></h2>
         <p>Manage your ingredients and plan your meals</p>
         <div class="fridge-dashboard">
+          <div class="fridge-header">
+            <h3>Recent Ingredients</h3>
+            <span class="ingredient-count">{{ ingredients.length }} items</span>
+          </div>
           <div class="fridge-items">
-            <div class="fridge-item" v-for="i in 5" :key="i">
+            <div v-if="loading" class="loading">Loading ingredients...</div>
+            <div v-else-if="ingredients.length === 0" class="no-items">
+              No ingredients found. Add some to your fridge!
+            </div>
+            <div v-else class="fridge-item" v-for="ingredient in ingredients" :key="ingredient.id">
               <div class="item-content">
-                <span class="item-name">Ingredient {{ i }}</span>
-                <span class="item-quantity">2 units</span>
+                <div class="item-info">
+                  <span class="item-name">{{ ingredient.name }}</span>
+                  <span class="item-category">{{ ingredient.category }}</span>
+                </div>
+                <div class="item-details">
+                  <span class="item-quantity">{{ ingredient.quantity }} {{ ingredient.unit }}</span>
+                  <span class="item-expiry">Expires: {{ new Date(ingredient.expiration_date).toLocaleDateString() }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -131,8 +169,6 @@ const userStore = useUserStore()
     height: 100%;
   }
 
-  
-
   .cookbook {
     background-color: #FFD8B1;
   }
@@ -183,6 +219,24 @@ const userStore = useUserStore()
     margin-top: 2rem;
   }
 
+  .fridge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .fridge-header h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0;
+  }
+
+  .ingredient-count {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
   .fridge-items {
     display: flex;
     flex-direction: column;
@@ -192,9 +246,14 @@ const userStore = useUserStore()
 
   .fridge-item {
     background: white;
-    padding: 1rem;
+    padding: 1.2rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+  }
+
+  .fridge-item:hover {
+    transform: translateY(-2px);
   }
 
   .item-content {
@@ -203,11 +262,44 @@ const userStore = useUserStore()
     align-items: center;
   }
 
+  .item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
   .item-name {
     font-weight: 600;
+    color: #333;
+  }
+
+  .item-category {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .item-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
   }
 
   .item-quantity {
+    font-weight: 500;
+    color: #497817;
+  }
+
+  .item-expiry {
+    font-size: 0.9rem;
+    color: #ff6b6b;
+  }
+
+  .loading, .no-items {
+    text-align: center;
+    padding: 2rem;
     color: #666;
+    background: white;
+    border-radius: 12px;
   }
 </style>
