@@ -23,7 +23,7 @@ import TheWelcome from '../components/TheWelcome.vue'
     </div>
 
     <div class="cta">
-      <router-link to="/register" class="btn-primary">Get Started</router-link>
+      <router-link to="/recipe-generator" class="btn-primary">Get Started</router-link>
       <router-link to="/login" class="btn-secondary">Login</router-link>
     </div>
   </div>

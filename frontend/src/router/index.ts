@@ -21,6 +21,23 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue'),
       meta: { requiresGuest: true }
     },
+     // ← New route for Recipe Generator
+    {
+      path: '/recipe-generator',
+      name: 'recipe-generator',
+      component: () => import('../views/RecipeGeneratorView.vue'),
+      // If you want only authenticated users to see it, add: meta: { requiresAuth: true }
+    },
+
+    {
+    path: '/generated-recipes',
+    name: 'generated-recipes',
+    component: () => import('../views/GeneratedRecipesAI.vue'),
+    props: false // we’ll pull data from localStorage instead of props
+    },
+
+    
+
     {
       path: '/ingredients',
       name: 'ingredients',
