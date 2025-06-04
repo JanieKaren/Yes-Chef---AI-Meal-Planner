@@ -6,8 +6,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'landing',
+      component: () => import('../views/LandingPage.vue'),
+      meta: { requiresGuest: true }
+    },
+    {
+      path: '/home',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -33,10 +40,10 @@ const router = createRouter({
     path: '/generated-recipes',
     name: 'generated-recipes',
     component: () => import('../views/GeneratedRecipesAI.vue'),
-    props: false // we’ll pull data from localStorage instead of props
+    props: false // we'll pull data from localStorage instead of props
     },
 
-    
+
 
     {
       path: '/fridge',
@@ -61,13 +68,19 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/recipe',
+      name: 'Recipe',
+      component: () => import('../views/RecipeView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  
+
   // Check authentication status if not already checked
   if (!userStore.isAuthenticated && userStore.user === null) {
     await userStore.checkAuth()
@@ -75,7 +88,7 @@ router.beforeEach(async (to, from, next) => {
 
   // Handle protected routes
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next({ name: 'login' })
+    next({ name: 'landing' })
   }
   // Handle guest-only routes
   else if (to.meta.requiresGuest && userStore.isAuthenticated) {

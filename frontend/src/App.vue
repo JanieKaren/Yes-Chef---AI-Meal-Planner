@@ -20,7 +20,7 @@ const handleLogout = async () => {
   <div class="app">
     <nav class="navbar">
       <div class="navbar-brand">
-        
+
         <router-link to="/" class="navbar-item">
           <img src="@/assets/images/logo.png" alt="Logo" class="logo" />
           Yes, Chef!
@@ -28,13 +28,15 @@ const handleLogout = async () => {
       </div>
       <div class="navbar-menu">
         <template v-if="userStore.isAuthenticated">
-            <router-link to="/fridge" class="navbar-item">Fridge</router-link>
-            <router-link to="/profile" class="navbar-item">Profile</router-link>
+            <router-link to="/home" class="navbar-item" active-class="active">Home</router-link>
+            <router-link to="/recipe" class="navbar-item" active-class="active">Recipes</router-link>
+            <router-link to="/fridge" class="navbar-item" active-class="active">Fridge</router-link>
+            <router-link to="/profile" class="navbar-item" active-class="active">Account</router-link>
             <a @click="handleLogout" class="navbar-item">Logout</a>
           </template>
           <template v-else>
-            <router-link to="/login" class="navbar-item">Login</router-link>
-            <router-link to="/register" class="navbar-item">Register</router-link>
+            <router-link to="/login" class="navbar-item" active-class="active">Login</router-link>
+            <router-link to="/register" class="navbar-item" active-class="active">Register</router-link>
           </template>
       </div>
     </nav>
@@ -53,18 +55,20 @@ const handleLogout = async () => {
 }
 
 .navbar {
-  background-color: cornsilk;
-  padding: 1rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
+  flex: 1;
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
+  padding: 1rem;
 }
 
 .logo {
@@ -77,22 +81,66 @@ const handleLogout = async () => {
 .navbar-item {
   color: #34495e;
   text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
   cursor: pointer;
   display: flex;
   align-items: center;
   height: 100%;
+  padding: 0 1.5rem;
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .navbar-item:hover {
-  background-color: rgb(255, 219, 186);
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #1e1e1e;
+}
+
+.navbar-item.active {
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.navbar-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background-color: #1e1e1e;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.navbar-item:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 2px;
+  background-color: rgba(30, 30, 30, 0.3);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.navbar-item.active:hover::after {
+  width: 80%;
+  background-color: #1e1e1e;
 }
 
 .navbar-menu {
+  width: 40%;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  background-color: #FFD8B1;
+  padding: 0 1rem;
 }
 
 .main-content {

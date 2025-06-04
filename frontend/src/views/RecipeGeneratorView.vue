@@ -65,18 +65,21 @@
         ></textarea>
       </div>
 
-      <div class="form-group">
-        <label>Diet &amp; Allergies</label>
-        <div class="checkbox-group" v-for="option in dietOptions" :key="option">
-          <input
-            type="checkbox"
-            :value="option"
-            v-model="form.diets"
-            :id="`diet-${option}`"
-          />
-          <label :for="`diet-${option}`">{{ option }}</label>
-        </div>
-      </div>
+      <div class="form-group" :class="{ selected: form.diets.length }">
+  <label>Diet &amp; Allergies</label>
+  <div class="checkbox-group" v-for="option in dietOptions" :key="option">
+    <label :for="`diet-${option}`" class="custom-checkbox-label">
+      <input
+        type="checkbox"
+        :value="option"
+        v-model="form.diets"
+        :id="`diet-${option}`"
+      />
+      <span class="custom-checkbox"></span>
+      {{ option }}
+    </label>
+  </div>
+</div>
 
       <div class="form-group">
         <label for="notes">Other Preferences</label>
@@ -88,13 +91,16 @@
         ></textarea>
       </div>
 
-      <button type="submit" id="generate-btn" :disabled="loading">
+      <div style="text-align: center;">
+    <button type="submit" id="generate-btn" :disabled="loading">
         <span v-if="!loading">Generate Recipes</span>
         <span v-else>
-          Generating
-          <span class="spinner"></span>
+            Generating
+            <span class="spinner"></span>
         </span>
-      </button>
+    </button>
+</div>
+
     </form>
 
     <div v-if="errorMessage" class="error">
@@ -108,6 +114,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
 
 const form = reactive({
   type: 'Dessert',
@@ -134,14 +141,35 @@ async function onGenerate() {
   errorMessage.value = ''
   loading.value = true
 
+  // 1) Build a prompt that forces JSON‐only output
   const promptText = `
-I have these ingredients: ${form.ingredients}.
-I want ${form.type} recipes in ${form.cuisine} cuisine that take ${form.time}
-and follow a ${form.style} style.
-Avoid: ${form.diets.join(', ')}.
-Notes: ${form.notes}.
-Provide 3 suggestions with a brief ingredients list and steps.
-  `.trim()
+You are an AI chef. Given:
+  • Ingredients: ${form.ingredients}
+  • Recipe Type: ${form.type}
+  • Cuisine: ${form.cuisine}
+  • Time: ${form.time}
+  • Nutritional Style: ${form.style}
+  • Dietary Restrictions: ${form.diets.join(', ') || 'none'}
+  • Other Preferences: ${form.notes || 'none'}
+
+Produce exactly three distinct recipe objects. 
+**Output must be valid JSON ONLY**—an array of three items. 
+Each item must have exactly these keys:
+  • "title"  : string
+  • "ingredients": an array of objects, each with:
+    – "name": string
+    – "quantity": string
+  • "steps"  : an array of strings
+
+Do NOT include any extra words, numbering, markdown, or commentary. 
+Return exactly:
+[
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] }
+]
+`.trim()
+
 
   try {
     const DJANGO_BACKEND_URL = 'http://localhost:8000'
@@ -151,7 +179,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
       body: JSON.stringify({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         prompt: promptText,
-        max_tokens: 500,
+        max_tokens: 600,     // bump up if needed so the JSON fits
         temperature: 0.7,
         top_p: 0.9
       })
@@ -163,23 +191,45 @@ Provide 3 suggestions with a brief ingredients list and steps.
     }
 
     const data = await res.json()
-    const text = data.choices?.[0]?.text ?? data.result
-    if (!text) throw new Error('No response text from API')
-
-    const recs = text
-      .trim()
-      .split(/\n\d+\./)
-      .filter(r => r.trim())
-
-    if (!recs.length) {
-      throw new Error('Could not parse any recipes from response.')
+    // assume the back‐end returns something like: { choices: [ { text: '[…JSON…]' } ] }
+    const rawText: string = data.choices?.[0]?.text ?? data.result
+    if (!rawText) {
+      throw new Error('No response from Llama.')
     }
 
-    localStorage.setItem('generatedRecipes', JSON.stringify(recs))
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(rawText.trim())
+    } catch (jsonErr) {
+      console.error('Failed to parse JSON:', rawText)
+      throw new Error('Invalid JSON returned by Llama. Check prompt/schema.')
+    }
+
+    // Validate that parsed is an array of length 3
+    if (!Array.isArray(parsed) || parsed.length !== 3) {
+      console.error('Parsed not an array of length 3:', parsed)
+      throw new Error('Unexpected JSON format: expected an array of exactly 3 recipes.')
+    }
+
+    // Optionally: further validate each object has title/ingredients/steps
+    parsed.forEach((item: any, idx: number) => {
+      if (
+        typeof item.title !== 'string' ||
+        !Array.isArray(item.ingredients) ||
+        !Array.isArray(item.steps)
+      ) {
+        throw new Error(`Recipe #${idx + 1} is missing required fields.`)
+      }
+    })
+
+    // Save to localStorage as a JSON string
+    localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
+
+    // Navigate to the “generated recipes” page
     router.push({ name: 'generated-recipes' })
   } catch (err: any) {
     console.error(err)
-    errorMessage.value = err.message || 'Unknown error'
+    errorMessage.value = err.message || 'Unknown generation error'
   } finally {
     loading.value = false
   }
@@ -187,12 +237,13 @@ Provide 3 suggestions with a brief ingredients list and steps.
 </script>
 
 <style scoped>
+
 .page-container {
   max-width: 700px;
   margin: 2rem auto;
   padding: 1rem;
   background: #f9f9f9;
-  border-radius: 6px;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -230,16 +281,20 @@ Provide 3 suggestions with a brief ingredients list and steps.
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   resize: vertical;
   font-size: 0.95rem;
   color: #2c3e50;
+  transition: background-color 0.2s ease;
 }
+
 
 .checkbox-group {
   display: inline-block;
   margin-right: 1rem;
   margin-bottom: 0.5rem;
+  align-items: start;
+  position: relative;
 }
 
 .checkbox-group input {
@@ -286,4 +341,10 @@ button[disabled] {
   margin-top: 1rem;
   font-weight: 500;
 }
+
+.page-container:hover {
+  background: #e6f9e6; /* Light green on hover */
+  transition: background 0.3s;
+}
+
 </style>
