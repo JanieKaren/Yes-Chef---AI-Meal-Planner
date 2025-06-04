@@ -51,12 +51,32 @@
       </div>
     </div>
   </div>
+  <div class="pagination-controls" v-if="ingredientsStore.totalPages > 1">
+    <button 
+      @click="updatePage(ingredientsStore.currentPage - 1)"
+      :disabled="!ingredientsStore.previousPage"
+      class="btn-secondary"
+    >
+      Previous
+    </button>
+    <span class="page-info">Page {{ ingredientsStore.currentPage }} of {{ ingredientsStore.totalPages }}</span>
+    <button 
+      @click="updatePage(ingredientsStore.currentPage + 1)"
+      :disabled="!ingredientsStore.nextPage"
+      class="btn-secondary"
+    >
+      Next
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
+const router = useRouter()
 const ingredientsStore = useIngredientsStore()
 
 const categories = [
@@ -80,8 +100,24 @@ const categories = [
   ['OTHER', 'Other']
 ]
 
+const updatePage = async (page: number) => {
+  await router.push({ query: { ...route.query, page: page.toString() } })
+  await ingredientsStore.fetchIngredients(page)
+}
+
 onMounted(() => {
-  ingredientsStore.fetchIngredients()
+  const page = Number(route.query.page) || 1
+  ingredientsStore.fetchIngredients(page)
+})
+
+// Watch for route query changes
+watch(() => route.query.page, (newPage) => {
+  if (newPage) {
+    const page = Number(newPage)
+    if (page !== ingredientsStore.currentPage) {
+      ingredientsStore.fetchIngredients(page)
+    }
+  }
 })
 
 const deleteIngredient = async (id: number) => {
@@ -202,26 +238,24 @@ const getConditionClass = (expirationDate: string) => {
 }
 
 .condition-expired {
-  color: #e74c3c;
+  color: #dc3545;
   font-weight: bold;
 }
 
 .condition-warning {
-  color: #e67e22;
+  color: #ffc107;
   font-weight: bold;
 }
 
 .condition-caution {
-  color: #f1c40f;
+  color: #fd7e14;
   font-weight: bold;
 }
 
 .condition-good {
-  color: #27ae60;
+  color: #28a745;
   font-weight: bold;
 }
-
-
 
 .loading, .error {
   text-align: center;
@@ -237,5 +271,37 @@ const getConditionClass = (expirationDate: string) => {
   text-align: center;
   padding: 2rem;
   color: #666;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.page-info {
+  color: #6c757d;
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  border: 1px solid #6c757d;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style> 

@@ -15,21 +15,33 @@ interface IngredientsState {
   ingredients: Ingredient[]
   loading: boolean
   error: string | null
+  currentPage: number
+  totalPages: number
+  nextPage: number | null
+  previousPage: number | null
 }
 
 export const useIngredientsStore = defineStore('ingredients', {
   state: (): IngredientsState => ({
     ingredients: [],
     loading: false,
-    error: null
+    error: null,
+    currentPage: 1,
+    totalPages: 1,
+    nextPage: null,
+    previousPage: null
   }),
 
   actions: {
-    async fetchIngredients() {
+    async fetchIngredients(page = 1) {
       this.loading = true
       try {
-        const response = await axios.get('/api/ingredients/')
-        this.ingredients = response.data
+        const response = await axios.get(`/api/ingredients/?page=${page}`)
+        this.ingredients = response.data.results
+        this.currentPage = response.data.current_page
+        this.totalPages = response.data.num_pages
+        this.nextPage = response.data.next_page
+        this.previousPage = response.data.previous_page
         this.error = null
       } catch (error) {
         console.error('Failed to fetch ingredients:', error)

@@ -8,6 +8,8 @@ from .serializers import UserSerializer, AccountSerializer, IngredientSerializer
 from django.contrib.auth import login, logout
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.core.paginator import Paginator
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 
@@ -125,10 +127,23 @@ def user_view(request):
 @permission_classes([IsAuthenticated])
 def ingredient_list(request):
     if request.method == 'GET':
-        ingredients = Ingredient.objects.filter(user=request.user)
-        serializer = IngredientSerializer(ingredients, many=True)
-        return Response(serializer.data)
-    
+        ingredients = Ingredient.objects.filter(user=request.user).order_by('expiration_date')
+        
+        paginator = Paginator(ingredients, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        serializer = IngredientSerializer(page_obj, many=True)
+        
+        return Response({
+            'count': paginator.count,
+            'num_pages': paginator.num_pages,
+            'current_page': page_obj.number,
+            'next_page': page_obj.next_page_number() if page_obj.has_next() else None,
+            'previous_page': page_obj.previous_page_number() if page_obj.has_previous() else None,
+            'results': serializer.data,
+        })
+
     elif request.method == 'POST':
         serializer = IngredientSerializer(data=request.data)
         if serializer.is_valid():
