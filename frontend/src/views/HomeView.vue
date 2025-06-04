@@ -11,7 +11,7 @@ const userStore = useUserStore()
         <h1>Looking for recipes? <br/> Let AI handle it!</h1>
         <p>Tailored to your ingredients, diet, needs, and preferences — no guesswork needed.</p>
         <div class="cta">
-          <router-link to="/recipe-generator" class="btn">Generate Recipes</router-link>
+          <router-link to="/recipe-generator" class="btn btn-primary">Generate Recipes</router-link>
         </div>
       </div>
       <div class="image-wrapper">
@@ -21,29 +21,35 @@ const userStore = useUserStore()
     </section>
 
     <section class="cookbook">
-      <div>
+      <div class="section-content">
         <h2><span class="highlight">Your</span> <strong>Cookbook</strong></h2>
         <p>Your favorite recipes saved for easy access</p>
         <div class="recipe-grid">
           <div class="recipe-card" v-for="i in 4" :key="i"></div>
         </div>
-      </div>
-      <div class="cta">
-        <router-link to="/recipe" class="btn">View Cookbook</router-link>
+        <div class="cta">
+          <router-link to="/recipe" class="btn btn-primary">View Cookbook</router-link>
+        </div>
       </div>
     </section>
 
     <section class="fridge-section">
-      <h2><strong>Your</strong> <span class="highlight">Fridge</span></h2>
-      <p>Manage your ingredients and plan your meals</p>
-      <div class="fridge-content">
-        <div class="fridge-image"></div>
-        <div class="fridge-list">
-          <div class="fridge-item" v-for="i in 5" :key="i"></div>
+      <div class="section-content">
+        <h2><strong>Your</strong> <span class="highlight">Fridge</span></h2>
+        <p>Manage your ingredients and plan your meals</p>
+        <div class="fridge-dashboard">
+          <div class="fridge-items">
+            <div class="fridge-item" v-for="i in 5" :key="i">
+              <div class="item-content">
+                <span class="item-name">Ingredient {{ i }}</span>
+                <span class="item-quantity">2 units</span>
+              </div>
+            </div>
+          </div>
+          <div class="cta">
+            <router-link to="/fridge" class="btn btn-primary">View All Ingredients</router-link>
+          </div>
         </div>
-      </div>
-      <div class="cta">
-        <router-link to="/fridge" class="btn">Check Fridge</router-link>
       </div>
     </section>
   </div>
@@ -58,15 +64,26 @@ const userStore = useUserStore()
     flex-direction: column;
   }
 
+  section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .section-content {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .ai-generator-section {
     background-color: #ffff;
     display: flex;
     justify-content: center;
-    padding: 4rem 2rem 2rem;
-    justify-content: center;
-    padding: 4rem 2rem 2rem;
+    padding: 4rem 2rem;
     position: relative;
-    min-height: 350px;
   }
 
   .ai-generator-content {
@@ -74,44 +91,15 @@ const userStore = useUserStore()
     flex-direction: column;
     align-items: start;
     gap: 2rem;
-    z-index: 2;
-    /* max-width: 1100px; */
     width: 100%;
+    max-width: 600px;
+    z-index: 2;
   }
 
   h1 {
     font-family: "Aclonica", sans-serif;
-  }
-
-  .text {
-    flex: 1;
-  }
-
-  .text h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-
-  .text p {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    max-width: 350px;
-  }
-
-  .cta {
-    background-color: #497817;
-    border: none;
-    border-radius: 20px;
-    font-weight: 600;
-    cursor: pointer;
-    /* padding: 0.5rem 1.5rem; */
-    display: inline-block;
-  }
-
-  .cta .btn {
-    color: #ffffff;
-    font-weight: 700;
+    font-size: 2.5rem;
+    line-height: 1.2;
   }
 
   .image-wrapper {
@@ -141,21 +129,17 @@ const userStore = useUserStore()
     right: 0;
     width: 40%;
     height: 100%;
-    /* z-index: 0; */
   }
 
-  /* Cookbook */
+  
+
   .cookbook {
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 2rem 4rem;
     background-color: #FFD8B1;
-    gap: 2rem;
   }
 
   .cookbook h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 1rem;
   }
 
   .cookbook .highlight {
@@ -163,34 +147,28 @@ const userStore = useUserStore()
     font-weight: 500;
   }
 
-  .cookbook p {
-    font-size: 0.9rem;
-    color: #444;
-    margin-bottom: 1.5rem;
-  }
-
   .recipe-grid {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
   }
 
   .recipe-card {
-    width: 150px;
-    height: 180px;
-    background: #d9d9d9;
+    width: 100%;
+    height: 250px;
+    background: #ffffff;
     border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
 
   .fridge-section {
-    padding: 2rem;
     background: white;
-    color: #1e1e1e;
   }
 
   .fridge-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.3rem;
+    font-size: 2rem;
+    margin-bottom: 1rem;
   }
 
   .fridge-section .highlight {
@@ -198,85 +176,38 @@ const userStore = useUserStore()
     font-weight: 600;
   }
 
-  .fridge-section p {
-    font-size: 0.9rem;
-    color: #444;
-    margin-bottom: 1.5rem;
+  .fridge-dashboard {
+    background: #f8f8f8;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
   }
 
-  .fridge-content {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-  }
-
-  .fridge-image {
-    width: 180px;
-    height: 280px;
-    background: #d9d9d9;
-    border-radius: 8px;
-  }
-
-  .fridge-list {
-    flex: 1;
+  .fridge-items {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
   }
 
   .fridge-item {
-    height: 40px;
-    background: #d9d9d9;
-    border-radius: 8px;
-  }
-
-  /* New styles for features section */
-  .features {
-    padding: 4rem 2rem;
-    background-color: #f8f8f8;
-  }
-
-  .features h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2rem;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .feature-card {
     background: white;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 
-  .feature-card h3 {
-    color: #497817;
-    margin-bottom: 1rem;
+  .item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .feature-card p {
+  .item-name {
+    font-weight: 600;
+  }
+
+  .item-quantity {
     color: #666;
-    line-height: 1.5;
   }
-
-  /* Update existing styles */
-  .cta .btn {
-    color: #ffffff;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .cta:hover {
-    background-color: #3a5f12;
-    transition: background-color 0.3s ease;
-  }
-
 </style>
