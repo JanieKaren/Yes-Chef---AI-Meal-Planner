@@ -162,7 +162,7 @@ async function onGenerate() {
   // 1) Build a prompt that forces JSON‐only output
   const promptText = `
 You are an AI chef. Given:
-  • Ingredients: ${goodIngredientsList.value}
+  • Available Ingredients: ${goodIngredientsList.value}
   • Recipe Type: ${form.type}
   • Cuisine: ${form.cuisine}
   • Time: ${form.time}
@@ -170,12 +170,18 @@ You are an AI chef. Given:
   • Dietary Restrictions: ${form.diets.join(', ') || 'none'}
   • Other Preferences: ${form.notes || 'none'}
 
+IMPORTANT RULES:
+1. ONLY use ingredients from the "Available Ingredients" list above
+2. DO NOT make up or invent new ingredients
+3. If you need an ingredient not in the list, skip that recipe and create a different one
+4. Each ingredient name must be a real, valid food item
+
 Produce exactly three distinct recipe objects. 
 **Output must be valid JSON ONLY**—an array of three items. 
 Each item must have exactly these keys:
   • "title"  : string
   • "ingredients": an array of objects, each with:
-    – "name": string
+    – "name": string (must be a real ingredient from the available list)
     – "quantity": string (amount in cups, grams, etc.; approximate is fine as long as it does not exceed what you have)
   • "steps"  : an array of strings
 
@@ -261,7 +267,7 @@ Return exactly:
       throw new Error('Unexpected JSON format: expected an array of exactly 3 recipes.')
     }
 
-    // Optionally: further validate each object has title/ingredients/steps
+    // Validate each recipe has valid ingredients
     parsed.forEach((item: any, idx: number) => {
       if (
         typeof item.title !== 'string' ||
@@ -270,12 +276,24 @@ Return exactly:
       ) {
         throw new Error(`Recipe #${idx + 1} is missing required fields.`)
       }
+
+      // Validate each ingredient is a real food item
+      item.ingredients.forEach((ing: any, ingIdx: number) => {
+        if (typeof ing.name !== 'string' || typeof ing.quantity !== 'string') {
+          throw new Error(`Recipe #${idx + 1}, ingredient #${ingIdx + 1} has invalid format.`)
+        }
+        
+        // Check if ingredient name contains any numbers or special characters
+        if (/[0-9]/.test(ing.name) || /[^a-zA-Z\s-]/.test(ing.name)) {
+          throw new Error(`Recipe #${idx + 1} contains invalid ingredient name: "${ing.name}". Ingredients must be real food items.`)
+        }
+      })
     })
 
     // Save to localStorage as a JSON string
     localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
 
-    // Navigate to the “generated recipes” page
+    // Navigate to the "generated recipes" page
     router.push({ name: 'generated-recipes' })
   } catch (err: any) {
     console.error(err)
