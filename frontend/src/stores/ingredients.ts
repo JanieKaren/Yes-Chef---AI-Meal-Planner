@@ -33,14 +33,15 @@ export const useIngredientsStore = defineStore('ingredients', {
   }),
 
   actions: {
-    async fetchIngredients(page = 1, queryParams: { search?: string; category?: string } = {}) {
+    async fetchIngredients(page = 1, queryParams: { search?: string; category?: string; condition?: string } = {}) {
       console.log('Store: fetchIngredients called with:', { page, queryParams })
       this.loading = true
       try {
         const params = new URLSearchParams({
           page: page.toString(),
           ...(queryParams.search && { search: queryParams.search }),
-          ...(queryParams.category && { category: queryParams.category })
+          ...(queryParams.category && { category: queryParams.category }),
+          ...(queryParams.condition && { condition: queryParams.condition })
         })
         
         console.log('Store: Making API request with params:', params.toString())

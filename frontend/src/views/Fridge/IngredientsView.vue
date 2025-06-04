@@ -17,6 +17,13 @@
             {{ label }}
           </option>
         </select>
+        <select v-model="selectedCondition" class="condition-select">
+          <option value="">All Conditions</option>
+          <option value="expired">Expired</option>
+          <option value="expiring_soon">Expiring Soon</option>
+          <option value="expiring_week">Expiring This Week</option>
+          <option value="good">Good</option>
+        </select>
         <button @click="handleSearch" class="btn-primary">Search</button>
       </div>
       <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
@@ -117,6 +124,7 @@ const categories = [
 
 const searchQuery = ref('')
 const selectedCategory = ref('')
+const selectedCondition = ref('')
 
 const updatePage = async (page: number) => {
   await router.push({ query: { ...route.query, page: page.toString() } })
@@ -124,10 +132,15 @@ const updatePage = async (page: number) => {
 }
 
 const handleSearch = async () => {
-  console.log('Search triggered with:', { searchQuery: searchQuery.value, category: selectedCategory.value })
+  console.log('Search triggered with:', { 
+    searchQuery: searchQuery.value, 
+    category: selectedCategory.value,
+    condition: selectedCondition.value 
+  })
   const queryParams: Record<string, string> = {}
   if (searchQuery.value) queryParams.search = searchQuery.value
   if (selectedCategory.value) queryParams.category = selectedCategory.value
+  if (selectedCondition.value) queryParams.condition = selectedCondition.value
   queryParams.page = '1' // Reset to first page on new search
   
   console.log('Pushing route with params:', queryParams)
@@ -141,7 +154,8 @@ onMounted(() => {
   const page = Number(route.query.page) || 1
   const queryParams = {
     search: route.query.search as string,
-    category: route.query.category as string
+    category: route.query.category as string,
+    condition: route.query.condition as string
   }
   console.log('Initial fetch with params:', queryParams)
   ingredientsStore.fetchIngredients(page, queryParams)
@@ -153,9 +167,10 @@ watch(() => route.query, (newQuery) => {
   const page = Number(newQuery.page) || 1
   const queryParams = {
     search: newQuery.search as string,
-    category: newQuery.category as string
+    category: newQuery.category as string,
+    condition: newQuery.condition as string
   }
-  if (page !== ingredientsStore.currentPage || queryParams.search || queryParams.category) {
+  if (page !== ingredientsStore.currentPage || queryParams.search || queryParams.category || queryParams.condition) {
     console.log('Fetching ingredients with new params:', queryParams)
     ingredientsStore.fetchIngredients(page, queryParams)
   }
@@ -362,7 +377,8 @@ const getConditionClass = (expirationDate: string) => {
   max-width: 300px;
 }
 
-.category-select {
+.category-select,
+.condition-select {
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -370,7 +386,8 @@ const getConditionClass = (expirationDate: string) => {
 }
 
 .search-input:focus,
-.category-select:focus {
+.category-select:focus,
+.condition-select:focus {
   outline: none;
   border-color: #4CAF50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
