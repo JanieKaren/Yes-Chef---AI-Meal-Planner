@@ -2,7 +2,10 @@
 <template>
   <div class="recipe-generator">
     <div class="recipe-generator__container">
-      <h1 class="recipe-generator__title">AI Recipe Generator</h1>
+     <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
+    <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
+    <h1 class="page-title">AI Recipe Generator</h1>
+  </div>
       <p class="recipe-generator__instructions">
         Create delicious recipes based on your preferences and available ingredients.
       </p>
@@ -118,6 +121,7 @@
 </template>
 
 <script setup lang="ts">
+import aiLogo from '@/assets/images/artificial-intelligence.png'
 import { reactive, ref, computed } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRouter } from 'vue-router'
