@@ -65,18 +65,21 @@
         ></textarea>
       </div>
 
-      <div class="form-group">
-        <label>Diet &amp; Allergies</label>
-        <div class="checkbox-group" v-for="option in dietOptions" :key="option">
-          <input
-            type="checkbox"
-            :value="option"
-            v-model="form.diets"
-            :id="`diet-${option}`"
-          />
-          <label :for="`diet-${option}`">{{ option }}</label>
-        </div>
-      </div>
+      <div class="form-group" :class="{ selected: form.diets.length }">
+  <label>Diet &amp; Allergies</label>
+  <div class="checkbox-group" v-for="option in dietOptions" :key="option">
+    <label :for="`diet-${option}`" class="custom-checkbox-label">
+      <input
+        type="checkbox"
+        :value="option"
+        v-model="form.diets"
+        :id="`diet-${option}`"
+      />
+      <span class="custom-checkbox"></span>
+      {{ option }}
+    </label>
+  </div>
+</div>
 
       <div class="form-group">
         <label for="notes">Other Preferences</label>
@@ -88,13 +91,16 @@
         ></textarea>
       </div>
 
-      <button type="submit" id="generate-btn" :disabled="loading">
+      <div style="text-align: center;">
+    <button type="submit" id="generate-btn" :disabled="loading">
         <span v-if="!loading">Generate Recipes</span>
         <span v-else>
-          Generating
-          <span class="spinner"></span>
+            Generating
+            <span class="spinner"></span>
         </span>
-      </button>
+    </button>
+</div>
+
     </form>
 
     <div v-if="errorMessage" class="error">
@@ -108,6 +114,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
 
 const form = reactive({
   type: 'Dessert',
@@ -187,6 +194,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
 </script>
 
 <style scoped>
+
 .page-container {
   max-width: 700px;
   margin: 2rem auto;
@@ -234,12 +242,16 @@ Provide 3 suggestions with a brief ingredients list and steps.
   resize: vertical;
   font-size: 0.95rem;
   color: #2c3e50;
+  transition: background-color 0.2s ease;
 }
+
 
 .checkbox-group {
   display: inline-block;
   margin-right: 1rem;
   margin-bottom: 0.5rem;
+  align-items: start;
+  position: relative;
 }
 
 .checkbox-group input {
@@ -286,4 +298,6 @@ button[disabled] {
   margin-top: 1rem;
   font-weight: 500;
 }
+
+
 </style>
