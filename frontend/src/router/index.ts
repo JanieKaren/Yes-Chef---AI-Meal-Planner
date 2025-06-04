@@ -36,7 +36,7 @@ const router = createRouter({
     props: false // we’ll pull data from localStorage instead of props
     },
 
-    
+
 
     {
       path: '/fridge',
@@ -61,13 +61,19 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/recipe',
+      name: 'Recipe',
+      component: () => import('../views/RecipeView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  
+
   // Check authentication status if not already checked
   if (!userStore.isAuthenticated && userStore.user === null) {
     await userStore.checkAuth()

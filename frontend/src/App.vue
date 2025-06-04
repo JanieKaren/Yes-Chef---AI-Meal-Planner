@@ -20,7 +20,7 @@ const handleLogout = async () => {
   <div class="app">
     <nav class="navbar">
       <div class="navbar-brand">
-        
+
         <router-link to="/" class="navbar-item">
           <img src="@/assets/images/logo.png" alt="Logo" class="logo" />
           Yes, Chef!
@@ -28,8 +28,10 @@ const handleLogout = async () => {
       </div>
       <div class="navbar-menu">
         <template v-if="userStore.isAuthenticated">
+            <router-link to="/" class="navbar-item">Home</router-link>
+            <router-link to="/recipe" class="navbar-item">Recipes</router-link>
             <router-link to="/fridge" class="navbar-item">Fridge</router-link>
-            <router-link to="/profile" class="navbar-item">Profile</router-link>
+            <router-link to="/profile" class="navbar-item">Account</router-link>
             <a @click="handleLogout" class="navbar-item">Logout</a>
           </template>
           <template v-else>
