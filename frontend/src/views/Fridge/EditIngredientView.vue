@@ -1,6 +1,6 @@
 <template>
   <div class="edit-ingredient-container">
-    <div class="edit-ingredient-content">
+    <section class="edit-ingredient-content">
       <h1>{{ isNew ? 'Add' : 'Edit' }} Ingredient</h1>
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
@@ -27,6 +27,7 @@
             type="number"
             id="quantity"
             v-model="form.quantity"
+            min="1"
             required
             class="form-control"
           />
@@ -51,10 +52,10 @@
         </div>
         <div class="form-actions">
           <button type="button" @click="goBack" class="btn-secondary">Cancel</button>
-          <button type="submit" class="btn-primary">Save</button>
+          <button type="submit" class="btn-primary">{{ isNew ? 'Add' : 'Save' }}</button>
         </div>
       </form>
-    </div>
+    </section>
   </div>
 </template>
 
@@ -71,7 +72,7 @@ const isNew = ref(true)
 const form = ref({
   name: '',
   category: '',
-  quantity: 0,
+  quantity: 1,
   unit: '',
   expiration_date: ''
 })
@@ -152,17 +153,15 @@ const goBack = () => {
 <style scoped>
 .edit-ingredient-container {
   background-image: url("@/assets/images/grocerybag.png");
-  background-size: contain;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top center;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: calc(100vh - 200px);
+  height: 100vh;
   padding: 2rem;
 }
-
 .edit-ingredient-content {
   background-color: white;
   padding: 2rem;
@@ -174,8 +173,8 @@ const goBack = () => {
 }
 
 h1 {
-  color: #2c3e50;
-  margin-bottom: 2rem;
+  color: #FFD8B1;
+  text-align: center;
 }
 
 .form-group {
@@ -185,14 +184,14 @@ h1 {
 label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #2c3e50;
+  color: #898989;
 }
 
 .form-control {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 12px;
   font-size: 1rem;
 }
 
