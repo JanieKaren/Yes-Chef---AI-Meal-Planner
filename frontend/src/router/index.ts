@@ -22,19 +22,19 @@ const router = createRouter({
       meta: { requiresGuest: true }
     },
     {
-      path: '/ingredients',
+      path: '/fridge',
       name: 'ingredients',
       component: () => import('../views/Fridge/IngredientsView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/ingredients/new',
+      path: '/fridge/new',
       name: 'new-ingredient',
       component: () => import('../views/Fridge/EditIngredientView.vue'),
       meta: { requiresAuth: true }
     },
     {
-      path: '/ingredients/:id/edit',
+      path: '/fridge/:id/edit',
       name: 'edit-ingredient',
       component: () => import('../views/Fridge/EditIngredientView.vue'),
       meta: { requiresAuth: true }

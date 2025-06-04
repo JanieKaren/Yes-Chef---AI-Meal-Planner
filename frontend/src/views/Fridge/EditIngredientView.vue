@@ -142,11 +142,11 @@ const handleSubmit = async () => {
   } else {
     await ingredientsStore.updateIngredient(Number(route.params.id), form.value)
   }
-  router.push('/ingredients')
+  router.push('/fridge')
 }
 
 const goBack = () => {
-  router.push('/ingredients')
+  router.push('/fridge')
 }
 </script>
 
