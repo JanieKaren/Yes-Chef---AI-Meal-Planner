@@ -28,7 +28,7 @@ const handleLogout = async () => {
       </div>
       <div class="navbar-menu">
         <template v-if="userStore.isAuthenticated">
-            <router-link to="/ingredients" class="navbar-item">Ingredients</router-link>
+            <router-link to="/fridge" class="navbar-item">Fridge</router-link>
             <router-link to="/profile" class="navbar-item">Profile</router-link>
             <a @click="handleLogout" class="navbar-item">Logout</a>
           </template>
@@ -53,7 +53,7 @@ const handleLogout = async () => {
 }
 
 .navbar {
-  background-color: #2c3e50;
+  background-color: cornsilk;
   padding: 1rem;
   display: flex;
   justify-content: space-between;
@@ -75,7 +75,7 @@ const handleLogout = async () => {
 }
 
 .navbar-item {
-  color: white;
+  color: #34495e;
   text-decoration: none;
   border-radius: 4px;
   transition: background-color 0.3s;
@@ -86,12 +86,13 @@ const handleLogout = async () => {
 }
 
 .navbar-item:hover {
-  background-color: #34495e;
+  background-color: rgb(255, 219, 186);
 }
 
 .navbar-menu {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .main-content {

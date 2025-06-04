@@ -10,6 +10,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.core.paginator import Paginator
 from rest_framework.pagination import PageNumberPagination
+from django.utils import timezone
+from datetime import timedelta
 
 # Create your views here.
 
@@ -138,6 +140,32 @@ def ingredient_list(request):
         category = request.GET.get('category')
         if category:
             ingredients = ingredients.filter(category=category)
+        
+        # Apply condition filter
+        condition = request.GET.get('condition')
+        print(f"Received condition parameter: {condition}")  # Debug log
+        if condition:
+            today = timezone.now().date()
+            print(f"Today's date: {today}")  # Debug log
+            
+            if condition == 'expired':
+                ingredients = ingredients.filter(expiration_date__lt=today)
+                print(f"Filtering expired items: {ingredients.count()}")  # Debug log
+            elif condition == 'expiring_soon':
+                ingredients = ingredients.filter(
+                    expiration_date__gte=today,
+                    expiration_date__lte=today + timedelta(days=3)
+                )
+                print(f"Filtering expiring soon items: {ingredients.count()}")  # Debug log
+            elif condition == 'expiring_week':
+                ingredients = ingredients.filter(
+                    expiration_date__gt=today + timedelta(days=3),
+                    expiration_date__lte=today + timedelta(days=7)
+                )
+                print(f"Filtering expiring this week items: {ingredients.count()}")  # Debug log
+            elif condition == 'good':
+                ingredients = ingredients.filter(expiration_date__gt=today + timedelta(days=7))
+                print(f"Filtering good items: {ingredients.count()}")  # Debug log
         
         # Order by expiration date
         ingredients = ingredients.order_by('expiration_date')

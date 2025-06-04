@@ -10,6 +10,8 @@ interface User {
 interface Account {
   id: number
   user: number
+  dietary_preferences: string[];  
+  fridge_inventory: string[];    
   // Add other account fields as needed
 }
 
@@ -41,19 +43,22 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async register(username: string, email: string, password: string) {
+    async register(username: string, email: string, password: string): Promise<boolean> {
       try {
         const response = await axios.post('/api/auth/register/', { username, email, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
+          return true
         }
+        return false
       } catch (error) {
         console.error('Registration failed:', error)
-        throw error
+        return false
       }
     },
+
 
     async logout() {
       try {
@@ -83,6 +88,7 @@ export const useUserStore = defineStore('user', {
     },
 
     async updateDietaryPreferences(preferences: string[]) {
+      if (!this.account) return false;
       try {
         const response = await axios.post(`/api/accounts/${this.account.id}/update_dietary_preferences/`, {
           dietary_preferences: preferences
@@ -96,6 +102,7 @@ export const useUserStore = defineStore('user', {
     },
 
     async updateFridgeInventory(inventory: string[]) {
+      if (!this.account) return false;
       try {
         const response = await axios.post(`/api/accounts/${this.account.id}/update_fridge_inventory/`, {
           fridge_inventory: inventory
