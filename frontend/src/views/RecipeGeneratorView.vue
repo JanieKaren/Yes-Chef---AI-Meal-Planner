@@ -1,11 +1,10 @@
 <!-- src/views/RecipeGeneratorView.vue -->
 <template>
   <div class="recipe-generator page-container">
+   <div style="display: flex; align-items: center;justify-content:center; gap: 10px;">
+    <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
     <h1 class="page-title">AI Recipe Generator</h1>
-    <p class="instructions">
-      1) Make sure your Django backend is running and exposes <code>/api/recipes/</code>.<br />
-      2) Replace <code>DJANGO_BACKEND_URL</code> below if it lives somewhere else.
-    </p>
+  </div>
 
     <form class="recipe-form" @submit.prevent="onGenerate">
       <div class="form-group">
@@ -110,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+import aiLogo from '@/assets/images/artificial-intelligence.png'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
