@@ -156,7 +156,7 @@ p {
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 label {
@@ -183,7 +183,7 @@ label {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .btn-primary:hover {

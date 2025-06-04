@@ -22,6 +22,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
+    
+    def get_object(self):
+        return self.request.user
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()

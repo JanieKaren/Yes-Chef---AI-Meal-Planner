@@ -1,11 +1,12 @@
 <template>
-  <div class="profile-container">
-    <div class="profile-header">
-      <h1>Profile</h1>
+  <div class="background-container">
+    <div class="profile-container">
+      <div class="profile-header">
+      <h1>User Profile</h1>
     </div>
     <div class="information">
       <div class="profile-section">
-      <h2>User Information</h2>
+      <h2>Account Information</h2>
       <div class="info-card">
         <div class="field">
           <label>Firstname:</label>
@@ -86,6 +87,7 @@
       </div>
 
     </div>
+    </div>
   </div>
 </template>
 
@@ -148,46 +150,61 @@ function toggleEdit() {
   }
 }
 
-function saveChanges() {
-  // You can add an API call here to update user data
+async function saveChanges() {
   if (isEditing.value && userStore.user) {
-    Object.assign(editableUser, {
-      first_name: userStore.user.first_name,
-      last_name: userStore.user.last_name,
-      username: userStore.user.username,
-      email: userStore.user.email
-    })
+    try {
+      const updatedUser = await userStore.updateUserInfo({ ...editableUser })
+      if (updatedUser) {
+        isEditing.value = false
+      }
+    } catch (error) {
+      console.error('Failed to update user info:', error)
+    }
   }
-  isEditing.value = false
 }
+
 </script>
 
 <style scoped>
-.profile-container {
+.background-container {
  padding: 2rem 1rem;
  background-color: #fdfaf6;
  min-height: calc(100vh - 100px);
  display: flex;
  flex-direction: column;
  align-items: center;
+ background-image: url("@/assets/images/profile_background.jpg");
+ /* background-repeat: repeat; */
+ background-size: contain; /* or set to the exact size of the image */
+ background-position: top left;
+}
+
+.profile-container{
+  padding: 20px;
+  border-radius: 8px;
+  /* background-color: rgb(247, 238, 221); */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-image: url("@/assets/images/notepad.png");
+  background-size: cover;
 }
 
 .information {
   max-width: 800px;
-  margin: 0 auto;
   padding: 2rem;
+  padding-top: 0;
   
 }
 
 .profile-header{
- max-width: 800px;
- text-align: start;
+ /* max-width: 800px; */
+ text-align: center;
  width: 100%;
 }
 
 
 .profile-section {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
 }
 
 h1 {
@@ -197,24 +214,28 @@ h1 {
 
 h2 {
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.info-card, .preferences-card, .inventory-card {
+.info-card, .preferences-card {
   background-color: white;
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.preferences-list, .inventory-list {
+.user-preference{
+  margin-top: 10px;
+}
+
+.preferences-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.preference-tag, .inventory-item {
+.preference-tag {
   background-color: #e0e0e0;
   padding: 0.5rem 1rem;
   border-radius: 20px;

@@ -114,6 +114,19 @@ export const useUserStore = defineStore('user', {
         console.error('Failed to update fridge inventory:', error)
         return false
       }
+    },
+
+    async updateUserInfo(updatedInfo: Partial<User>) {
+      if (!this.user) return null
+      try {
+        const response = await axios.put(`/api/users/${this.user.id}/`, updatedInfo)
+        this.user = response.data
+        return this.user
+      } catch (error) {
+        console.error('Error updating user info:', error)
+        throw error
+      }
     }
+
   }
 }) 
