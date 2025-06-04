@@ -54,17 +54,7 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="ingredients">Ingredients Available</label>
-        <textarea
-          id="ingredients"
-          v-model="form.ingredients"
-          rows="2"
-          placeholder="e.g. chicken, tomatoes, rice"
-          required
-        ></textarea>
-      </div>
-
+    
       <div class="form-group" :class="{ selected: form.diets.length }">
   <label>Diet &amp; Allergies</label>
   <div class="checkbox-group" v-for="option in dietOptions" :key="option">
@@ -110,11 +100,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
+import { useIngredientsStore } from '@/stores/ingredients'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
 
 const form = reactive({
   type: 'Dessert',
@@ -124,6 +114,34 @@ const form = reactive({
   ingredients: '',
   diets: [] as string[],
   notes: ''
+})
+
+// 1. Instantiate the Pinia store
+const ingredientsStore = useIngredientsStore()
+
+// 2. Copy/paste (or import) your "condition" helper from IngredientsView.vue
+const getConditionText = (expirationDate: string) => {
+  const today = new Date()
+  const expDate = new Date(expirationDate)
+  const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (daysUntilExpiration < 0) return 'Expired'
+  if (daysUntilExpiration <= 3) return 'Expiring Soon'
+  if (daysUntilExpiration <= 7) return 'Expiring This Week'
+  return 'Good'
+}
+
+// 3. Fetch all ingredients on mount so store is populated
+onMounted(() => {
+  ingredientsStore.fetchIngredients(1)
+})
+
+// 4. Create a computed string of only "Good" ingredients (with quantity/unit)
+const goodIngredientsList = computed(() => {
+  return ingredientsStore.ingredients
+    .filter(i => getConditionText(i.expiration_date) === 'Good')
+    .map(i => `${i.name} ${i.quantity} ${i.unit}`)
+    .join(', ')
 })
 
 const dietOptions = [
@@ -144,7 +162,7 @@ async function onGenerate() {
   // 1) Build a prompt that forces JSON‐only output
   const promptText = `
 You are an AI chef. Given:
-  • Ingredients: ${form.ingredients}
+  • Available Ingredients: ${goodIngredientsList.value}
   • Recipe Type: ${form.type}
   • Cuisine: ${form.cuisine}
   • Time: ${form.time}
@@ -152,24 +170,62 @@ You are an AI chef. Given:
   • Dietary Restrictions: ${form.diets.join(', ') || 'none'}
   • Other Preferences: ${form.notes || 'none'}
 
+IMPORTANT RULES:
+1. ONLY use ingredients from the "Available Ingredients" list above
+2. DO NOT make up or invent new ingredients
+3. If you need an ingredient not in the list, skip that recipe and create a different one
+4. Each ingredient name must be a real, valid food item
+
 Produce exactly three distinct recipe objects. 
 **Output must be valid JSON ONLY**—an array of three items. 
 Each item must have exactly these keys:
   • "title"  : string
   • "ingredients": an array of objects, each with:
-    – "name": string
-    – "quantity": string
+    – "name": string (must be a real ingredient from the available list)
+    – "quantity": string (amount in cups, grams, etc.; approximate is fine as long as it does not exceed what you have)
   • "steps"  : an array of strings
 
 Do NOT include any extra words, numbering, markdown, or commentary. 
 Return exactly:
 [
-  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
-  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
-  { "title": "...", "ingredients": ["…"], "steps": ["…"] }
+  {
+    "title": "Example Recipe 1",
+    "ingredients": [
+      { "name": "Ingredient A", "quantity": "2 cups" },
+      { "name": "Ingredient B", "quantity": "1 tbsp" }
+    ],
+    "steps": [
+      "Do X",
+      "Do Y",
+      "Do Z"
+    ]
+  },
+  {
+    "title": "Example Recipe 2",
+    "ingredients": [
+      { "name": "Ingredient C", "quantity": "3 slices" },
+      { "name": "Ingredient D", "quantity": "200g" }
+    ],
+    "steps": [
+      "Step 1",
+      "Step 2",
+      "Step 3"
+    ]
+  },
+  {
+    "title": "Example Recipe 3",
+    "ingredients": [
+      { "name": "Ingredient E", "quantity": "1 cup" },
+      { "name": "Ingredient F", "quantity": "2 tsp" }
+    ],
+    "steps": [
+      "First do this",
+      "Then do that",
+      "Finally do the other"
+    ]
+  }
 ]
 `.trim()
-
 
   try {
     const DJANGO_BACKEND_URL = 'http://localhost:8000'
@@ -211,7 +267,7 @@ Return exactly:
       throw new Error('Unexpected JSON format: expected an array of exactly 3 recipes.')
     }
 
-    // Optionally: further validate each object has title/ingredients/steps
+    // Validate each recipe has valid ingredients
     parsed.forEach((item: any, idx: number) => {
       if (
         typeof item.title !== 'string' ||
@@ -220,12 +276,24 @@ Return exactly:
       ) {
         throw new Error(`Recipe #${idx + 1} is missing required fields.`)
       }
+
+      // Validate each ingredient is a real food item
+      item.ingredients.forEach((ing: any, ingIdx: number) => {
+        if (typeof ing.name !== 'string' || typeof ing.quantity !== 'string') {
+          throw new Error(`Recipe #${idx + 1}, ingredient #${ingIdx + 1} has invalid format.`)
+        }
+        
+        // Check if ingredient name contains any numbers or special characters
+        if (/[0-9]/.test(ing.name) || /[^a-zA-Z\s-]/.test(ing.name)) {
+          throw new Error(`Recipe #${idx + 1} contains invalid ingredient name: "${ing.name}". Ingredients must be real food items.`)
+        }
+      })
     })
 
     // Save to localStorage as a JSON string
     localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
 
-    // Navigate to the “generated recipes” page
+    // Navigate to the "generated recipes" page
     router.push({ name: 'generated-recipes' })
   } catch (err: any) {
     console.error(err)

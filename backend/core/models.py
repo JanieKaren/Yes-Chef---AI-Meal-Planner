@@ -96,3 +96,61 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering = ['expiration_date']
+
+class Recipe(models.Model):
+    TYPE_CHOICES = [
+        ('dessert', 'Dessert'),
+        ('appetizer', 'Appetizer'),
+        ('main_course', 'Main Course'),
+        ('side_dish', 'Side Dish'),
+        ('snack', 'Snack'),
+        ('beverage', 'Beverage'),
+    ]
+
+    CUISINE_CHOICES = [
+        ('chinese', 'Chinese'),
+        ('indian', 'Indian'),
+        ('italian', 'Italian'),
+        ('mexican', 'Mexican'),
+        ('middle_eastern', 'Middle Eastern'),
+        ('fusion', 'Fusion'),
+    ]
+
+    TIME_CHOICES = [
+        ('under_15', '< 15 minutes'),
+        ('15_30', '15-30 minutes'),
+        ('30_60', '30-60 minutes'),
+        ('over_60', ' > 60 minutes'),
+    ]
+
+    NUTRITIONAL_STYLE_CHOICES = [
+        ('healthy', 'Healthy'),
+        ('low_carb', 'Low Carb'),
+        ('high_protein', 'High Protein'),
+        ('whole_foods', 'Whole Foods'),
+        ('vegan', 'Vegan'),
+        ('vegetarian', 'Vegetarian'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes', null=True, blank=True)
+    title = models.CharField(max_length=200)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    cuisine = models.CharField(max_length=20, choices=CUISINE_CHOICES)
+    time_required = models.CharField(max_length=20, choices=TIME_CHOICES)
+    nutritional_style = models.CharField(max_length=20, choices=NUTRITIONAL_STYLE_CHOICES)
+    ingredients = models.JSONField(
+        default=list,
+        help_text="List of ingredients with their measurements (e.g., [{'name': 'flour', 'quantity': 2, 'unit': 'cup'}])"
+    )
+    steps = models.JSONField(
+        default=list,
+        help_text="List of cooking steps in order"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
