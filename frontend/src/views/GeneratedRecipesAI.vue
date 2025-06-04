@@ -1,7 +1,7 @@
 <!-- src/views/GeneratedRecipesAI.vue -->
 <template>
   <div class="generated-recipes page-container">
-    <h1 class="page-title">Your AI‐Generated Recipes</h1>
+    <h1 class="page-title">Your AI-Generated Recipes</h1>
 
     <div v-if="!recipes.length" class="no-recipes">
       <p>No recipes found. Please generate some first.</p>
@@ -15,11 +15,28 @@
       <div class="cards-container">
         <div
           class="card"
-          v-for="(rec, idx) in recipes"
+          v-for="(recipe, idx) in recipes"
           :key="idx"
         >
-          <h3>Recipe {{ idx + 1 }}</h3>
-          <pre>{{ rec }}</pre>
+          <h3 class="card-title">{{ recipe.title }}</h3>
+
+          <div class="section">
+            <h4>Ingredients</h4>
+            <ul>
+              <li v-for="(ing, i) in recipe.ingredients" :key="i">
+                {{ ing.quantity }} {{ ing.name }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <h4>Steps</h4>
+            <ol>
+              <li v-for="(step, sIdx) in recipe.steps" :key="sIdx">
+                {{ step }}
+              </li>
+            </ol>
+          </div>
         </div>
       </div>
 
@@ -35,7 +52,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
-const recipes = ref<string[]>([])
+interface Ingredient {
+  name: string
+  quantity: string
+}
+
+interface Recipe {
+  title: string
+  ingredients: Ingredient[]
+  steps: string[]
+}
+
+const recipes = ref<Recipe[]>([])
 
 onMounted(() => {
   const raw = localStorage.getItem('generatedRecipes')
@@ -43,7 +71,22 @@ onMounted(() => {
     try {
       const arr = JSON.parse(raw)
       if (Array.isArray(arr)) {
-        recipes.value = arr.filter(item => typeof item === 'string')
+        // Only keep items that match { title: string, ingredients: [{ name, quantity }], steps: [string] }
+        recipes.value = arr.filter((item: any) => {
+          return (
+            item &&
+            typeof item.title === 'string' &&
+            Array.isArray(item.ingredients) &&
+            Array.isArray(item.steps) &&
+            item.ingredients.every(
+              (ing: any) =>
+                ing &&
+                typeof ing.name === 'string' &&
+                typeof ing.quantity === 'string'
+            ) &&
+            item.steps.every((step: any) => typeof step === 'string')
+          )
+        }) as Recipe[]
       }
     } catch {
       recipes.value = []
@@ -124,15 +167,26 @@ onMounted(() => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.card h3 {
+.card-title {
   margin-bottom: 0.5rem;
   color: #2c3e50;
+  font-size: 1.25rem;
 }
 
-.card pre {
-  white-space: pre-wrap;
-  font-size: 0.95rem;
-  color: #333;
+.section {
+  margin-top: 0.75rem;
+}
+
+.section h4 {
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: #444;
+}
+
+.section ul,
+.section ol {
+  padding-left: 1.25rem;
+  margin: 0;
 }
 
 .actions {

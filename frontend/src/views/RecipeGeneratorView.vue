@@ -141,14 +141,35 @@ async function onGenerate() {
   errorMessage.value = ''
   loading.value = true
 
+  // 1) Build a prompt that forces JSON‐only output
   const promptText = `
-I have these ingredients: ${form.ingredients}.
-I want ${form.type} recipes in ${form.cuisine} cuisine that take ${form.time}
-and follow a ${form.style} style.
-Avoid: ${form.diets.join(', ')}.
-Notes: ${form.notes}.
-Provide 3 suggestions with a brief ingredients list and steps.
-  `.trim()
+You are an AI chef. Given:
+  • Ingredients: ${form.ingredients}
+  • Recipe Type: ${form.type}
+  • Cuisine: ${form.cuisine}
+  • Time: ${form.time}
+  • Nutritional Style: ${form.style}
+  • Dietary Restrictions: ${form.diets.join(', ') || 'none'}
+  • Other Preferences: ${form.notes || 'none'}
+
+Produce exactly three distinct recipe objects. 
+**Output must be valid JSON ONLY**—an array of three items. 
+Each item must have exactly these keys:
+  • "title"  : string
+  • "ingredients": an array of objects, each with:
+    – "name": string
+    – "quantity": string
+  • "steps"  : an array of strings
+
+Do NOT include any extra words, numbering, markdown, or commentary. 
+Return exactly:
+[
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] },
+  { "title": "...", "ingredients": ["…"], "steps": ["…"] }
+]
+`.trim()
+
 
   try {
     const DJANGO_BACKEND_URL = 'http://localhost:8000'
@@ -158,7 +179,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
       body: JSON.stringify({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         prompt: promptText,
-        max_tokens: 500,
+        max_tokens: 600,     // bump up if needed so the JSON fits
         temperature: 0.7,
         top_p: 0.9
       })
@@ -170,23 +191,45 @@ Provide 3 suggestions with a brief ingredients list and steps.
     }
 
     const data = await res.json()
-    const text = data.choices?.[0]?.text ?? data.result
-    if (!text) throw new Error('No response text from API')
-
-    const recs = text
-      .trim()
-      .split(/\n\d+\./)
-      .filter((r: string) => r.trim())
-
-    if (!recs.length) {
-      throw new Error('Could not parse any recipes from response.')
+    // assume the back‐end returns something like: { choices: [ { text: '[…JSON…]' } ] }
+    const rawText: string = data.choices?.[0]?.text ?? data.result
+    if (!rawText) {
+      throw new Error('No response from Llama.')
     }
 
-    localStorage.setItem('generatedRecipes', JSON.stringify(recs))
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(rawText.trim())
+    } catch (jsonErr) {
+      console.error('Failed to parse JSON:', rawText)
+      throw new Error('Invalid JSON returned by Llama. Check prompt/schema.')
+    }
+
+    // Validate that parsed is an array of length 3
+    if (!Array.isArray(parsed) || parsed.length !== 3) {
+      console.error('Parsed not an array of length 3:', parsed)
+      throw new Error('Unexpected JSON format: expected an array of exactly 3 recipes.')
+    }
+
+    // Optionally: further validate each object has title/ingredients/steps
+    parsed.forEach((item: any, idx: number) => {
+      if (
+        typeof item.title !== 'string' ||
+        !Array.isArray(item.ingredients) ||
+        !Array.isArray(item.steps)
+      ) {
+        throw new Error(`Recipe #${idx + 1} is missing required fields.`)
+      }
+    })
+
+    // Save to localStorage as a JSON string
+    localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
+
+    // Navigate to the “generated recipes” page
     router.push({ name: 'generated-recipes' })
   } catch (err: any) {
     console.error(err)
-    errorMessage.value = err.message || 'Unknown error'
+    errorMessage.value = err.message || 'Unknown generation error'
   } finally {
     loading.value = false
   }
