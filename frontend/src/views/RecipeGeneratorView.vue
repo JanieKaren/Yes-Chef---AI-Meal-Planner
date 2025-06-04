@@ -1,130 +1,164 @@
 <!-- src/views/RecipeGeneratorView.vue -->
 <template>
-  <div class="recipe-generator page-container">
-   <div style="display: flex; align-items: center;justify-content:center; gap: 10px;">
-    <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
-    <h1 class="page-title">AI Recipe Generator</h1>
-  </div>
+  <div class="recipe-generator">
+    <div class="recipe-generator__container">
+      <h1 class="recipe-generator__title">AI Recipe Generator</h1>
+      <p class="recipe-generator__instructions">
+        Create delicious recipes based on your preferences and available ingredients.
+      </p>
 
-    <form class="recipe-form" @submit.prevent="onGenerate">
-      <div class="form-group">
-        <label for="type">Recipe Type</label>
-        <select id="type" v-model="form.type" required>
-          <option>Appetizer</option>
-          <option>Main Course</option>
-          <option>Side Dish</option>
-          <option>Dessert</option>
-          <option>Snack</option>
-          <option>Beverage</option>
-        </select>
-      </div>
+      <form class="recipe-form" @submit.prevent="onGenerate">
+        <div class="recipe-form__grid">
+          <div class="form-group">
+            <label for="type">Recipe Type</label>
+            <select 
+              id="type" 
+              v-model="form.type" 
+              required
+              class="form-control"
+            >
+              <option v-for="type in recipeTypes" :key="type" :value="type">
+                {{ type }}
+              </option>
+            </select>
+          </div>
 
-      <div class="form-group">
-        <label for="cuisine">Cuisine</label>
-        <select id="cuisine" v-model="form.cuisine" required>
-          <option>Chinese</option>
-          <option>Indian</option>
-          <option>Italian</option>
-          <option>Mexican</option>
-          <option>Middle Eastern</option>
-          <option>Fusion</option>
-        </select>
-      </div>
+          <div class="form-group">
+            <label for="cuisine">Cuisine</label>
+            <select 
+              id="cuisine" 
+              v-model="form.cuisine" 
+              required
+              class="form-control"
+            >
+              <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">
+                {{ cuisine }}
+              </option>
+            </select>
+          </div>
 
-      <div class="form-group">
-        <label for="time">Time It Takes</label>
-        <select id="time" v-model="form.time" required>
-          <option>Under 15 min</option>
-          <option>15–30 min</option>
-          <option>30–60 min</option>
-          <option>60+ min</option>
-        </select>
-      </div>
+          <div class="form-group">
+            <label for="time">Time It Takes</label>
+            <select 
+              id="time" 
+              v-model="form.time" 
+              required
+              class="form-control"
+            >
+              <option v-for="time in timeOptions" :key="time" :value="time">
+                {{ time }}
+              </option>
+            </select>
+          </div>
 
-      <div class="form-group">
-        <label for="style">Nutritional Style</label>
-        <select id="style" v-model="form.style" required>
-          <option>Healthy</option>
-          <option>Low-Carb</option>
-          <option>High-Protein</option>
-          <option>Whole Foods</option>
-          <option>Vegan</option>
-          <option>Vegetarian</option>
-        </select>
-      </div>
+          <div class="form-group">
+            <label for="style">Nutritional Style</label>
+            <select 
+              id="style" 
+              v-model="form.style" 
+              required
+              class="form-control"
+            >
+              <option v-for="style in nutritionalStyles" :key="style" :value="style">
+                {{ style }}
+              </option>
+            </select>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="ingredients">Ingredients Available</label>
-        <textarea
-          id="ingredients"
-          v-model="form.ingredients"
-          rows="2"
-          placeholder="e.g. chicken, tomatoes, rice"
-          required
-        ></textarea>
-      </div>
+        <div class="form-group">
+          <label>Diet & Allergies</label>
+          <div class="diet-options">
+            <button
+              v-for="option in dietOptions"
+              :key="option"
+              type="button"
+              class="diet-button"
+              :class="{ 'diet-button--selected': form.diets.includes(option) }"
+              @click="toggleDiet(option)"
+            >
+              {{ option }}
+            </button>
+          </div>
+        </div>
 
-      <div class="form-group" :class="{ selected: form.diets.length }">
-  <label>Diet &amp; Allergies</label>
-  <div class="checkbox-group" v-for="option in dietOptions" :key="option">
-    <label :for="`diet-${option}`" class="custom-checkbox-label">
-      <input
-        type="checkbox"
-        :value="option"
-        v-model="form.diets"
-        :id="`diet-${option}`"
-      />
-      <span class="custom-checkbox"></span>
-      {{ option }}
-    </label>
-  </div>
-</div>
+        <div class="form-group">
+          <label for="notes">Other Preferences</label>
+          <textarea
+            id="notes"
+            v-model="form.notes"
+            rows="2"
+            placeholder="E.g., no cilantro, extra spicy, kid-friendly"
+            class="form-control"
+          ></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="notes">Other Preferences</label>
-        <textarea
-          id="notes"
-          v-model="form.notes"
-          rows="2"
-          placeholder="no cilantro, extra spicy, kid-friendly"
-        ></textarea>
-      </div>
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            :disabled="loading || !isFormValid"
+          >
+            <span v-if="!loading">Generate Recipes</span>
+            <span v-else class="loading">
+              <span class="loading__spinner"></span>
+              Generating...
+            </span>
+          </button>
+        </div>
+      </form>
 
-      <div style="text-align: center;">
-    <button type="submit" id="generate-btn" :disabled="loading">
-        <span v-if="!loading">Generate Recipes</span>
-        <span v-else>
-            Generating
-            <span class="spinner"></span>
-        </span>
-    </button>
-</div>
-
-    </form>
-
-    <div v-if="errorMessage" class="error">
-      {{ errorMessage }}
+      <Transition name="fade">
+        <div v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import aiLogo from '@/assets/images/artificial-intelligence.png'
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
+import { useIngredientsStore } from '@/stores/ingredients'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const ingredientsStore = useIngredientsStore()
 
+// Constants
+const recipeTypes = [
+  'Appetizer',
+  'Main Course',
+  'Side Dish',
+  'Dessert',
+  'Snack',
+  'Beverage'
+]
 
-const form = reactive({
-  type: 'Dessert',
-  cuisine: 'Chinese',
-  time: 'Under 15 min',
-  style: 'Healthy',
-  ingredients: '',
-  diets: [] as string[],
-  notes: ''
-})
+const cuisines = [
+  'Chinese',
+  'Indian',
+  'Italian',
+  'Mexican',
+  'Middle Eastern',
+  'Fusion'
+]
+
+const timeOptions = [
+  'Under 15 min',
+  '15–30 min',
+  '30–60 min',
+  '60+ min'
+]
+
+const nutritionalStyles = [
+  'Healthy',
+  'Low-Carb',
+  'High-Protein',
+  'Whole Foods',
+  'Vegan',
+  'Vegetarian'
+]
 
 const dietOptions = [
   'Gluten-free',
@@ -134,21 +168,122 @@ const dietOptions = [
   'Paleo'
 ]
 
+// State
+const form = reactive({
+  type: 'Main Course',
+  cuisine: 'Italian',
+  time: '30–60 min',
+  style: 'Healthy',
+  diets: [] as string[],
+  notes: ''
+})
+
 const loading = ref(false)
 const errorMessage = ref('')
+
+// Computed
+const isFormValid = computed(() => {
+  return form.type && form.cuisine && form.time && form.style
+})
+
+const goodIngredientsList = computed(() => {
+  return ingredientsStore.ingredients
+    .filter(i => getConditionText(i.expiration_date) === 'Good')
+    .map(i => `${i.name} ${i.quantity} ${i.unit}`)
+    .join(', ')
+})
+
+// Methods
+const getConditionText = (expirationDate: string) => {
+  const today = new Date()
+  const expDate = new Date(expirationDate)
+  const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (daysUntilExpiration < 0) return 'Expired'
+  if (daysUntilExpiration <= 3) return 'Expiring Soon'
+  if (daysUntilExpiration <= 7) return 'Expiring This Week'
+  return 'Good'
+}
+
+const toggleDiet = (diet: string) => {
+  const index = form.diets.indexOf(diet)
+  if (index === -1) {
+    form.diets.push(diet)
+  } else {
+    form.diets.splice(index, 1)
+  }
+}
 
 async function onGenerate() {
   errorMessage.value = ''
   loading.value = true
 
   const promptText = `
-I have these ingredients: ${form.ingredients}.
-I want ${form.type} recipes in ${form.cuisine} cuisine that take ${form.time}
-and follow a ${form.style} style.
-Avoid: ${form.diets.join(', ')}.
-Notes: ${form.notes}.
-Provide 3 suggestions with a brief ingredients list and steps.
-  `.trim()
+You are an AI chef. Given:
+  • Available Ingredients: ${goodIngredientsList.value}
+  • Recipe Type: ${form.type}
+  • Cuisine: ${form.cuisine}
+  • Time: ${form.time}
+  • Nutritional Style: ${form.style}
+  • Dietary Restrictions: ${form.diets.join(', ') || 'none'}
+  • Other Preferences: ${form.notes || 'none'}
+
+IMPORTANT RULES:
+1. ONLY use ingredients from the "Available Ingredients" list above
+2. DO NOT make up or invent new ingredients
+3. If you need an ingredient not in the list, skip that recipe and create a different one
+4. Each ingredient name must be a real, valid food item
+
+Produce exactly three distinct recipe objects. 
+**Output must be valid JSON ONLY**—an array of three items. 
+Each item must have exactly these keys:
+  • "title"  : string
+  • "ingredients": an array of objects, each with:
+    – "name": string (must be a real ingredient from the available list)
+    – "quantity": string (amount in cups, grams, etc.; approximate is fine as long as it does not exceed what you have)
+  • "steps"  : an array of strings
+
+Do NOT include any extra words, numbering, markdown, or commentary. 
+Return exactly:
+[
+  {
+    "title": "Example Recipe 1",
+    "ingredients": [
+      { "name": "Ingredient A", "quantity": "2 cups" },
+      { "name": "Ingredient B", "quantity": "1 tbsp" }
+    ],
+    "steps": [
+      "Do X",
+      "Do Y",
+      "Do Z"
+    ]
+  },
+  {
+    "title": "Example Recipe 2",
+    "ingredients": [
+      { "name": "Ingredient C", "quantity": "3 slices" },
+      { "name": "Ingredient D", "quantity": "200g" }
+    ],
+    "steps": [
+      "Step 1",
+      "Step 2",
+      "Step 3"
+    ]
+  },
+  {
+    "title": "Example Recipe 3",
+    "ingredients": [
+      { "name": "Ingredient E", "quantity": "1 cup" },
+      { "name": "Ingredient F", "quantity": "2 tsp" }
+    ],
+    "steps": [
+      "First do this",
+      "Then do that",
+      "Finally do the other"
+    ]
+  }
+]
+`.trim()
 
   try {
     const DJANGO_BACKEND_URL = 'http://localhost:8000'
@@ -158,7 +293,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
       body: JSON.stringify({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         prompt: promptText,
-        max_tokens: 500,
+        max_tokens: 600,
         temperature: 0.7,
         top_p: 0.9
       })
@@ -170,23 +305,48 @@ Provide 3 suggestions with a brief ingredients list and steps.
     }
 
     const data = await res.json()
-    const text = data.choices?.[0]?.text ?? data.result
-    if (!text) throw new Error('No response text from API')
-
-    const recs = text
-      .trim()
-      .split(/\n\d+\./)
-      .filter((r: string) => r.trim())
-
-    if (!recs.length) {
-      throw new Error('Could not parse any recipes from response.')
+    const rawText: string = data.choices?.[0]?.text ?? data.result
+    if (!rawText) {
+      throw new Error('No response from Llama.')
     }
 
-    localStorage.setItem('generatedRecipes', JSON.stringify(recs))
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(rawText.trim())
+    } catch (jsonErr) {
+      console.error('Failed to parse JSON:', rawText)
+      throw new Error('Invalid JSON returned by Llama. Check prompt/schema.')
+    }
+
+    if (!Array.isArray(parsed) || parsed.length !== 3) {
+      throw new Error('Unexpected JSON format: expected an array of exactly 3 recipes.')
+    }
+
+    parsed.forEach((item: any, idx: number) => {
+      if (
+        typeof item.title !== 'string' ||
+        !Array.isArray(item.ingredients) ||
+        !Array.isArray(item.steps)
+      ) {
+        throw new Error(`Recipe #${idx + 1} is missing required fields.`)
+      }
+
+      item.ingredients.forEach((ing: any, ingIdx: number) => {
+        if (typeof ing.name !== 'string' || typeof ing.quantity !== 'string') {
+          throw new Error(`Recipe #${idx + 1}, ingredient #${ingIdx + 1} has invalid format.`)
+        }
+        
+        if (/[0-9]/.test(ing.name) || /[^a-zA-Z\s-]/.test(ing.name)) {
+          throw new Error(`Recipe #${idx + 1} contains invalid ingredient name: "${ing.name}". Ingredients must be real food items.`)
+        }
+      })
+    })
+
+    localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
     router.push({ name: 'generated-recipes' })
   } catch (err: any) {
     console.error(err)
-    errorMessage.value = err.message || 'Unknown error'
+    errorMessage.value = err.message || 'Unknown generation error'
   } finally {
     loading.value = false
   }
@@ -194,114 +354,186 @@ Provide 3 suggestions with a brief ingredients list and steps.
 </script>
 
 <style scoped>
-
-.page-container {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.recipe-generator {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  padding: 2rem 1rem;
 }
 
-.page-title {
+.recipe-generator__container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-generator__title {
+  font-size: 2.5rem;
+  color: #2c3e50;
   text-align: center;
   margin-bottom: 1rem;
-  color: #2c3e50;
-  font-size: 2rem;
+  font-weight: 700;
 }
 
-.instructions {
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  color: #555;
+.recipe-generator__instructions {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
-.recipe-form {
-  display: flex;
-  flex-direction: column;
+.recipe-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
   display: block;
-  color: #2c3e50;
-}
-
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  resize: vertical;
-  font-size: 0.95rem;
-  color: #2c3e50;
-  transition: background-color 0.2s ease;
-}
-
-
-.checkbox-group {
-  display: inline-block;
-  margin-right: 1rem;
   margin-bottom: 0.5rem;
-  align-items: start;
-  position: relative;
-}
-
-.checkbox-group input {
-  margin-right: 0.25rem;
-}
-
-button[type='submit'] {
-  background-color: #28a745;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
   font-weight: 600;
-  margin-top: 0.5rem;
-  display: inline-flex;
-  align-items: center;
+  color: #2c3e50;
 }
 
-button[disabled] {
-  background-color: #94d3a2;
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.diet-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.diet-button {
+  padding: 0.625rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #4a5568;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diet-button:hover {
+  border-color: #4CAF50;
+  color: #4CAF50;
+  transform: translateY(-1px);
+}
+
+.diet-button--selected {
+  background: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
+}
+
+.diet-button--selected:hover {
+  background: #43A047;
+  color: white;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 0.875rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #43A047;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: #9E9E9E;
   cursor: not-allowed;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 3px solid rgba(255, 255, 255, 0.6);
-  border-top: 3px solid #fff;
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading__spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid white;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-left: 8px;
+  animation: spin 1s linear infinite;
+}
+
+.error-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
+  border-radius: 8px;
+  color: #B91C1C;
+  text-align: center;
 }
 
 @keyframes spin {
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-.error {
-  color: #c00;
-  margin-top: 1rem;
-  font-weight: 500;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
 }
 
-.page-container:hover {
-  background: #e6f9e6; /* Light green on hover */
-  transition: background 0.3s;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
+@media (max-width: 640px) {
+  .recipe-generator__container {
+    padding: 1.5rem;
+  }
+
+  .recipe-generator__title {
+    font-size: 2rem;
+  }
+
+  .recipe-form__grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
