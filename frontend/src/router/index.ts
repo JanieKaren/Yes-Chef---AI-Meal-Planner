@@ -72,7 +72,7 @@ const router = createRouter({
     {
       path: '/recipe',
       name: 'Recipe',
-      component: () => import('../views/RecipeView.vue'),
+      component: () => import('../views/Cookbook/RecipeView.vue'),
       meta: { requiresAuth: true }
     }
   ]
