@@ -2,7 +2,7 @@
   <div class="background-container">
     <div class="profile-container">
       <div class="profile-header">
-      <h1>User Profile</h1>
+      <!-- <h1>User Profile</h1> -->
     </div>
     <div class="information">
       <div class="profile-section">
@@ -180,6 +180,7 @@ async function saveChanges() {
 }
 
 .profile-container{
+  
   padding: 20px;
   border-radius: 8px;
   /* background-color: rgb(247, 238, 221); */
@@ -189,6 +190,7 @@ async function saveChanges() {
 }
 
 .information {
+  margin-top: 16rem;
   max-width: 800px;
   padding: 2rem;
   padding-top: 0;
@@ -215,10 +217,11 @@ h1 {
 h2 {
   color: #2c3e50;
   margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 .info-card, .preferences-card {
-  background-color: white;
+  background-color: rgb(245, 231, 204);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -267,20 +270,6 @@ h2 {
 }
 
 .preference-option {
-  margin-bottom: 0.5rem;
-}
-
-.inventory-items {
-  margin-top: 1rem;
-}
-
-.inventory-item-edit {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
   margin-bottom: 0.5rem;
 }
 
@@ -343,7 +332,7 @@ h2 {
  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .profile-section h2 {
- margin-bottom: 1rem;
+ margin-bottom: 0.5rem;
  font-size: 1.5rem;
  color: #333;
  
