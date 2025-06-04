@@ -19,6 +19,7 @@
           :key="idx"
         >
           <h3 class="card-title">{{ recipe.title }}</h3>
+          <p class="card-description">{{ recipe.description }}</p>
 
           <div class="section">
             <h4>Ingredients</h4>
@@ -37,6 +38,22 @@
               </li>
             </ol>
           </div>
+
+          <!-- SAVE BUTTON -->
+          <div class="save-button-container">
+            <button
+              class="btn-save"
+              :disabled="saving[idx]"
+              @click="saveRecipe(recipe, idx)"
+            >
+              <span v-if="!saving[idx] && !saved[idx]">Save</span>
+              <span v-if="saving[idx]">Saving...</span>
+              <span v-if="saved[idx]">Saved ✓</span>
+            </button>
+            <p v-if="saveErrors[idx]" class="error-text">
+              {{ saveErrors[idx] }}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -51,19 +68,26 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface Ingredient {
   name: string
   quantity: string
 }
 
-interface Recipe {
+interface GeneratedRecipe {
   title: string
+  description: string
   ingredients: Ingredient[]
   steps: string[]
 }
 
-const recipes = ref<Recipe[]>([])
+const recipes = ref<GeneratedRecipe[]>([])
+const saving = ref<boolean[]>([])
+const saved = ref<boolean[]>([])
+const saveErrors = ref<string[]>([])
+
+const router = useRouter()
 
 onMounted(() => {
   const raw = localStorage.getItem('generatedRecipes')
@@ -71,11 +95,11 @@ onMounted(() => {
     try {
       const arr = JSON.parse(raw)
       if (Array.isArray(arr)) {
-        // Only keep items that match { title: string, ingredients: [{ name, quantity }], steps: [string] }
         recipes.value = arr.filter((item: any) => {
           return (
             item &&
             typeof item.title === 'string' &&
+            typeof item.description === 'string' &&
             Array.isArray(item.ingredients) &&
             Array.isArray(item.steps) &&
             item.ingredients.every(
@@ -86,17 +110,66 @@ onMounted(() => {
             ) &&
             item.steps.every((step: any) => typeof step === 'string')
           )
-        }) as Recipe[]
+        }) as GeneratedRecipe[]
       }
     } catch {
       recipes.value = []
     }
+
+    // Prepare a parallel array for saving state
+    saving.value = recipes.value.map(() => false)
+    saved.value = recipes.value.map(() => false)
+    saveErrors.value = recipes.value.map(() => '')
+
     localStorage.removeItem('generatedRecipes')
   }
 })
+
+/**
+ * Instead of POSTing to Django, we’ll save this recipe into `localStorage` under "savedRecipes".
+ */
+async function saveRecipe(recipe: GeneratedRecipe, index: number) {
+  saveErrors.value[index] = ''
+  saved.value[index] = false
+  saving.value[index] = true
+
+  try {
+    // 1) Read existing saved array (or start a new one)
+    const existingRaw = localStorage.getItem('savedRecipes')
+    let existingArr: GeneratedRecipe[] = []
+    if (existingRaw) {
+      try {
+        const parsed = JSON.parse(existingRaw)
+        if (Array.isArray(parsed)) {
+          existingArr = parsed as GeneratedRecipe[]
+        }
+      } catch {
+        existingArr = []
+      }
+    }
+
+    // 2) Append this recipe
+    existingArr.push(recipe)
+
+    // 3) Write back as JSON
+    localStorage.setItem('savedRecipes', JSON.stringify(existingArr))
+
+    // 4) Mark it saved
+    saved.value[index] = true
+
+    // 5) Navigate to RecipeView (which will read from localStorage)
+    router.push({ name: 'RecipeView' })
+  } catch (err: any) {
+    console.error('Save error:', err)
+    saveErrors.value[index] = err.message || 'Failed to save.'
+  } finally {
+    saving.value[index] = false
+  }
+}
 </script>
 
 <style scoped>
+/* (Your existing styles here) */
 .page-container {
   max-width: 800px;
   margin: 2rem auto;
@@ -173,6 +246,12 @@ onMounted(() => {
   font-size: 1.25rem;
 }
 
+.card-description {
+  margin-bottom: 0.75rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
 .section {
   margin-top: 0.75rem;
 }
@@ -187,6 +266,31 @@ onMounted(() => {
 .section ol {
   padding-left: 1.25rem;
   margin: 0;
+}
+
+.save-button-container {
+  margin-top: 1rem;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-save:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+.error-text {
+  margin-top: 0.5rem;
+  color: #c00;
+  font-size: 0.85rem;
 }
 
 .actions {
