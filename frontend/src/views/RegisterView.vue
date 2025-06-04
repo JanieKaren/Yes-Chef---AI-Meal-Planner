@@ -4,6 +4,26 @@
       <h1>Create an Account</h1>
       <p>Already have an account? <router-link to="/login" style="color: orange; text-decoration: underline;">Login</router-link></p>
       <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input
+          type="text"
+          id="firstname"
+          v-model="form.firstname"
+          required
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
+        <label for="lastname">Lastname</label>
+        <input
+          type="text"
+          id="lastname"
+          v-model="form.lastname"
+          required
+          class="form-control"
+        />
+      </div>
+      <div class="form-group">
         <label for="username">Username</label>
         <input
           type="text"
@@ -61,6 +81,8 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const form = ref({
+  firstname: '',
+  lastname: '',
   username: '',
   email: '',
   password: '',
@@ -81,6 +103,8 @@ const handleRegister = async () => {
   
   try {
     const success = await userStore.register(
+      form.value.firstname,
+      form.value.lastname,
       form.value.username,
       form.value.email,
       form.value.password

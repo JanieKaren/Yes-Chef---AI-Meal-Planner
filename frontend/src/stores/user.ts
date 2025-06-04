@@ -5,6 +5,8 @@ interface User {
   id: number
   username: string
   email: string
+  first_name: string
+  last_name: string
 }
 
 interface Account {
@@ -12,7 +14,6 @@ interface Account {
   user: number
   dietary_preferences: string[];  
   fridge_inventory: string[];    
-  // Add other account fields as needed
 }
 
 interface UserState {
@@ -43,9 +44,9 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-    async register(username: string, email: string, password: string): Promise<boolean> {
+    async register(firstname: string, lastname: string, username: string, email: string, password: string): Promise<boolean> {
       try {
-        const response = await axios.post('/api/auth/register/', { username, email, password })
+        const response = await axios.post('/api/auth/register/', { firstname,lastname,username, email, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
