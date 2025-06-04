@@ -127,7 +127,20 @@ def user_view(request):
 @permission_classes([IsAuthenticated])
 def ingredient_list(request):
     if request.method == 'GET':
-        ingredients = Ingredient.objects.filter(user=request.user).order_by('expiration_date')
+        ingredients = Ingredient.objects.filter(user=request.user)
+        
+        # Apply search filter
+        search_query = request.GET.get('search')
+        if search_query:
+            ingredients = ingredients.filter(name__icontains=search_query)
+        
+        # Apply category filter
+        category = request.GET.get('category')
+        if category:
+            ingredients = ingredients.filter(category=category)
+        
+        # Order by expiration date
+        ingredients = ingredients.order_by('expiration_date')
         
         paginator = Paginator(ingredients, 10)
         page_number = request.GET.get('page')

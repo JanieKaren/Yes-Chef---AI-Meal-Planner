@@ -3,9 +3,24 @@
   </div>
   <div class="ingredients-container">
     <div class="ingredients-header">
-        <h1>My Fridge</h1>
-        <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
+      <h1>My Fridge</h1>
+      <div class="search-form">
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="Search ingredients..." 
+          class="search-input"
+        >
+        <select v-model="selectedCategory" class="category-select">
+          <option value="">All Categories</option>
+          <option v-for="[value, label] in categories" :key="value" :value="value">
+            {{ label }}
+          </option>
+        </select>
+        <button @click="handleSearch" class="btn-primary">Search</button>
       </div>
+      <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
+    </div>
     <div v-if="ingredientsStore.loading" class="loading">
       Loading Fridge Items...
     </div>
@@ -71,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -100,25 +115,51 @@ const categories = [
   ['OTHER', 'Other']
 ]
 
+const searchQuery = ref('')
+const selectedCategory = ref('')
+
 const updatePage = async (page: number) => {
   await router.push({ query: { ...route.query, page: page.toString() } })
   await ingredientsStore.fetchIngredients(page)
 }
 
+const handleSearch = async () => {
+  console.log('Search triggered with:', { searchQuery: searchQuery.value, category: selectedCategory.value })
+  const queryParams: Record<string, string> = {}
+  if (searchQuery.value) queryParams.search = searchQuery.value
+  if (selectedCategory.value) queryParams.category = selectedCategory.value
+  queryParams.page = '1' // Reset to first page on new search
+  
+  console.log('Pushing route with params:', queryParams)
+  await router.push({ query: queryParams })
+  console.log('Fetching ingredients with params:', queryParams)
+  await ingredientsStore.fetchIngredients(1, queryParams)
+}
+
 onMounted(() => {
+  console.log('Component mounted, route query:', route.query)
   const page = Number(route.query.page) || 1
-  ingredientsStore.fetchIngredients(page)
+  const queryParams = {
+    search: route.query.search as string,
+    category: route.query.category as string
+  }
+  console.log('Initial fetch with params:', queryParams)
+  ingredientsStore.fetchIngredients(page, queryParams)
 })
 
 // Watch for route query changes
-watch(() => route.query.page, (newPage) => {
-  if (newPage) {
-    const page = Number(newPage)
-    if (page !== ingredientsStore.currentPage) {
-      ingredientsStore.fetchIngredients(page)
-    }
+watch(() => route.query, (newQuery) => {
+  console.log('Route query changed:', newQuery)
+  const page = Number(newQuery.page) || 1
+  const queryParams = {
+    search: newQuery.search as string,
+    category: newQuery.category as string
   }
-})
+  if (page !== ingredientsStore.currentPage || queryParams.search || queryParams.category) {
+    console.log('Fetching ingredients with new params:', queryParams)
+    ingredientsStore.fetchIngredients(page, queryParams)
+  }
+}, { deep: true })
 
 const deleteIngredient = async (id: number) => {
   if (confirm('Are you sure you want to delete this ingredient?')) {
@@ -303,5 +344,35 @@ const getConditionClass = (expirationDate: string) => {
 .btn-secondary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.search-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex: 1;
+  margin: 0 2rem;
+}
+
+.search-input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.category-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 150px;
+}
+
+.search-input:focus,
+.category-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 </style> 

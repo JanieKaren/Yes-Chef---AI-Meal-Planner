@@ -33,10 +33,20 @@ export const useIngredientsStore = defineStore('ingredients', {
   }),
 
   actions: {
-    async fetchIngredients(page = 1) {
+    async fetchIngredients(page = 1, queryParams: { search?: string; category?: string } = {}) {
+      console.log('Store: fetchIngredients called with:', { page, queryParams })
       this.loading = true
       try {
-        const response = await axios.get(`/api/ingredients/?page=${page}`)
+        const params = new URLSearchParams({
+          page: page.toString(),
+          ...(queryParams.search && { search: queryParams.search }),
+          ...(queryParams.category && { category: queryParams.category })
+        })
+        
+        console.log('Store: Making API request with params:', params.toString())
+        const response = await axios.get(`/api/ingredients/?${params.toString()}`)
+        console.log('Store: API response:', response.data)
+        
         this.ingredients = response.data.results
         this.currentPage = response.data.current_page
         this.totalPages = response.data.num_pages
@@ -44,7 +54,7 @@ export const useIngredientsStore = defineStore('ingredients', {
         this.previousPage = response.data.previous_page
         this.error = null
       } catch (error) {
-        console.error('Failed to fetch ingredients:', error)
+        console.error('Store: Failed to fetch ingredients:', error)
         this.error = 'Failed to fetch ingredients'
       } finally {
         this.loading = false
