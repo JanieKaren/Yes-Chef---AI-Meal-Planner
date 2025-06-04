@@ -4,7 +4,10 @@
   <div class="ingredients-container">
     <div class="ingredients-header">
       <h1>My Fridge</h1>
-      <div class="search-form">
+      
+      <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
+    </div>
+    <div class="search-form">
         <input 
           type="text" 
           v-model="searchQuery" 
@@ -27,8 +30,6 @@
         <button @click="handleSearch" class="btn-primary">Search</button>
         <button @click="resetFilters" class="btn-secondary">Show All</button>
       </div>
-      <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
-    </div>
     <div v-if="ingredientsStore.loading" class="loading">
       Loading Fridge Items...
     </div>
@@ -64,8 +65,12 @@
               </td>
               <td class="actions-cell">
                 <div class="action-buttons">
-                  <router-link :to="{ name: 'edit-ingredient', params: { id: ingredient.id }}" class="btn-icon">✏️</router-link>
-                  <button @click="deleteIngredient(ingredient.id)" class="btn-icon">🗑️</button>
+                  <router-link :to="{ name: 'edit-ingredient', params: { id: ingredient.id }}" class="btn-icon">
+                    <i class="fas fa-edit"></i>
+                  </router-link>
+                  <button @click="deleteIngredient(ingredient.id)" class="btn-icon">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -78,7 +83,7 @@
     <button 
       @click="updatePage(ingredientsStore.currentPage - 1)"
       :disabled="!ingredientsStore.previousPage"
-      class="btn-secondary"
+      class="btn-page"
     >
       Previous
     </button>
@@ -86,7 +91,7 @@
     <button 
       @click="updatePage(ingredientsStore.currentPage + 1)"
       :disabled="!ingredientsStore.nextPage"
-      class="btn-secondary"
+      class="btn-page"
     >
       Next
     </button>
@@ -243,20 +248,24 @@ const getConditionClass = (expirationDate: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-block: 1rem;
 }
 
 
 .ingredients-table-container {
   overflow-x: auto;
   margin: 1rem 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .ingredients-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .ingredients-table th,
@@ -266,14 +275,30 @@ const getConditionClass = (expirationDate: string) => {
   border-bottom: 1px solid #eee;
 }
 
+.ingredients-table th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.ingredients-table th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.ingredients-table tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.ingredients-table tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
 .ingredients-table th {
-  background-color: #f8f9fa;
+  background-color: #faf5ef;
   font-weight: bold;
   color: #2c3e50;
 }
 
 .ingredients-table tr:hover {
-  background-color: #f8f9fa;
+  background-color: #f8f6f4;
 }
 
 .actions-cell {
@@ -292,14 +317,32 @@ const getConditionClass = (expirationDate: string) => {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0.25rem;
-  transition: transform 0.2s;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  border-radius: 6px;
 }
 
 .btn-icon:hover {
-  transform: scale(1.1);
+  transform: translateY(-2px);
+  color: #2c3e50;
+  background-color: #f8f6f4;
+}
+
+.btn-icon i {
+  font-size: 1.1rem;
+}
+
+.btn-icon:first-child:hover {
+  color: #FFC07F;
+}
+
+.btn-icon:last-child:hover {
+  color: #dc3545;
 }
 
 .condition-expired {
@@ -308,12 +351,13 @@ const getConditionClass = (expirationDate: string) => {
 }
 
 .condition-warning {
-  color: #ffc107;
+  color: #fd7e14;
+  
   font-weight: bold;
 }
 
 .condition-caution {
-  color: #fd7e14;
+  color: #ffc107;
   font-weight: bold;
 }
 
@@ -350,7 +394,7 @@ const getConditionClass = (expirationDate: string) => {
   color: #6c757d;
 }
 
-.btn-secondary {
+.btn-page {
   padding: 0.5rem 1rem;
   border: 1px solid #6c757d;
   border-radius: 4px;
@@ -360,12 +404,12 @@ const getConditionClass = (expirationDate: string) => {
   transition: all 0.2s;
 }
 
-.btn-secondary:hover:not(:disabled) {
+.btn-page:hover:not(:disabled) {
   background-color: #6c757d;
   color: #fff;
 }
 
-.btn-secondary:disabled {
+.btn-page:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -375,30 +419,74 @@ const getConditionClass = (expirationDate: string) => {
   gap: 1rem;
   align-items: center;
   flex: 1;
-  margin: 0 2rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
 }
 
 .search-input {
-  padding: 0.5rem;
+  padding: 0.75rem 1rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   flex: 1;
   max-width: 300px;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
 }
 
 .category-select,
 .condition-select {
-  padding: 0.5rem;
+  padding: 0.75rem 1rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   min-width: 150px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.search-form button {
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.search-form .btn-primary {
+  background-color: #E1F5CB;
+  color: #2c3e50;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-form .btn-secondary {
+  color: #2c3e50;
+  border: 1px solid #2c3e50;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-form .btn-primary:hover {
+  background-color: #d4e9bc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-form .btn-secondary:hover {
+  color: #2c3e50;
+  background-color: #E1F5CB;
+  border: 1px solid #E1F5CB;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-input:focus,
 .category-select:focus,
 .condition-select:focus {
   outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  border-color: #FFC07F;
+  box-shadow: 0 0 0 3px rgba(255, 192, 127, 0.2);
+  background-color: white;
 }
 </style> 
