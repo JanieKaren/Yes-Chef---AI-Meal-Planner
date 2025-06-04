@@ -1,15 +1,30 @@
-<!-- src/views/RecipeView.vue -->
 <template>
   <div class="recipe-page">
+    <!-- Header image -->
     <div class="fridge-header"></div>
-    <div class="page-container">
-      <h1 class="page-title">Saved Recipes</h1>
 
-      <div v-if="loading" class="loading">
-        Loading…
+    <div class="page-container">
+      <div class="top-bar">
+        <h1 class="page-title">Recipe Book</h1>
+        <button class="btn-generate">Generate Recipe</button>
       </div>
 
-      <div v-else>
+      <!-- Search and Filter Controls -->
+      <div class="controls">
+        <input type="text" placeholder="Search" class="search-input" />
+        <select class="dropdown">
+          <option disabled selected>Type</option>
+          <option>Breakfast</option>
+          <option>Lunch</option>
+          <option>Dinner</option>
+        </select>
+        <button class="btn-filter">Filter</button>
+      </div>
+
+      <div v-if="loading" class="loading">Loading…</div>
+
+      <!-- Recipe Cards -->
+      <div v-else class="card-grid">
         <div v-if="recipes.length === 0" class="no-data">
           <p>No recipes have been saved yet.</p>
           <router-link to="/recipe-generator" class="btn-primary">
@@ -17,37 +32,11 @@
           </router-link>
         </div>
 
-        <ul v-else class="saved-list">
-          <li
-            v-for="recipe in recipes"
-            :key="recipe.title"
-            class="saved-card"
-          >
-            <h2>{{ recipe.title }}</h2>
-            <p class="saved-description">{{ recipe.description }}</p>
-
-            <div class="section">
-              <h4>Ingredients</h4>
-              <ul>
-                <li v-for="(ing, i) in recipe.ingredients" :key="i">
-                  {{ ing.quantity }} {{ ing.name }}
-                </li>
-              </ul>
-            </div>
-
-            <div class="section">
-              <h4>Steps</h4>
-              <ol>
-                <li v-for="(step, sIdx) in recipe.steps" :key="sIdx">
-                  {{ step }}
-                </li>
-              </ol>
-            </div>
-          </li>
-        </ul>
+        <div v-else v-for="recipe in recipes" :key="recipe.title" class="recipe-card">
+          <p>Recipe Card</p>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -84,9 +73,7 @@ onMounted(() => {
             Array.isArray(item.steps) &&
             item.ingredients.every(
               (ing: any) =>
-                ing &&
-                typeof ing.name === 'string' &&
-                typeof ing.quantity === 'string'
+                ing && typeof ing.name === 'string' && typeof ing.quantity === 'string'
             ) &&
             item.steps.every((step: any) => typeof step === 'string')
           )
@@ -102,97 +89,92 @@ onMounted(() => {
 </script>
 
 <style scoped>
-  .fridge-header {
-    background-image: url("@/assets/images/fridge-header.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: top center;
-    height: 20vh;
-    width: 100vw;
-  }
+.recipe-page {
+  width: 100%;
+}
 
-  .page-container {
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #f9f9f9;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.fridge-header {
+  background-image: url('@/assets/images/fridge-header.png'); /* Replace with actual image */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  height: 150px;
+  width: 100%;
+}
 
-  .page-title {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-    font-size: 2rem;
-  }
+.page-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
 
-  .loading {
-    text-align: center;
-    font-size: 1.1rem;
-    color: #555;
-  }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
 
-  .no-data {
-    text-align: center;
-    font-size: 1.1rem;
-    color: #555;
-  }
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
 
-  .saved-list {
-    list-style: none;
-    padding: 0;
-  }
+.btn-generate {
+  background-color: #fcbf49;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  .saved-card {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: #fff;
-  }
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
 
-  .saved-card h2 {
-    margin-bottom: 0.5rem;
-    color: #2c3e50;
-  }
+.search-input {
+  padding: 0.5rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  flex-grow: 1;
+}
 
-  .saved-description {
-    margin-bottom: 1rem;
-    color: #555;
-    font-size: 0.95rem;
-  }
+.dropdown {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-  .section {
-    margin-top: 0.75rem;
-  }
+.btn-filter {
+  background-color: #cbe5c9;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
 
-  .section h4 {
-    margin-bottom: 0.25rem;
-    font-size: 1rem;
-    color: #444;
-  }
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+}
 
-  .section ul,
-  .section ol {
-    padding-left: 1.25rem;
-    margin: 0;
-  }
-
-  .btn-primary {
-    display: inline-block;
-    background-color: #2c3e50;
-    color: white;
-    padding: 0.6rem 1.2rem;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    margin-top: 1rem;
-  }
-
-  .btn-primary:hover {
-    background-color: #34495e;
-  }
+.recipe-card {
+  background-color: #eee;
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-weight: bold;
+  font-size: 1rem;
+}
 </style>
