@@ -33,7 +33,7 @@ const router = createRouter({
     path: '/generated-recipes',
     name: 'generated-recipes',
     component: () => import('../views/GeneratedRecipesAI.vue'),
-    props: false // we’ll pull data from localStorage instead of props
+    props: false // we'll pull data from localStorage instead of props
     },
 
 
@@ -62,15 +62,12 @@ const router = createRouter({
       component: () => import('../views/ProfileView.vue'),
       meta: { requiresAuth: true }
     },
-<<<<<<< Updated upstream
     {
       path: '/recipe',
       name: 'Recipe',
       component: () => import('../views/RecipeView.vue'),
       meta: { requiresAuth: true }
     }
-=======
->>>>>>> Stashed changes
   ]
 })
 
