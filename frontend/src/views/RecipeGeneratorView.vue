@@ -169,7 +169,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
     const recs = text
       .trim()
       .split(/\n\d+\./)
-      .filter(r => r.trim())
+      .filter((r: string) => r.trim())
 
     if (!recs.length) {
       throw new Error('Could not parse any recipes from response.')
@@ -192,7 +192,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
   margin: 2rem auto;
   padding: 1rem;
   background: #f9f9f9;
-  border-radius: 6px;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -230,7 +230,7 @@ Provide 3 suggestions with a brief ingredients list and steps.
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   resize: vertical;
   font-size: 0.95rem;
   color: #2c3e50;
