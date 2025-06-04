@@ -299,5 +299,9 @@ button[disabled] {
   font-weight: 500;
 }
 
+.page-container:hover {
+  background: #e6f9e6; /* Light green on hover */
+  transition: background 0.3s;
+}
 
 </style>
