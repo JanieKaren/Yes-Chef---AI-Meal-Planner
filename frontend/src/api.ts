@@ -2,31 +2,40 @@ import axios from 'axios'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://yes-chef-uj7s.onrender.com/api/'
 
-// Create configured axios instance
+// Create axios instance with default config
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true, // Important for cookies
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true // Enable sending cookies with requests
 })
 
-// Add request interceptors
+// Function to get CSRF token from cookie
+const getCsrfToken = () => {
+  const name = 'csrftoken'
+  let cookieValue = null
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';')
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim()
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1))
+        break
+      }
+    }
+  }
+  return cookieValue
+}
+
+// Add request interceptor
 apiClient.interceptors.request.use(
   (config) => {
     // Get CSRF token from cookie
-    const csrfToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('csrftoken='))
-      ?.split('=')[1]
-
+    const csrfToken = getCsrfToken()
     if (csrfToken) {
       config.headers['X-CSRFToken'] = csrfToken
     }
-
-    // Ensure credentials are included
-    config.withCredentials = true
-
     return config
   },
   (error) => {
@@ -34,41 +43,41 @@ apiClient.interceptors.request.use(
   }
 )
 
-// Add response interceptors
+// Add response interceptor
 apiClient.interceptors.response.use(
   (response) => {
-    // Store CSRF token if it's in the response headers
+    // Store CSRF token from response headers if present
     const csrfToken = response.headers['x-csrftoken']
     if (csrfToken) {
-      document.cookie = `csrftoken=${csrfToken}; path=/; SameSite=None; Secure`
+      document.cookie = `csrftoken=${csrfToken}; path=/; secure; samesite=none`
     }
     return response
   },
-  (error) => {
-    // Handle errors globally
+  async (error) => {
     if (error.response) {
-      switch (error.response.status) {
-        case 401:
-          // Handle unauthorized access
-          console.error('Unauthorized access. Please log in.')
-          // You might want to redirect to login page or clear user state
-          break
-        case 403:
-          // Handle forbidden access
-          console.error('Forbidden access. Please check your permissions.')
-          // Try to refresh CSRF token
-          const csrfToken = error.response.headers['x-csrftoken']
-          if (csrfToken) {
-            document.cookie = `csrftoken=${csrfToken}; path=/; SameSite=None; Secure`
-          }
-          break
-        case 404:
-          // Handle not found errors
-          console.error('Resource not found.')
-          break
-        // Add other cases as needed
+      // Handle 401 Unauthorized
+      if (error.response.status === 401) {
+        console.error('Unauthorized access. Please log in.')
+        // Optionally redirect to login page
+        window.location.href = '/login'
+      }
+      // Handle 403 Forbidden
+      else if (error.response.status === 403) {
+        console.error('Forbidden access. Please check your permissions.')
+        // Try to refresh CSRF token
+        try {
+          await apiClient.get('/auth/csrf/')
+        } catch (refreshError) {
+          console.error('Failed to refresh CSRF token:', refreshError)
+        }
+      }
+      // Handle 404 Not Found
+      else if (error.response.status === 404) {
+        console.error('Resource not found.')
       }
     }
     return Promise.reject(error)
   }
 )
+
+export default apiClient

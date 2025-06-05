@@ -164,6 +164,8 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
@@ -174,11 +176,13 @@ CSRF_COOKIE_SECURE = True  # Required when SameSite is None
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie
 CSRF_USE_SESSIONS = False  # Use cookies instead of sessions for CSRF
 CSRF_COOKIE_NAME = 'csrftoken'  # Match the cookie name expected by the frontend
+CSRF_COOKIE_DOMAIN = None  # Allow the cookie to be sent to any domain
 
 # Session settings
 SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-origin requests
 SESSION_COOKIE_SECURE = True  # Required when SameSite is None
 SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_DOMAIN = None  # Allow the cookie to be sent to any domain
 
 # REST Framework settings
 REST_FRAMEWORK = {

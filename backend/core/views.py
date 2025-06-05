@@ -34,9 +34,17 @@ class AccountViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
 
+    def get_object(self):
+        obj = super().get_object()
+        if obj.user != self.request.user:
+            raise permissions.PermissionDenied("You can only update your own account")
+        return obj
+
     @action(detail=True, methods=['post'])
     def update_dietary_preferences(self, request, pk=None):
         account = self.get_object()
+        if account.user != request.user:
+            raise permissions.PermissionDenied("You can only update your own dietary preferences")
         account.dietary_preferences = request.data.get('dietary_preferences', [])
         account.save()
         return Response(self.get_serializer(account).data)
@@ -44,6 +52,8 @@ class AccountViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def update_fridge_inventory(self, request, pk=None):
         account = self.get_object()
+        if account.user != request.user:
+            raise permissions.PermissionDenied("You can only update your own fridge inventory")
         account.fridge_inventory = request.data.get('fridge_inventory', [])
         account.save()
         return Response(self.get_serializer(account).data)
@@ -51,6 +61,8 @@ class AccountViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def update_allergies(self, request, pk=None):
         account = self.get_object()
+        if account.user != request.user:
+            raise permissions.PermissionDenied("You can only update your own allergies")
         account.allergies = request.data.get('allergies', [])
         account.save()
         return Response(self.get_serializer(account).data)
