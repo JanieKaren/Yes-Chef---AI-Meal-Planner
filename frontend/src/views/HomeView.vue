@@ -3,7 +3,6 @@ import { useUserStore } from '../stores/user'
 import { ref, onMounted, computed } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRecipesStore } from '@/stores/recipe'
-import axios from 'axios'
 
 const userStore = useUserStore()
 const ingredientsStore = useIngredientsStore()
@@ -570,15 +569,27 @@ onMounted(() => {
       padding: 0.5rem;
       min-height: unset;
     }
-    .ai-generator-section {
-      padding: 0.5rem 0;
+    .ai-generator-section, .cookbook, .fridge-section {
+      padding: 2rem 0;
+      align-items: center;
+      text-align: center;
+    }
+    .ai-generator-content {
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ai-generator-content h1 {
+      font-size: 1.5rem;
+    }
+    .ai-generator-content p {
+      font-size: 0.8rem;
     }
     .image-wrapper {
       width: 120px;
       height: 120px;
     }
     .fridge-dashboard, .recipes-dashboard {
-      padding: 0.25rem;
+      padding: 1rem;
       margin-top: 1rem;
     }
     .recipe-content {

@@ -1,6 +1,6 @@
 // stores/recipes.ts
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { apiClient } from '@/api'
 
 export interface Ingredient {
   name: string
@@ -38,7 +38,7 @@ function getAuthHeaders() {
 }
 
 export async function saveRecipeToBackend(recipe: Omit<Recipe, 'id'>) {
-  const response = await axios.post('/api/save-recipe/', recipe, {
+  const response = await apiClient.post('/save-recipe/', recipe, {
     headers: getAuthHeaders()
   })
   return response.data
@@ -65,7 +65,7 @@ export const useRecipesStore = defineStore('recipes', {
           ...(params.favorite !== undefined && { favorite: params.favorite.toString() })
         })
 
-        const response = await axios.get(`/api/save-recipe/?${queryParams.toString()}`)
+        const response = await apiClient.get(`/save-recipe/?${queryParams.toString()}`)
         this.recipes = response.data.results
         this.currentPage = response.data.current_page
         this.totalPages = response.data.num_pages
@@ -83,7 +83,7 @@ export const useRecipesStore = defineStore('recipes', {
     async deleteRecipe(id: number) {
       this.loading = true
       try {
-        await axios.delete(`/api/recipes-detail/${id}/`, {
+        await apiClient.delete(`/recipes-detail/${id}/`, {
           headers: getAuthHeaders()
         })
         this.recipes = this.recipes.filter(recipe => recipe.id !== id)
@@ -104,7 +104,7 @@ export const useRecipesStore = defineStore('recipes', {
       recipe.favorite = !recipe.favorite
 
       try {
-        await axios.patch(`/api/recipes-detail/${id}/`, { favorite: recipe.favorite }, {
+        await apiClient.patch(`/recipes-detail/${id}/`, { favorite: recipe.favorite }, {
           headers: getAuthHeaders()
         })
       } catch (error) {

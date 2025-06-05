@@ -55,6 +55,8 @@ class AccountViewSet(viewsets.ModelViewSet):
         account.save()
         return Response(self.get_serializer(account).data)
 
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):

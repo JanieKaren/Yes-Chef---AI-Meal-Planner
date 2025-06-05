@@ -25,8 +25,7 @@ Digitally manage your fridge like never before:
 ### 📖 Personal Cookbook  
 Your own organized, always-accessible online cookbook:
 - Save your favorite AI-generated or custom recipes  
-- Categorize by meal type, cuisine, or dietary tags  
-- Easily edit or add instructions and ingredient lists  
+- Generate by meal type, cuisine, or dietary tags  
 - Access your recipes anytime, from any device  
 Never lose a great recipe to cluttered notes or screenshots again.
 
@@ -44,6 +43,7 @@ Never lose a great recipe to cluttered notes or screenshots again.
 - **Frontend:** Vue.js 3 + TypeScript
 - **Backend:** Django (Python)
 - **Database:** SQLite
+- **AI:** Meta LLama 4 
 
 ---
 
@@ -78,6 +78,21 @@ Built using:
 - User authentication
 - Input validation & data serialization
 
+---
+#### 🧠 AI Implementation
+Powered by Meta's LLama 4 models:
+- **Model Variants:**
+  - `meta-llama/llama-4-maverick-17b-128e-instruct` (Frontend)
+  - `meta-llama/llama-4-scout-17b-16e-instruct` (Backend)
+- **Configuration:**
+  - Temperature: 0.7 (balanced creativity)
+  - Max Tokens: 600 (detailed recipes)
+  - Top P: 0.9 (controlled randomness)
+- **Features:**
+  - Context-aware recipe generation
+  - Ingredient compatibility checking
+  - Dietary restriction compliance
+  - Cuisine-specific adaptations
 ---
 
 ## 🚀 Getting Started
@@ -138,6 +153,10 @@ The backend exposes RESTful endpoints for:
   - Landing page for unauthorized users  
   - Recipe Generator form UI  
   - Ingredient factories
+  - Filtering, searching, and pagination for recipes
+  - Fixing issues with Recipe Generator
+  - Connecting diet and allergies of user
+  - Dashboard for fridge and recipes 
 
 - **Documentation:**  
   - README file  
