@@ -561,5 +561,19 @@ const deleteRecipe = async (id: number) => {
   .fridge-header {
     height: 60px;
   }
+  .page-title,
+  .recipe-card h3 {
+    margin-top: 2rem;
+    font-size: 2rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .top-bar .btn-primary {
+    display: block;
+    margin: 0 auto 0 auto;
+    /* width: 90%; */
+    text-align: center;
+  }
 }
 </style>

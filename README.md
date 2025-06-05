@@ -138,6 +138,10 @@ The backend exposes RESTful endpoints for:
   - Landing page for unauthorized users  
   - Recipe Generator form UI  
   - Ingredient factories
+  - Filtering, searching, and pagination for recipes
+  - Fixing issues with Recipe Generator
+  - Connecting diet and allergies of user
+  - Dashboard for fridge and recipes 
 
 - **Documentation:**  
   - README file  

@@ -247,7 +247,7 @@ const toggleDiet = (diet: string) => {
 onMounted(async () => {
   // Fetch all non-expired ingredients
   await ingredientsStore.fetchIngredients(1)
-  
+
   if (userStore.account) {
     // Add user's dietary preferences to the form
     form.diets = [...userStore.account.dietary_preferences]
@@ -666,5 +666,69 @@ Return exactly:
   font-style: italic;
   text-align: center;
   padding: 1rem;
+}
+
+@media (max-width: 480px) {
+  .recipe-generator {
+    padding: 0.5rem 0.2rem;
+  }
+  .recipe-generator__container {
+    padding: 0.7rem;
+    border-radius: 8px;
+  }
+  .ai-logo {
+    width: 60px;
+    height: 60px;
+  }
+  .recipe-generator__header {
+    margin-bottom: 1rem;
+  }
+  .page-title,
+  .recipe-generator__title {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 0.7rem;
+    width: 100%;
+  }
+  .recipe-generator__instructions {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  .form-group label,
+  .dietary-info__header label {
+    font-size: 0.95rem;
+  }
+  .form-control {
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+  .form-actions {
+    margin-top: 1rem;
+  }
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .dietary-info {
+    padding: 1rem;
+  }
+  .dietary-tag {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+  }
+  .warning-message {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  .dietary-info__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
 </style>

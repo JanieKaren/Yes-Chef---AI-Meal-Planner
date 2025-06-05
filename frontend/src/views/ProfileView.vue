@@ -33,7 +33,7 @@
             {{ isEditing ? 'Cancel' : 'Edit' }}
           </button>
           <button v-if="isEditing" @click="saveChanges" class="btn-primary">Save</button>
-        
+
       </div>
     </div>
       <div class="user-preference">
@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      
+
       <!-- Dietary Preferences Modal -->
       <div v-if="showPreferencesModal" class="modal">
         <div class="modal-content">
@@ -172,7 +172,7 @@ const savePreferences = async () => {
     alert('Something went wrong while saving preferences.')
 
   }
-  
+
 }
 
 
@@ -242,7 +242,7 @@ const saveAllergies = async () => {
  background-image: url("@/assets/images/profile_background.png");
  background-size: cover;
  /* background-position: top left; */
- 
+
 }
 
 .profile-container{
@@ -257,7 +257,7 @@ const saveAllergies = async () => {
   max-width: 800px;
   padding: 2rem;
   padding-top: 0;
-  
+
 }
 
 .profile-header{
@@ -273,7 +273,7 @@ const saveAllergies = async () => {
 
 h1 {
   color: #2c3e50;
-  
+
 }
 
 h2 {
@@ -397,7 +397,7 @@ h2 {
  margin-bottom: 0.5rem;
  font-size: 1.5rem;
  color: #333;
- 
+
 }
 .info-card .field {
  display: flex;
@@ -420,5 +420,74 @@ h2 {
  color: #2c3e50;
 }
 
+@media (max-width: 900px) {
+  .profile-container {
+    min-width: 0;
+    width: 100%;
+    padding: 10px;
+  }
+  .information {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}
 
-</style> 
+@media (max-width: 600px) {
+  .background-container {
+    padding: 1rem 0.2rem;
+    min-height: unset;
+  }
+  .profile-container {
+    padding: 8px;
+    border-radius: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  .information {
+    padding: 0.5rem;
+  }
+  .info-card, .preferences-card {
+    padding: 0.7rem;
+  }
+  .modal-content {
+    padding: 1rem;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+  h2, .profile-section h2 {
+    font-size: 1.1rem;
+  }
+  .preference-tag {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+  }
+  .btn-primary, .btn-secondary {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.7rem;
+  }
+  .field input, .form-control {
+    font-size: 0.95rem;
+    padding: 0.4rem;
+  }
+  .field p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-header img {
+    width: 100%;
+    height: auto;
+  }
+  h1 {
+    font-size: 1rem;
+  }
+  h2, .profile-section h2 {
+    font-size: 1rem;
+  }
+  .modal-content {
+    padding: 0.5rem;
+  }
+}
+</style>
