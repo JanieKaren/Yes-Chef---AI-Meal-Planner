@@ -21,25 +21,45 @@ interface UserState {
   user: User | null
   account: Account | null
   isAuthenticated: boolean
+  isInitialized: boolean
 }
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({
     user: null,
     account: null,
-    isAuthenticated: false
+    isAuthenticated: false,
+    isInitialized: false
   }),
 
   actions: {
+    async initialize() {
+      if (this.isInitialized) return
+      
+      try {
+        // First get CSRF token
+        await apiClient.get('/auth/csrf/')
+        
+        // Then check auth status
+        await this.checkAuth()
+      } catch (error) {
+        console.error('Failed to initialize auth:', error)
+        this.clearAuth()
+      } finally {
+        this.isInitialized = true
+      }
+    },
+
     async login(username: string, password: string) {
       try {
+        // Ensure we have CSRF token
+        await apiClient.get('/auth/csrf/')
+        
         const response = await apiClient.post('/auth/login/', { username, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
-          // Store authentication state
-          localStorage.setItem('isAuthenticated', 'true')
         }
       } catch (error) {
         console.error('Login failed:', error)
@@ -49,13 +69,14 @@ export const useUserStore = defineStore('user', {
 
     async register(firstname: string, lastname: string, username: string, email: string, password: string): Promise<boolean> {
       try {
+        // Ensure we have CSRF token
+        await apiClient.get('/auth/csrf/')
+        
         const response = await apiClient.post('/auth/register/', { firstname, lastname, username, email, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
-          // Store authentication state
-          localStorage.setItem('isAuthenticated', 'true')
           return true
         }
         return false
@@ -68,11 +89,7 @@ export const useUserStore = defineStore('user', {
     async logout() {
       try {
         await apiClient.post('/auth/logout/')
-        this.user = null
-        this.account = null
-        this.isAuthenticated = false
-        // Clear authentication state
-        localStorage.removeItem('isAuthenticated')
+        this.clearAuth()
       } catch (error) {
         console.error('Logout failed:', error)
         throw error
@@ -86,8 +103,6 @@ export const useUserStore = defineStore('user', {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
-          // Store authentication state
-          localStorage.setItem('isAuthenticated', 'true')
         } else {
           this.clearAuth()
         }
@@ -100,7 +115,6 @@ export const useUserStore = defineStore('user', {
       this.user = null
       this.account = null
       this.isAuthenticated = false
-      localStorage.removeItem('isAuthenticated')
     },
 
     async updateDietaryPreferences(preferences: string[]) {

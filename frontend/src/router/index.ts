@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/user'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -29,23 +28,17 @@ const router = createRouter({
       component: () => import('../views/RegisterView.vue'),
       meta: { requiresGuest: true }
     },
-     // ← New route for Recipe Generator
     {
       path: '/recipe-generator',
       name: 'recipe-generator',
       component: () => import('../views/RecipeGeneratorView.vue'),
-      // If you want only authenticated users to see it, add: meta: { requiresAuth: true }
     },
-
     {
-    path: '/generated-recipes',
-    name: 'generated-recipes',
-    component: () => import('../views/GeneratedRecipesAI.vue'),
-    props: false // we'll pull data from localStorage instead of props
+      path: '/generated-recipes',
+      name: 'generated-recipes',
+      component: () => import('../views/GeneratedRecipesAI.vue'),
+      props: false
     },
-
-
-
     {
       path: '/fridge',
       name: 'ingredients',
@@ -82,20 +75,25 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
 
-  // Check authentication status if not already checked
-  if (!userStore.isAuthenticated && userStore.user === null) {
-    await userStore.checkAuth()
+  // Initialize auth if not already done
+  if (!userStore.isInitialized) {
+    await userStore.initialize()
+  }
+
+  // Skip auth check for guest routes
+  if (to.meta.requiresGuest) {
+    if (userStore.isAuthenticated) {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
+    return
   }
 
   // Handle protected routes
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next({ name: 'landing' })
-  }
-  // Handle guest-only routes
-  else if (to.meta.requiresGuest && userStore.isAuthenticated) {
-    next({ name: 'home' })
-  }
-  else {
+    next({ name: 'login' })
+  } else {
     next()
   }
 })
