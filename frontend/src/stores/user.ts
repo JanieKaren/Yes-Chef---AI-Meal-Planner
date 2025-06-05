@@ -13,7 +13,8 @@ interface Account {
   id: number
   user: number
   dietary_preferences: string[];  
-  fridge_inventory: string[];    
+  fridge_inventory: string[]; 
+  allergies: string[];   
 }
 
 interface UserState {
@@ -101,6 +102,20 @@ export const useUserStore = defineStore('user', {
         return false
       }
     },
+
+    async updateAllergies(allergies_list: string[]) {
+      if (!this.account) return false;
+      try {
+        const response = await axios.post(`/api/accounts/${this.account.id}/update_allergies/`, {
+          allergies: allergies_list
+        })
+        return true
+      } catch (error) {
+        console.error('Error updating allergies:', error)
+        return false
+      }
+    },
+
 
     async updateFridgeInventory(inventory: string[]) {
       if (!this.account) return false;

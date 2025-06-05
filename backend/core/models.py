@@ -15,9 +15,10 @@ class Account(models.Model):
         default=list,
         help_text="List of recipe IDs saved by the user"
     )
-    fridge_inventory = models.JSONField(
+    
+    allergies = models.JSONField(
         default=list,
-        help_text="List of ingredients in the user's fridge (e.g., ['chicken', 'tomatoes'])"
+        help_text="List of allergies (e.g., ['milk', 'peanuts'])"
     )
 
     def __str__(self):
