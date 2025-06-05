@@ -44,7 +44,7 @@ onMounted(() => {
     <section class="ai-generator-section">
       <div class="ai-generator-content">
         <h1>Looking for recipes? <br/> Let AI handle it!</h1>
-        <p>Tailored to your ingredients, diet, needs, and preferences — no guesswork needed.</p>
+        <p>Tailored to your ingredients, diet, needs, and <br>preferences — no guesswork needed.</p>
         <div class="cta">
           <router-link to="/recipe-generator" class="btn btn-primary">Generate Recipes</router-link>
         </div>
@@ -181,8 +181,8 @@ onMounted(() => {
     top: 50%;
     left: 60%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    height: 300px;
+    width: 500px;
+    height: 500px;
     border-radius: 50%;
     background: #D2B48C;
     display: flex;
@@ -209,14 +209,11 @@ onMounted(() => {
     background-color: #D2B48C;
   }
 
-  .cookbook h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+  
 
   .cookbook .highlight {
     color: #7f4d14;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .recipe-grid {
@@ -238,10 +235,7 @@ onMounted(() => {
     background: white;
   }
 
-  .fridge-section h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
+
 
   .fridge-section .highlight {
     color: #ffb87d;
@@ -262,11 +256,7 @@ onMounted(() => {
     margin-bottom: 1.5rem;
   }
 
-  .fridge-header h3 {
-    font-size: 1.2rem;
-    color: #333;
-    margin: 0;
-  }
+
 
   .ingredient-count {
     color: #666;
@@ -357,11 +347,7 @@ onMounted(() => {
     margin-bottom: 1.5rem;
   }
 
-  .recipes-header h3 {
-    font-size: 1.2rem;
-    color: #333;
-    margin: 0;
-  }
+
 
   .recipe-count {
     color: #666;
@@ -502,5 +488,17 @@ onMounted(() => {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  p{
+    font-size: 2rem;
+  }
+
+  h2{
+    font-size: 2.5rem;
+  }
+
+  .fridge-section p, .cookbook p{
+    font-size: 1.5rem;
   }
 </style>

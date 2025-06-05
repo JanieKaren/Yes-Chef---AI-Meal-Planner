@@ -13,13 +13,19 @@
 
       <!-- Search and Filter Controls -->
       <div class="controls">
-        <input type="text" placeholder="Search" class="search-input" />
-        <select class="dropdown">
+        <input
+          type="text"
+          placeholder="Search"
+          class="search-input"
+          v-model="searchQuery"
+        />
+
+        <select class="dropdown" v-model="filterType">
           <option disabled selected>Type</option>
-          <option>Breakfast</option>
-          <option>Lunch</option>
-          <option>Dinner</option>
+          <option>All</option>
+          <option>Favorites</option>
         </select>
+
         <button class="btn-filter">Filter</button>
       </div>
 
@@ -31,21 +37,60 @@
           <p>No recipes have been saved yet.</p>
         </div>
 
-        <div v-else v-for="recipe in recipes" :key="recipe.title" class="recipe-card">
+        <div v-if="filteredRecipes.length === 0" class="no-data">
+          <p>No favorite recipes yet.</p>
+        </div>
+
+        <div v-else v-for="recipe in filteredRecipes" :key="recipe.title" class="recipe-card">
           <div class="card-header">
-            <h3 class="title-with-fav">
-              {{ recipe.title }}
-              <button
-                @click="toggleFavorite(recipe.id)"
-                class="favorite-btn"
-                :aria-label="recipe.favorite ? 'Unfavorite' : 'Favorite'"
+            <h3>{{ recipe.title }}</h3>
+            <div class="card-actions">
+              <button 
+                @click="toggleFavorite(recipe.id)" 
+                class="icon-button"
+                aria-label="Toggle favorite"
               >
-                <i
-                  :class="['fa', recipe.favorite ? 'fa-heart' : 'fa-heart-o']"
-                  :style="{ color: recipe.favorite ? '#e63946' : '#444' }"
-                ></i>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  :fill="recipe.favorite ? '#e63946' : 'none'"
+                  :stroke="recipe.favorite ? '#e63946' : '#444'"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  class="heart-icon"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  />
+                </svg>
               </button>
-            </h3>
+
+              <button 
+                @click="deleteRecipe(recipe.id)" 
+                class="icon-button"
+                aria-label="Delete recipe"  
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="#444"  
+                  stroke-width="1.5"
+                  viewBox="0 0 24 24"
+                  width="20"  
+                  height="20"
+                  class="trash-icon"  
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
           <p>{{ recipe.description }}</p>
 
@@ -67,7 +112,7 @@
             </ol>
           </div>
 
-          <button @click="deleteRecipe(recipe.id)" class="delete-btn"><i class="material-icons">delete</i></button>
+         
         </div>
       </div>
     </div>
@@ -75,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed,ref } from 'vue'
 import { useRecipesStore } from '@/stores/recipe'
 
 const recipesStore = useRecipesStore()
@@ -101,7 +146,19 @@ const deleteRecipe = async (id: number) => {
   }
 }
 
+const searchQuery = ref('')
+const filterType = ref('All')
 
+const filteredRecipes = computed(() => {
+  return recipes.value.filter(recipe => {
+    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesType =
+      filterType.value === 'All' ||
+      (filterType.value === 'Favorites' && (recipe as any).favorite)
+
+    return matchesSearch && matchesType
+  })
+})
 </script>
 
 
@@ -136,6 +193,10 @@ const deleteRecipe = async (id: number) => {
   font-size: 2rem;
   font-weight: bold;
   color: #333;
+}
+
+.no-data p{
+  font-size:large;
 }
 
 .controls {
@@ -243,34 +304,83 @@ const deleteRecipe = async (id: number) => {
   border-radius: 4px;
 }
 
-.title-with-fav {
+.card-header{
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap:10px
 }
 
-.favorite-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  margin-left: 0.25rem;
-  display: flex;
-  align-items: center;
+.card-header h3{
+  flex: 2;
 }
 
-.delete-btn {
-  font-size: 24px;
-  margin-top: auto;
-  align-self: flex-end;
+
+.card-actions{
+  display: flex;
+  justify-content: end;
+  align-items: start;
+}
+.icon-button {
   background: none;
   border: none;
-  color: #7c8585;
-  font-size: 1rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  padding-left: 5px;
+  
+}
+
+.icon-button svg {
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Heart Icon Animations */
+.heart-icon {
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hover Effects */
+.icon-button:hover .heart-icon {
+  transform: scale(1.1);
+}
+
+/* When NOT favorited (outlined state) */
+.icon-button:hover .heart-icon:not([fill='#e63946']) {
+  stroke: #e63946; /* Red outline on hover */
+}
+
+/* When favorited (filled state) */
+.icon-button:hover .heart-icon[fill='#e63946'] {
+  filter: drop-shadow(0 0 2px rgba(230, 57, 70, 0.5)); /* Glow effect */
+}
+
+/* Click Animation */
+.icon-button:active .heart-icon {
+  transform: scale(0.95);
+}
+
+/* Optional: Pulsate when favorited */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.heart-icon[fill='#e63946'] {
+  animation: pulse 0.5s ease; /* One-time animation when favorited */
+}
+
+
+/* Add to your styles */
+.trash-icon {
+  transition: all 0.2s ease;
+}
+
+.icon-button:hover .trash-icon {
+  stroke: #e63946;  /* Red on hover */
+  transform: scale(1.1);
+}
+
+.icon-button:active .trash-icon {
+  stroke: #c1121f;  /* Darker red on click */
+  transform: scale(0.95);
 }
 </style>
