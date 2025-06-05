@@ -3,8 +3,8 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .models import Account, Ingredient
-from .serializers import UserSerializer, AccountSerializer, IngredientSerializer
+from .models import Account, Ingredient, Recipe
+from .serializers import UserSerializer, AccountSerializer, IngredientSerializer, RecipeSerializer
 from django.contrib.auth import login, logout
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -227,3 +227,42 @@ def ingredient_detail(request, pk):
         ingredient.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
+@api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
+def recipe(request):
+    if request.method == 'GET':
+        # Filter recipes by current user
+        recipes = Recipe.objects.filter(user=request.user)
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = RecipeSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save with user attached
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def recipe_detail(request, pk):
+    try:
+        recipe = Recipe.objects.get(pk=pk, user=request.user)
+    except Recipe.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        # Partial update: for favorite toggle or other fields
+        data = request.data
+        serializer = RecipeSerializer(recipe, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        recipe.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

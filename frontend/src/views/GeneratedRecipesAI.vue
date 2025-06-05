@@ -44,7 +44,7 @@
             <button
               class="btn-save"
               :disabled="saving[idx]"
-              @click="saveRecipe(recipe, idx)"
+              @click="save(recipe, idx)"
             >
               <span v-if="!saving[idx] && !saved[idx]">Save</span>
               <span v-if="saving[idx]">Saving...</span>
@@ -69,6 +69,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRecipesStore } from '@/stores/recipe'
+import { saveRecipeToBackend } from '@/stores/recipe'
 
 interface Ingredient {
   name: string
@@ -82,6 +84,7 @@ interface GeneratedRecipe {
   steps: string[]
 }
 
+const recipesStore = useRecipesStore()
 const recipes = ref<GeneratedRecipe[]>([])
 const saving = ref<boolean[]>([])
 const saved = ref<boolean[]>([])
@@ -125,47 +128,33 @@ onMounted(() => {
   }
 })
 
-/**
- * Instead of POSTing to Django, we’ll save this recipe into `localStorage` under "savedRecipes".
- */
-async function saveRecipe(recipe: GeneratedRecipe, index: number) {
-  saveErrors.value[index] = ''
-  saved.value[index] = false
+async function save(recipe: GeneratedRecipe, index: number) {
+  if (saved.value[index]) return
+  
   saving.value[index] = true
+  saveErrors.value[index] = ''
 
   try {
-    // 1) Read existing saved array (or start a new one)
-    const existingRaw = localStorage.getItem('savedRecipes')
-    let existingArr: GeneratedRecipe[] = []
-    if (existingRaw) {
-      try {
-        const parsed = JSON.parse(existingRaw)
-        if (Array.isArray(parsed)) {
-          existingArr = parsed as GeneratedRecipe[]
-        }
-      } catch {
-        existingArr = []
-      }
+    const payload: GeneratedRecipe = {
+      title: recipe.title,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps
     }
 
-    // 2) Append this recipe
-    existingArr.push(recipe)
+    await saveRecipeToBackend(payload)
 
-    // 3) Write back as JSON
-    localStorage.setItem('savedRecipes', JSON.stringify(existingArr))
-
-    // 4) Mark it saved
     saved.value[index] = true
-
-    // 5) Navigate to RecipeView (which will read from localStorage)
-    router.push({ name: 'RecipeView' })
-  } catch (err: any) {
-    console.error('Save error:', err)
-    saveErrors.value[index] = err.message || 'Failed to save.'
+    alert('Recipe saved successfully!')
+  } catch (err) {
+    saveErrors.value[index] = 'Failed to save recipe.'
+    console.error('Failed to save recipe', err)
   } finally {
     saving.value[index] = false
   }
 }
+
+
 </script>
 
 <style scoped>

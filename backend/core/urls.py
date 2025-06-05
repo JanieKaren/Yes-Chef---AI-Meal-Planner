@@ -16,4 +16,6 @@ urlpatterns = [
     path('auth/user/', views.user_view, name='user'),
     path('ingredients/', views.ingredient_list, name='ingredient-list'),
     path('ingredients/<int:pk>/', views.ingredient_detail, name='ingredient-detail'),
+    path('save-recipe/', views.recipe, name='save-recipe'),
+    path('recipes-detail/<int:pk>/', views.recipe_detail, name='recipe-detail'),
 ] 

@@ -28,9 +28,11 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     date_hierarchy = 'expiration_date'
 
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'type', 'cuisine', 'time_required', 'nutritional_style', 'created_at')
-    list_filter = ('type', 'cuisine', 'time_required', 'nutritional_style', 'created_at')
+    list_display = ('title', 'user', 'created_at', 'favorite')
+    list_filter = ('created_at','favorite',)
     search_fields = ('title', 'user__username', 'ingredients')
     readonly_fields = ('created_at', 'updated_at')
