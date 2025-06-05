@@ -145,7 +145,7 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
-import { apiClient } from '@/services/api'
+import { apiClient } from '@/api'
 
 const router = useRouter()
 const ingredientsStore = useIngredientsStore()
