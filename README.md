@@ -146,6 +146,7 @@ The backend exposes RESTful endpoints for:
  
 - **Development:**
   - Display user info, dietary preference, allergies
+  - Display saved recipes
   - Save, Favorite, Delete Recipes
   - PostgreSQL database
   - Render Deployment
