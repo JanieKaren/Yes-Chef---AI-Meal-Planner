@@ -15,13 +15,7 @@ const recipesLoading = ref(true)
 
 const fetchIngredients = async () => {
   try {
-    const response = await axios.get('/api/ingredients/', {
-      params: {
-        page: 1,
-        condition: 'good' // Only show non-expired items
-      }
-    })
-    ingredients.value = response.data.results.slice(0, 5) // Get only first 5 items
+    await ingredientsStore.fetchIngredients(1, { condition: 'good' })
   } catch (error) {
     console.error('Error fetching ingredients:', error)
   } finally {
@@ -120,7 +114,7 @@ onMounted(() => {
             <div v-else-if="ingredients.length === 0" class="no-items">
               No ingredients found. Add some to your fridge!
             </div>
-            <div v-else class="fridge-item" v-for="ingredient in ingredients" :key="ingredient.id">
+            <div v-else class="fridge-item" v-for="ingredient in ingredients.slice(0, 5)" :key="ingredient.id">
               <div class="item-content">
                 <div class="item-info">
                   <span class="item-name">{{ ingredient.name }}</span>
