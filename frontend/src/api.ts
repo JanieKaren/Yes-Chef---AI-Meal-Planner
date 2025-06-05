@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://yes-chef-uj7s.onrender.com'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://yes-chef-uj7s.onrender.com/api/'
 
 // Create configured axios instance
 export const apiClient = axios.create({
