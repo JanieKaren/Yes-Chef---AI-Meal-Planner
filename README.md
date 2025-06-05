@@ -43,7 +43,8 @@ Never lose a great recipe to cluttered notes or screenshots again.
 - **Frontend:** Vue.js 3 + TypeScript
 - **Backend:** Django (Python)
 - **Database:** SQLite
-- **AI:** Meta LLama 4 
+- **AI:** Meta LLama 4
+- **Deployment :** Vercel (Vue.js) + Render (Django)
 
 ---
 
@@ -134,8 +135,10 @@ The backend exposes RESTful endpoints for:
 ## 👥 Member Responsibilities
 
 ### 🧑‍💻 Cabusor
+- **Development:**  
+  - Collaborated to Recipe Generator Form
 
--Collaborated to Ai Recipe Generator
+---
 
 ### 🧑‍💻 Cerio
 
@@ -156,7 +159,8 @@ The backend exposes RESTful endpoints for:
   - Filtering, searching, and pagination for recipes
   - Fixing issues with Recipe Generator
   - Connecting diet and allergies of user
-  - Dashboard for fridge and recipes 
+  - Dashboard for fridge and recipes
+  - Vercel Deployment
 
 - **Documentation:**  
   - README file  
@@ -165,11 +169,22 @@ The backend exposes RESTful endpoints for:
 ---
 
 ### 👩‍💻 Mejia  
+- **Development:**  
+  - Integration of Meta Llama
+  - Prompt Creation
+  - Recipe Generator using Meta Llama
+  - Connecting Recipe List to Prompts
 
 ---
-
 ### 👨‍💻 Molanda  
-
+- **Planning:**  
+  - Application Logo
+  - Application Color Theme
+- **Development:**  
+  - Improve overall UI
+  - Ensure responsiveness across all devices
+  - Home and Recipe Book pages
+  - Vercel Deployment
 ---
 
 
