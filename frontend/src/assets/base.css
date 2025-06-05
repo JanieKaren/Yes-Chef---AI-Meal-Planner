@@ -101,6 +101,7 @@ body {
   transition: all 0.3s ease;
   text-decoration: none;
   border: none;
+  font-family: inherit;
 }
 
 .btn-primary {
@@ -119,15 +120,13 @@ body {
 }
 
 .btn-secondary {
-  background-color: white;
-  color: #FFC07F;
-  border: 1px solid #FFC07F;
+  background-color: #FFC07F;
+  color: #5e4a0d;
   border-radius: 100px;
 }
 
 .btn-secondary:hover {
-  background-color: #FFC07F;
-  color: white;
+  background-color: #FFD8B1;
 }
 
 .btn-icon {

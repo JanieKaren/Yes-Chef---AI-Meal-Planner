@@ -229,7 +229,7 @@ const toggleDiet = (diet: string) => {
 
 async function onGenerate() {
   errorMessage.value = ''
-  
+
   if (!hasIngredients.value) {
     errorMessage.value = 'Please add some ingredients to your fridge first. You can add ingredients from the "My Fridge" page.'
     return
@@ -441,6 +441,7 @@ Return exactly:
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
+  font-family: inherit;
 }
 
 .form-control:focus {
@@ -465,6 +466,7 @@ Return exactly:
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .diet-button:hover {
@@ -489,7 +491,7 @@ Return exactly:
   margin-top: 2rem;
 }
 
-.btn {
+/* .btn {
   padding: 0.875rem 2rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -497,9 +499,9 @@ Return exactly:
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-}
+} */
 
-.btn-primary {
+/* .btn-primary {
   background: #4CAF50;
   color: white;
 }
@@ -512,7 +514,7 @@ Return exactly:
 .btn-primary:disabled {
   background: #9E9E9E;
   cursor: not-allowed;
-}
+} */
 
 .loading {
   display: flex;
@@ -584,7 +586,7 @@ Return exactly:
   font-size: 1.1rem;
 }
 
-.btn-secondary {
+/* .btn-secondary {
   background: #6c757d;
   color: white;
   text-decoration: none;
@@ -593,5 +595,5 @@ Return exactly:
 
 .btn-secondary:hover {
   background: #5a6268;
-}
+} */
 </style>
