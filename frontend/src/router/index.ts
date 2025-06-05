@@ -20,13 +20,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
-      meta: { requiresGuest: true }
+      meta: { isPublic: true }
     },
     {
       path: '/register',
       name: 'register',
       component: () => import('../views/RegisterView.vue'),
-      meta: { requiresGuest: true }
+      meta: { isPublic: true }
     },
     {
       path: '/recipe-generator',
@@ -77,7 +77,13 @@ router.beforeEach(async (to, from, next) => {
 
   // Skip auth checks for public routes
   if (to.meta.isPublic) {
-    next()
+    // If user is already authenticated and tries to access login/register,
+    // redirect them to home
+    if (userStore.isAuthenticated && (to.name === 'login' || to.name === 'register')) {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
     return
   }
 
@@ -89,16 +95,6 @@ router.beforeEach(async (to, from, next) => {
       console.error('Failed to initialize auth:', error)
       // Continue with navigation even if initialization fails
     }
-  }
-
-  // Handle guest routes
-  if (to.meta.requiresGuest) {
-    if (userStore.isAuthenticated) {
-      next({ name: 'home' })
-    } else {
-      next()
-    }
-    return
   }
 
   // Handle protected routes
