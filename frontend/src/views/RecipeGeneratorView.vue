@@ -75,18 +75,32 @@
         </div>
 
         <div class="form-group">
-          <label>Diet & Allergies</label>
-          <div class="diet-options">
-            <button
-              v-for="option in dietOptions"
-              :key="option"
-              type="button"
-              class="diet-button"
-              :class="{ 'diet-button--selected': form.diets.includes(option) }"
-              @click="toggleDiet(option)"
-            >
-              {{ option }}
-            </button>
+          <div class="dietary-info">
+            <div class="dietary-info__header">
+              <label>Your Dietary Preferences & Allergies</label>
+              <router-link to="/profile" class="btn btn-secondary">Edit in Profile</router-link>
+            </div>
+            <div class="dietary-info__content">
+              <div v-if="userStore.account?.dietary_preferences?.length" class="dietary-info__section">
+                <h4>Dietary Preferences:</h4>
+                <div class="dietary-tags">
+                  <span v-for="pref in userStore.account.dietary_preferences" :key="pref" class="dietary-tag">
+                    {{ pref }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="userStore.account?.allergies?.length" class="dietary-info__section">
+                <h4>Allergies:</h4>
+                <div class="dietary-tags">
+                  <span v-for="allergy in userStore.account.allergies" :key="allergy" class="dietary-tag dietary-tag--allergy">
+                    {{ allergy }}
+                  </span>
+                </div>
+              </div>
+              <div v-if="!userStore.account?.dietary_preferences?.length && !userStore.account?.allergies?.length" class="dietary-info__empty">
+                No dietary preferences or allergies set. Click "Edit in Profile" to add them.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -96,7 +110,7 @@
             id="notes"
             v-model="form.notes"
             rows="2"
-            placeholder="E.g., no cilantro, extra spicy, kid-friendly"
+            placeholder="E.g., extra spicy, kid-friendly, no cilantro"
             class="form-control"
           ></textarea>
         </div>
@@ -127,12 +141,14 @@
 
 <script setup lang="ts">
 import aiLogo from '@/assets/images/logo-1.png'
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
+import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const ingredientsStore = useIngredientsStore()
+const userStore = useUserStore()
 
 // Constants
 const recipeTypes = [
@@ -227,6 +243,19 @@ const toggleDiet = (diet: string) => {
   }
 }
 
+// Initialize user preferences
+onMounted(() => {
+  if (userStore.account) {
+    // Add user's dietary preferences to the form
+    form.diets = [...userStore.account.dietary_preferences]
+    
+    // Add user's allergies to the notes if any
+    if (userStore.account.allergies && userStore.account.allergies.length > 0) {
+      form.notes = `Allergies: ${userStore.account.allergies.join(', ')}`
+    }
+  }
+})
+
 async function onGenerate() {
   errorMessage.value = ''
 
@@ -257,6 +286,8 @@ IMPORTANT RULES:
 2. DO NOT make up or invent new ingredients
 3. If you need an ingredient not in the list, skip that recipe and create a different one
 4. Each ingredient name must be a real, valid food item
+5. STRICTLY AVOID any ingredients that the user is allergic to
+6. Ensure recipes comply with all dietary restrictions specified
 
 Produce exactly three distinct recipe objects.
 **Output must be valid JSON ONLY**—an array of three items.
@@ -595,5 +626,73 @@ Return exactly:
 
 .btn-secondary:hover {
   background: #5a6268;
-} */
+}
+
+.dietary-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.dietary-info__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dietary-info__header label {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+}
+
+.dietary-info__section {
+  margin-bottom: 1rem;
+}
+
+.dietary-info__section h4 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.dietary-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dietary-tag {
+  background: #4CAF50;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+
+.dietary-tag--allergy {
+  background: #e74c3c;
+}
+
+.dietary-info__empty {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
 </style>
