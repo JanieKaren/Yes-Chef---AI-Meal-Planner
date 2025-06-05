@@ -55,6 +55,10 @@ class AccountViewSet(viewsets.ModelViewSet):
         account.save()
         return Response(self.get_serializer(account).data)
 
+@permission_classes([AllowAny])
+def index(request):
+    return render(request, 'index.html')
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):

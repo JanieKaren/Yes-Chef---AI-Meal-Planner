@@ -8,7 +8,7 @@ import App from './App.vue'
 import router from './router'
 
 // Configure axios
-axios.defaults.baseURL = 'http://localhost:8000'
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 axios.defaults.withCredentials = true
 
 // Add CSRF token to all requests
