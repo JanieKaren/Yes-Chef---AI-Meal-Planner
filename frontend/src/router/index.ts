@@ -8,7 +8,7 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: () => import('../views/LandingPage.vue'),
-      meta: { requiresGuest: true }
+      meta: { isPublic: true }
     },
     {
       path: '/home',
@@ -75,12 +75,23 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
 
-  // Initialize auth if not already done
-  if (!userStore.isInitialized) {
-    await userStore.initialize()
+  // Skip auth checks for public routes
+  if (to.meta.isPublic) {
+    next()
+    return
   }
 
-  // Skip auth check for guest routes
+  // Initialize auth if not already done
+  if (!userStore.isInitialized) {
+    try {
+      await userStore.initialize()
+    } catch (error) {
+      console.error('Failed to initialize auth:', error)
+      // Continue with navigation even if initialization fails
+    }
+  }
+
+  // Handle guest routes
   if (to.meta.requiresGuest) {
     if (userStore.isAuthenticated) {
       next({ name: 'home' })
@@ -91,11 +102,17 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // Handle protected routes
-  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next({ name: 'login' })
-  } else {
-    next()
+  if (to.meta.requiresAuth) {
+    if (userStore.isAuthenticated) {
+      next()
+    } else {
+      next({ name: 'login' })
+    }
+    return
   }
+
+  // Allow access to non-protected routes
+  next()
 })
 
 export default router

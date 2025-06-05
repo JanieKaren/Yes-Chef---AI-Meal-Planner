@@ -44,7 +44,8 @@ export const useUserStore = defineStore('user', {
         await this.checkAuth()
       } catch (error) {
         console.error('Failed to initialize auth:', error)
-        this.clearAuth()
+        // Don't clear auth on initialization failure
+        // Just mark as initialized so we don't keep trying
       } finally {
         this.isInitialized = true
       }
@@ -107,7 +108,9 @@ export const useUserStore = defineStore('user', {
           this.clearAuth()
         }
       } catch (error) {
-        this.clearAuth()
+        // Don't clear auth on check failure
+        // This prevents the 403 from clearing auth state
+        console.error('Auth check failed:', error)
       }
     },
 
