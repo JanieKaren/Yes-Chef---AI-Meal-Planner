@@ -38,10 +38,13 @@ onMounted(() => {
           <router-link to="/recipe-generator" class="btn btn-primary">Generate Recipes</router-link>
         </div>
       </div>
-      <div class="image-wrapper">
-        <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
+      <div class="padding-right">
+        <div class="image-wrapper">
+          <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
+        </div>
+        <div class="brown-background"></div>
       </div>
-      <div class="orange-background"></div>
+
     </section>
 
     <section class="cookbook">
@@ -129,7 +132,7 @@ onMounted(() => {
     align-items: start;
     gap: 2rem;
     width: 100%;
-    max-width: 600px;
+    /* max-width: 600px; */
     z-index: 2;
   }
 
@@ -153,7 +156,7 @@ onMounted(() => {
     border-radius: 50%;
   }
 
-  .orange-background {
+  .brown-background {
     background-color: #D2B48C;
     position: absolute;
     top: 0;
@@ -172,7 +175,7 @@ onMounted(() => {
   }
 
   .cookbook .highlight {
-    color: #a86e2d;
+    color: #7f4d14;
     font-weight: 500;
   }
 

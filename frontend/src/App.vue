@@ -21,9 +21,9 @@ const handleLogout = async () => {
     <nav class="navbar">
       <div class="navbar-brand">
 
-        <router-link to="/" class="navbar-item">
-          <img src="@/assets/images/logo.png" alt="Logo" class="logo" />
-          Yes, Chef!
+        <router-link to="/">
+          <img src="@/assets/images/logo-1.png" alt="Logo" class="logo" />
+          <span>Yes, Chef!</span>
         </router-link>
       </div>
       <div class="navbar-menu">
@@ -72,7 +72,7 @@ const handleLogout = async () => {
 }
 
 .logo {
-  height: 50px;
+  height: 40px;
   margin-right: 10px;
   display: inline-block;
   vertical-align: middle;
@@ -141,6 +141,12 @@ const handleLogout = async () => {
   justify-content: flex-end;
   background-color: #D2B48C;
   padding: 0 1rem;
+}
+
+span {
+  font-family: 'Afacad', sans-serif;
+  color: #497817;
+  font-weight: bold;
 }
 
 .main-content {
