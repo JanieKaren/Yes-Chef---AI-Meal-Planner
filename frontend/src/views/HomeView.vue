@@ -571,7 +571,19 @@ onMounted(() => {
       min-height: unset;
     }
     .ai-generator-section {
-      padding: 0.5rem 0;
+      padding: 1rem 0;
+      align-items: center;
+      text-align: center;
+    }
+    .ai-generator-content {
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ai-generator-content h1 {
+      font-size: 1.5rem;
+    }
+    .ai-generator-content p {
+      font-size: 0.8rem;
     }
     .image-wrapper {
       width: 120px;

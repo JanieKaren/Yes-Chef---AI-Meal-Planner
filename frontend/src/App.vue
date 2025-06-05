@@ -153,4 +153,63 @@ span {
   flex: 1;
   width: 100%;
 }
+
+@media (max-width: 900px) {
+  .navbar-brand {
+    font-size: 1.1rem;
+    padding: 0.7rem;
+  }
+  .logo {
+    height: 32px;
+    margin-right: 6px;
+  }
+  .navbar-menu {
+    width: 55%;
+    padding: 0 0.5rem;
+  }
+  .navbar-item {
+    padding: 0 0.7rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+  }
+  .navbar-brand {
+    justify-content: center;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+  }
+  .navbar-menu {
+    width: 100%;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0;
+    background-color: #D2B48C;
+    flex-wrap: wrap;
+  }
+  .navbar-item {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.95rem;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar-brand {
+    font-size: 0.9rem;
+  }
+  .logo {
+    height: 24px;
+    margin-right: 4px;
+  }
+  .navbar-item {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+  }
+}
 </style>
