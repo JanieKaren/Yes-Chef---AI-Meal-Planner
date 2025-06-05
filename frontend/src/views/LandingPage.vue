@@ -6,8 +6,8 @@
    <section class="hero">
     <div class="hero-content">
       <div class="hero-img">
-        <h1>Where <span>AI</span> meets <span>Appetite</span></h1>
-        <p>Personalized recipes crafted from what's <br>in your kitchen with Yes, Chef!</p>
+        <h2>Where <span>AI</span> meets <span>appetite</span></h2>
+        <p>Personalized recipes crafted from what's <br>in your kitchen with <span>Yes, Chef!</span></p>
       </div>
     </div>
    </section>
@@ -29,16 +29,16 @@
      </article>
    </section>
    <section class="get-started">
-    <h1>Start your Culinary Journey with Yes, Chef!</h1>
+    <h2>Start your Culinary Journey with Yes, Chef!</h2>
     <div class="cta">
-      <router-link to="/register" class="btn-primary">Get Started</router-link>
       <router-link to="/login" class="btn-secondary">Login</router-link>
+      <router-link to="/register" class="btn-primary">Get Started</router-link>
     </div>
    </section>
   </div>
 </template>
 
-<style scoped>
+<style scoped>s
 .landing-page {
   font-family: 'Afacad', sans-serif;
 }
@@ -46,7 +46,7 @@
 .hero {
   margin: 0;
   height: 90vh;
-  background: linear-gradient(to right, white 60%, #FFD8B1 40%);
+  background: linear-gradient(to right, white 60%, #D2B48C 40%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,7 +61,7 @@
 }
 
 .hero-img {
-  background-image: url("@/assets/images/login_background.jpg");
+  background-image: url("@/assets/images/landing-bg.png");
   background-size: cover;
   background-position: center;
   height: 85vh;
@@ -76,19 +76,16 @@
   flex-direction: column;
 }
 
-h1 {
-  font-family: 'Aclonica', sans-serif;
-  font-weight: bold;
-  font-size: 3.5rem;
-  color: #1e1e1e;
+h2 {
   position: relative;
+  font-size: 3.5rem;
   z-index: 1;
-  margin: 0;
+  margin: 2;
   line-height: 1.2;
 }
 
-h1 span {
-  color: #FFD8B1;
+h2 span {
+  font-style: italic;
   font-weight: bold;
 }
 
@@ -99,20 +96,24 @@ p {
   padding-block: 1rem;
 }
 
+p span {
+  color: #FFAB91;
+  font-weight: bold;
+}
+
 .features {
-  
-  background-color: #FFD8B1;
+  background-color: #D2B48C;
   padding: 4rem 2rem;
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .features article {
-  background: rgba(255, 255, 255, 0.1);
+  background: #E1F5CB;
   backdrop-filter: blur(10px);
   padding: 2rem;
   border-radius: 20px;
@@ -135,7 +136,7 @@ p {
 }
 
 .features h2 {
-  font-family: 'Aclonica', sans-serif;
+  font-family: 'Afacad', sans-serif;
   font-size: 1.8rem;
   font-weight: bold;
   color: #1e1e1e;
@@ -150,7 +151,7 @@ p {
   color: #1e1e1e;
   font-weight: normal;
   margin: 0 auto;
-} 
+}
 
 .get-started {
   padding: 6rem 2rem;
@@ -182,15 +183,15 @@ p {
 }
 
 .btn-primary {
-  background-color: #FFD8B1;
+  background-color: #D2B48C;
   color: #1e1e1e;
-  border: 2px solid #FFD8B1;
+  border: 2px solid #D2B48C;
 }
 
 .btn-secondary {
   background-color: transparent;
   color: #1e1e1e;
-  border: 2px solid #FFD8B1;
+  border: 2px solid #D2B48C;
 }
 
 .btn-primary:hover, .btn-secondary:hover {

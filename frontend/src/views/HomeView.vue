@@ -134,12 +134,6 @@ onMounted(() => {
     z-index: 2;
   }
 
-  h1 {
-    font-family: "Aclonica", sans-serif;
-    font-size: 2.5rem;
-    line-height: 1.2;
-  }
-
   .image-wrapper {
     position: absolute;
     top: 50%;
@@ -148,7 +142,7 @@ onMounted(() => {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: #FFD8B1;
+    background: #D2B48C;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,7 +155,7 @@ onMounted(() => {
   }
 
   .orange-background {
-    background-color: #FFD8B1;
+    background-color: #D2B48C;
     position: absolute;
     top: 0;
     right: 0;
@@ -170,7 +164,7 @@ onMounted(() => {
   }
 
   .cookbook {
-    background-color: #FFD8B1;
+    background-color: #D2B48C;
   }
 
   .cookbook h2 {

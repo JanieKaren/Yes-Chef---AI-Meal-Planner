@@ -173,7 +173,7 @@ const goBack = () => {
 }
 
 h1 {
-  color: #FFD8B1;
+  color: #D2B48C;
   text-align: center;
 }
 
@@ -203,4 +203,4 @@ label {
 }
 
 
-</style> 
+</style>
