@@ -2,7 +2,10 @@
 <template>
   <div class="recipe-generator">
     <div class="recipe-generator__container">
-      <h1 class="recipe-generator__title">AI Recipe Generator</h1>
+     <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
+    <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
+    <h1 class="page-title">AI Recipe Generator</h1>
+  </div>
       <p class="recipe-generator__instructions">
         Create delicious recipes based on your preferences and available ingredients.
       </p>
@@ -118,6 +121,7 @@
 </template>
 
 <script setup lang="ts">
+import aiLogo from '@/assets/images/artificial-intelligence.png'
 import { reactive, ref, computed } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRouter } from 'vue-router'
@@ -229,7 +233,7 @@ You are an AI chef. Given:
   • Other Preferences: ${form.notes || 'none'}
 
 IMPORTANT RULES:
-1. ONLY use ingredients from the "Available Ingredients" list above
+1. ONLY use ingredients from the "goodIngredientsList"
 2. DO NOT make up or invent new ingredients
 3. If you need an ingredient not in the list, skip that recipe and create a different one
 4. Each ingredient name must be a real, valid food item
@@ -238,8 +242,9 @@ Produce exactly three distinct recipe objects.
 **Output must be valid JSON ONLY**—an array of three items. 
 Each item must have exactly these keys:
   • "title"  : string
+  • "description" : string (a brief one sentence summary)
   • "ingredients": an array of objects, each with:
-    – "name": string (must be a real ingredient from the available list)
+    – "name": string (must be a real ingredient from goodIngredientsList)
     – "quantity": string (amount in cups, grams, etc.; approximate is fine as long as it does not exceed what you have)
   • "steps"  : an array of strings
 
@@ -248,6 +253,7 @@ Return exactly:
 [
   {
     "title": "Example Recipe 1",
+    "description": "A short appetizing summary of the dish.",
     "ingredients": [
       { "name": "Ingredient A", "quantity": "2 cups" },
       { "name": "Ingredient B", "quantity": "1 tbsp" }
@@ -255,11 +261,13 @@ Return exactly:
     "steps": [
       "Do X",
       "Do Y",
-      "Do Z"
+      "Do Z",
+      "etc"
     ]
   },
   {
     "title": "Example Recipe 2",
+    "description": "A short appetizing summary of the dish.",
     "ingredients": [
       { "name": "Ingredient C", "quantity": "3 slices" },
       { "name": "Ingredient D", "quantity": "200g" }
@@ -267,11 +275,13 @@ Return exactly:
     "steps": [
       "Step 1",
       "Step 2",
-      "Step 3"
+      "Step 3",
+      "etc"
     ]
   },
   {
     "title": "Example Recipe 3",
+    "description": "A short appetizing summary of the dish.",
     "ingredients": [
       { "name": "Ingredient E", "quantity": "1 cup" },
       { "name": "Ingredient F", "quantity": "2 tsp" }
@@ -279,11 +289,13 @@ Return exactly:
     "steps": [
       "First do this",
       "Then do that",
-      "Finally do the other"
+      "Finally do the other",
+      "etc"
     ]
   }
 ]
 `.trim()
+
 
   try {
     const DJANGO_BACKEND_URL = 'http://localhost:8000'
@@ -291,7 +303,7 @@ Return exactly:
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+        model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
         prompt: promptText,
         max_tokens: 600,
         temperature: 0.7,

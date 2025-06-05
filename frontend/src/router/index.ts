@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/user'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -71,8 +72,8 @@ const router = createRouter({
     },
     {
       path: '/recipe',
-      name: 'Recipe',
-      component: () => import('../views/RecipeView.vue'),
+      name: 'RecipeView',
+      component: () => import('../views/Cookbook/RecipeView.vue'),
       meta: { requiresAuth: true }
     }
   ]
