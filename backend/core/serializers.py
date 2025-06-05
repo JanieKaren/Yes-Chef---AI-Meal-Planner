@@ -13,7 +13,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'user', 'dietary_preferences', 'saved_recipes', 'fridge_inventory')
+        fields = ('id', 'user', 'dietary_preferences', 'saved_recipes', 'allergies')
 
 class IngredientSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

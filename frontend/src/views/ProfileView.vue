@@ -2,7 +2,8 @@
   <div class="background-container">
     <div class="profile-container">
       <div class="profile-header">
-      <!-- <h1>User Profile</h1> -->
+        <img src="@/assets/images/profile_header.png" alt="profile-header-image">
+      <h1>User Profile</h1>
     </div>
     <div class="information">
       <div class="profile-section">
@@ -54,6 +55,24 @@
         </div>
       </div>
 
+      <div class="profile-section">
+        <h2>Allergies</h2>
+        <div class="preferences-card">
+          <div class="preferences-list">
+            <div
+              v-for="allergy in userStore.account?.allergies"
+              :key="allergy"
+              class="preference-tag"
+            >
+              {{ allergy }}
+            </div>
+          </div>
+          <button @click="showAllergyModal = true" class="btn-secondary">
+            Edit Allergies
+          </button>
+        </div>
+      </div>
+
       
       <!-- Dietary Preferences Modal -->
       <div v-if="showPreferencesModal" class="modal">
@@ -80,6 +99,33 @@
               Cancel
             </button>
             <button @click="savePreferences" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Allergies Modal -->
+      <div v-if="showAllergyModal" class="modal">
+        <div class="modal-content">
+          <h2>Edit Allergies</h2>
+          <div class="preferences-edit">
+            <div
+              v-for="allergy in availableAllergies"
+              :key="allergy"
+              class="preference-option"
+            >
+              <label>
+                <input
+                  type="checkbox"
+                  :value="allergy"
+                  v-model="selectedAllergies"
+                />
+                {{ allergy }}
+              </label>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button @click="showAllergyModal = false" class="btn-secondary">Cancel</button>
+            <button @click="saveAllergies" class="btn-primary">Save</button>
           </div>
         </div>
       </div>
@@ -115,7 +161,7 @@ const selectedPreferences = ref<string[]>([])
 
 onMounted(() => {
   selectedPreferences.value = userStore.account?.dietary_preferences || []
-  
+  selectedAllergies.value = userStore.account?.allergies || []
 })
 
 const savePreferences = async () => {
@@ -163,6 +209,26 @@ async function saveChanges() {
   }
 }
 
+const showAllergyModal = ref(false)
+
+const availableAllergies = [
+  'Peanuts', 'Tree Nuts', 'Milk', 'Eggs', 'Fish', 'Shellfish', 'Soy', 'Wheat',
+  'Sesame', 'Gluten', 'Lactose', 'Corn'
+]
+
+const selectedAllergies = ref<string[]>([])
+
+const saveAllergies = async () => {
+  const success = await userStore.updateAllergies(selectedAllergies.value)
+  if (success) {
+    alert('Allergies saved')
+    showAllergyModal.value = false
+  } else {
+    alert('Something went wrong while saving allergies.')
+  }
+}
+
+
 </script>
 
 <style scoped>
@@ -174,21 +240,20 @@ async function saveChanges() {
  flex-direction: column;
  align-items: center;
  background-image: url("@/assets/images/profile_background.jpg");
- /* background-repeat: repeat; */
- background-size: contain; /* or set to the exact size of the image */
+ background-size: contain;
  background-position: top left;
+ 
 }
 
 .profile-container{
   padding: 20px;
   border-radius: 8px;
-  background-image: url("@/assets/images/notepad.png");
-  background-size: cover;
+  background-color: white;
   min-width: 800px;
 }
 
 .information {
-  margin-top: 16rem;
+  margin-top: 1rem;
   max-width: 800px;
   padding: 2rem;
   padding-top: 0;
@@ -196,9 +261,8 @@ async function saveChanges() {
 }
 
 .profile-header{
- /* max-width: 800px; */
  text-align: center;
- width: 100%;
+ font-family: 'Aclonica', sans-serif;
 }
 
 

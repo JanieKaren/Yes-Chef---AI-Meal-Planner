@@ -47,6 +47,13 @@ class AccountViewSet(viewsets.ModelViewSet):
         account.fridge_inventory = request.data.get('fridge_inventory', [])
         account.save()
         return Response(self.get_serializer(account).data)
+    
+    @action(detail=True, methods=['post'])
+    def update_allergies(self, request, pk=None):
+        account = self.get_object()
+        account.allergies = request.data.get('allergies', [])
+        account.save()
+        return Response(self.get_serializer(account).data)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
