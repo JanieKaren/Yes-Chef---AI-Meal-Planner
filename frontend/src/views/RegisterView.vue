@@ -2,7 +2,7 @@
   <div class="register-container">
     <form @submit.prevent="handleRegister" class="register-form">
       <h1>Create an Account</h1>
-      <p>Already have an account? <router-link to="/login" style="color: orange; text-decoration: underline;">Login</router-link></p>
+      <p>Already have an account? <router-link to="/login" style="color: #FF825C; text-decoration: underline;">Login</router-link></p>
       <div class="form-group">
         <label for="firstname">Firstname</label>
         <input
@@ -67,7 +67,7 @@
         {{ loading ? 'Registering...' : 'Register' }}
       </button>
       <p v-if="error" class="error-message">{{ error }}</p>
-      
+
     </form>
   </div>
 </template>
@@ -100,7 +100,7 @@ const handleRegister = async () => {
 
   loading.value = true
   error.value = ''
-  
+
   try {
     const success = await userStore.register(
       form.value.firstname,
@@ -128,14 +128,14 @@ const handleRegister = async () => {
   justify-content: start;
   align-items: center;
   min-height: calc(100vh - 100px);
-  background-image: url("@/assets/images/login_background.jpg");
+  background-image: url("@/assets/images/landing-bg.png");
   background-size: cover;
 }
 
 .register-form {
   background-color: white;
   padding: 3rem;
-  margin-left: 9rem;
+  margin: 2rem 9rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -176,18 +176,19 @@ label {
 .btn-primary {
   width: 100%;
   padding: 0.75rem;
-  background-color: rgba(255, 192, 127, 1);
-  color: white;
+  background-color: #FFC07F;
+  color: black;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
   margin-top: 1rem;
+  font-family: "Afacad", sans-serif;
 }
 
 .btn-primary:hover {
-  background-color: #34495e;
+  background-color: #FFD8B1;
 }
 
 .btn-primary:disabled {
@@ -215,4 +216,4 @@ label {
 .login-link a:hover {
   text-decoration: underline;
 }
-</style> 
+</style>

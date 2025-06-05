@@ -90,7 +90,6 @@ h2 span {
 }
 
 p {
-  font-family: 'Afacad', sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
   padding-block: 1rem;
@@ -136,7 +135,6 @@ p span {
 }
 
 .features h2 {
-  font-family: 'Afacad', sans-serif;
   font-size: 1.8rem;
   font-weight: bold;
   color: #1e1e1e;
@@ -145,7 +143,6 @@ p span {
 }
 
 .features p {
-  font-family: 'Afacad', sans-serif;
   font-size: 1.1rem;
   line-height: 1.6;
   color: #1e1e1e;
@@ -175,7 +172,6 @@ p span {
 .btn-primary, .btn-secondary {
   padding: 1rem 2.5rem;
   border-radius: 50px;
-  font-family: 'Afacad', sans-serif;
   font-size: 1.2rem;
   font-weight: bold;
   text-decoration: none;

@@ -95,7 +95,6 @@ onMounted(() => {
 
 <style scoped>
   .homepage {
-    font-family: "Afacad", sans-serif;
     background-color: #ffff;
     color: #1e1e1e;
     display: flex;
