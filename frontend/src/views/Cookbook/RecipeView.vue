@@ -37,6 +37,10 @@
           <p>No recipes have been saved yet.</p>
         </div>
 
+        <div v-if="filteredRecipes.length === 0" class="no-data">
+          <p>No favorite recipes yet.</p>
+        </div>
+
         <div v-else v-for="recipe in filteredRecipes" :key="recipe.title" class="recipe-card">
           <div class="card-header">
             <h3>{{ recipe.title }}</h3>
@@ -189,6 +193,10 @@ const filteredRecipes = computed(() => {
   font-size: 2rem;
   font-weight: bold;
   color: #333;
+}
+
+.no-data p{
+  font-size:large;
 }
 
 .controls {
