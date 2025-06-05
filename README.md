@@ -31,7 +31,7 @@ Never lose a great recipe to cluttered notes or screenshots again.
 
 ---
 
-🎥 **Demo Video:** _[Insert video link here]_
+🎥 **Demo Video:** https://www.youtube.com/watch?v=zbVufJLeiPQ
 
 🔗 **Explore Yes, Chef:** https://yes-chef-lovat.vercel.app
 
