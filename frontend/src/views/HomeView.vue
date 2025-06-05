@@ -38,10 +38,13 @@ onMounted(() => {
           <router-link to="/recipe-generator" class="btn btn-primary">Generate Recipes</router-link>
         </div>
       </div>
-      <div class="image-wrapper">
-        <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
+      <div class="padding-right">
+        <div class="image-wrapper">
+          <img src="@/assets/images/plate.png" alt="Plate" class="ai-image">
+        </div>
+        <div class="brown-background"></div>
       </div>
-      <div class="orange-background"></div>
+
     </section>
 
     <section class="cookbook">
@@ -95,7 +98,6 @@ onMounted(() => {
 
 <style scoped>
   .homepage {
-    font-family: "Afacad", sans-serif;
     background-color: #ffff;
     color: #1e1e1e;
     display: flex;
@@ -130,14 +132,8 @@ onMounted(() => {
     align-items: start;
     gap: 2rem;
     width: 100%;
-    max-width: 600px;
+    /* max-width: 600px; */
     z-index: 2;
-  }
-
-  h1 {
-    font-family: "Aclonica", sans-serif;
-    font-size: 2.5rem;
-    line-height: 1.2;
   }
 
   .image-wrapper {
@@ -148,7 +144,7 @@ onMounted(() => {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: #FFD8B1;
+    background: #D2B48C;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -160,8 +156,8 @@ onMounted(() => {
     border-radius: 50%;
   }
 
-  .orange-background {
-    background-color: #FFD8B1;
+  .brown-background {
+    background-color: #D2B48C;
     position: absolute;
     top: 0;
     right: 0;
@@ -170,7 +166,7 @@ onMounted(() => {
   }
 
   .cookbook {
-    background-color: #FFD8B1;
+    background-color: #D2B48C;
   }
 
   .cookbook h2 {
@@ -179,7 +175,7 @@ onMounted(() => {
   }
 
   .cookbook .highlight {
-    color: #a86e2d;
+    color: #7f4d14;
     font-weight: 500;
   }
 

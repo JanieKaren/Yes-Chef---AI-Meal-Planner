@@ -54,6 +54,7 @@ body {
     background-color 0.5s;
   line-height: 1.6;
   font-family:
+    'Afacad',
     Inter,
     -apple-system,
     BlinkMacSystemFont,
@@ -71,9 +72,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-h1{
-  font-weight: bold;
-}
+
+  h1 {
+    font-family: "Aclonica", sans-serif;
+    font-size: 2.5rem;
+    line-height: 1.2;
+    font-weight: bold;
+    color: #1e1e1e;
+  }
+
+ h2 {
+    font-family: "Afacad", sans-serif;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #1e1e1e;
+  }
 
 /* Button Styles */
 .btn, .btn-primary, .btn-secondary  {
@@ -91,13 +104,13 @@ h1{
 }
 
 .btn-primary {
-  background-color: #FFC07F;
+  background-color: #497817;
   color: white;
   border-radius: 100px;
 }
 
 .btn-primary:hover {
-  background-color: #f3a150;
+  background-color: #73BC24;
 }
 
 .btn-primary:disabled {
