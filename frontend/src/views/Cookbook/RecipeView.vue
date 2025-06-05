@@ -25,8 +25,6 @@
           <option>All</option>
           <option>Favorites</option>
         </select>
-
-        <button class="btn-filter">Filter</button>
       </div>
 
       <div v-if="loading" class="loading">Loading…</div>
@@ -212,20 +210,14 @@ const filteredRecipes = computed(() => {
   border-radius: 20px;
   border: 1px solid #ccc;
   flex-grow: 1;
+  font-family: inherit;
 }
 
 .dropdown {
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-}
-
-.btn-filter {
-  background-color: #cbe5c9;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
+  font-family: inherit;
 }
 
 .card-grid {
@@ -391,5 +383,62 @@ const filteredRecipes = computed(() => {
   justify-content: flex-end;
   align-items: center;
   padding-top: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .recipe-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .recipe-card {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+  .page-title {
+    font-size: 1.3rem;
+  }
+  .fridge-header {
+    height: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.5rem;
+  }
+  .recipe-card {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  .fridge-header {
+    height: 60px;
+  }
 }
 </style>
