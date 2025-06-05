@@ -147,6 +147,7 @@ The backend exposes RESTful endpoints for:
   - UI/UX for sign up, login, and profile
  
 - **Development:**
+  - Login and Sign up page
   - Display user info, dietary preference, allergies
   - Display saved recipes
   - Save, Favorite, Delete Recipes
