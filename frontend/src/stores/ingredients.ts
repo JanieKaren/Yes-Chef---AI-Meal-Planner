@@ -1,11 +1,5 @@
 import { defineStore } from 'pinia'
 import { apiClient } from '@/api'
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: 'https://yes-chef-uj7s.onrender.com/api/',
-  withCredentials: true
-});
 
 interface Ingredient {
   id: number
@@ -51,7 +45,7 @@ export const useIngredientsStore = defineStore('ingredients', {
         })
         
         console.log('Store: Making API request with params:', params.toString())
-        const response = await api.get(`/ingredients/?${params.toString()}`)
+        const response = await apiClient.get(`/ingredients/?${params.toString()}`)
         console.log('Store: API response:', response.data)
         
         this.ingredients = response.data.results
@@ -70,7 +64,7 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async addIngredient(ingredient: Omit<Ingredient, 'id'>) {
       try {
-        const response = await api.post('/ingredients/', ingredient)
+        const response = await apiClient.post('/ingredients/', ingredient)
         this.ingredients.push(response.data)
         return true
       } catch (error) {
@@ -81,7 +75,7 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async updateIngredient(id: number, ingredient: Partial<Ingredient>) {
       try {
-        const response = await api.patch(`/ingredients/${id}/`, ingredient)
+        const response = await apiClient.patch(`/ingredients/${id}/`, ingredient)
         const index = this.ingredients.findIndex(i => i.id === id)
         if (index !== -1) {
           this.ingredients[index] = response.data
@@ -95,7 +89,7 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async deleteIngredient(id: number) {
       try {
-        await api.delete(`/ingredients/${id}/`)
+        await apiClient.delete(`/ingredients/${id}/`)
         this.ingredients = this.ingredients.filter(i => i.id !== id)
         return true
       } catch (error) {
