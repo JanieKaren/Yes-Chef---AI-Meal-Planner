@@ -17,7 +17,7 @@ const fetchIngredients = async () => {
         condition: 'good' // Only show non-expired items
       }
     })
-    ingredients.value = response.data.results.slice(0, 5) // Get only first 5 items
+    
   } catch (error) {
     console.error('Error fetching ingredients:', error)
   } finally {
