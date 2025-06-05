@@ -180,13 +180,11 @@ async function saveChanges() {
 }
 
 .profile-container{
-  
   padding: 20px;
   border-radius: 8px;
-  /* background-color: rgb(247, 238, 221); */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-image: url("@/assets/images/notepad.png");
   background-size: cover;
+  min-width: 800px;
 }
 
 .information {
