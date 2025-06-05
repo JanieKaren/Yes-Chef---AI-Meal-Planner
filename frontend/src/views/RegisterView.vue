@@ -110,7 +110,7 @@ const handleRegister = async () => {
       form.value.password
     )
     if (success) {
-      router.push('/ingredients')
+      router.push('/home')
     } else {
       error.value = 'Registration failed'
     }
