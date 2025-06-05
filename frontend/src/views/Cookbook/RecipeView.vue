@@ -266,6 +266,7 @@ const deleteRecipe = async (id: number) => {
   border-radius: 20px;
   border: 1px solid #ccc;
   flex-grow: 1;
+  font-family: inherit;
 }
 
 .dropdown {
@@ -300,6 +301,7 @@ const deleteRecipe = async (id: number) => {
 
 .btn-clear:hover {
   background-color: #5a6268;
+  font-family: inherit;
 }
 
 .card-grid {
@@ -496,5 +498,62 @@ const deleteRecipe = async (id: number) => {
 .page-info {
   font-size: 0.9rem;
   color: #666;
+
+}
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .recipe-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .recipe-card {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+  .page-title {
+    font-size: 1.3rem;
+  }
+  .fridge-header {
+    height: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.5rem;
+  }
+  .recipe-card {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  .fridge-header {
+    height: 60px;
+  }
 }
 </style>

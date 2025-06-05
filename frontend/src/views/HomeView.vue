@@ -62,7 +62,7 @@ onMounted(() => {
       <div class="section-content">
         <h2><strong>Your</strong> <span class="highlight">Cookbook</span></h2>
         <p>Your latest saved recipes</p>
-        <div class="recipes-dashboard"> 
+        <div class="recipes-dashboard">
           <div class="recipes-grid">
             <div v-if="recipesLoading" class="loading">Loading recipes...</div>
             <div v-else-if="recipes.length === 0" class="no-items">
@@ -107,7 +107,7 @@ onMounted(() => {
         <div class="fridge-dashboard">
           <div class="fridge-header">
             <h3>Recent Ingredients</h3>
-            <span class="ingredient-count">{{ ingredients.length }} items</span>
+            <span class="ingredient-count">{{ ingredients.length }} item/s</span>
           </div>
           <div class="fridge-items">
             <div v-if="loading" class="loading">Loading ingredients...</div>
@@ -172,7 +172,6 @@ onMounted(() => {
     align-items: start;
     gap: 2rem;
     width: 100%;
-    /* max-width: 600px; */
     z-index: 2;
   }
 
@@ -209,8 +208,6 @@ onMounted(() => {
     background-color: #D2B48C;
   }
 
-  
-
   .cookbook .highlight {
     color: #7f4d14;
     font-weight: 600;
@@ -234,8 +231,6 @@ onMounted(() => {
   .fridge-section {
     background: white;
   }
-
-
 
   .fridge-section .highlight {
     color: #ffb87d;
@@ -490,8 +485,8 @@ onMounted(() => {
     overflow: hidden;
   }
 
-  p{
-    font-size: 2rem;
+  p {
+    font-size: 1.5rem;
   }
 
   h2{
@@ -500,5 +495,105 @@ onMounted(() => {
 
   .fridge-section p, .cookbook p{
     font-size: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    section {
+      padding: 1rem;
+    }
+    .ai-generator-section {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+    }
+    .image-wrapper {
+      position: static;
+      transform: none;
+      width: 350px;
+      height: 350px;
+      margin: 2rem auto 0 auto;
+    }
+    .brown-background {
+      display: none;
+    }
+    .section-content {
+      max-width: 98vw;
+    }
+    .recipes-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .fridge-dashboard, .recipes-dashboard {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .ai-generator-section {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1rem 0.5rem;
+    }
+    .ai-generator-content {
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .image-wrapper {
+      width: 220px;
+      height: 220px;
+      margin: 1rem auto 0 auto;
+    }
+    .section-content {
+      padding: 0 0.5rem;
+    }
+    .recipes-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .recipe-card {
+      min-width: 0;
+      padding: 0.5rem;
+    }
+    .fridge-dashboard, .recipes-dashboard {
+      padding: 1rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+    }
+    p, .fridge-section p, .cookbook p {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    section {
+      padding: 0.5rem;
+      min-height: unset;
+    }
+    .ai-generator-section {
+      padding: 0.5rem 0;
+    }
+    .image-wrapper {
+      width: 120px;
+      height: 120px;
+    }
+    .fridge-dashboard, .recipes-dashboard {
+      padding: 0.25rem;
+      margin-top: 1rem;
+    }
+    .recipe-content {
+      flex-direction: column;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+    .recipe-title {
+      font-size: 1rem;
+    }
+    h2 {
+      font-size: 1.1rem;
+    }
+    p, .fridge-section p, .cookbook p {
+      font-size: 0.9rem;
+    }
   }
 </style>

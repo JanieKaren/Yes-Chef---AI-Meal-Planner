@@ -2,8 +2,8 @@
 <template>
   <div class="recipe-generator">
     <div class="recipe-generator__container">
-      <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
-        <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
+      <div class="recipe-generator__header">
+        <img :src="aiLogo" alt="AI Logo" class="ai-logo" />
         <h1 class="page-title">AI Recipe Generator</h1>
       </div>
       <p class="recipe-generator__instructions">
@@ -248,7 +248,7 @@ onMounted(() => {
   if (userStore.account) {
     // Add user's dietary preferences to the form
     form.diets = [...userStore.account.dietary_preferences]
-    
+
     // Add user's allergies to the notes if any
     if (userStore.account.allergies && userStore.account.allergies.length > 0) {
       form.notes = `Allergies: ${userStore.account.allergies.join(', ')}`
@@ -432,6 +432,20 @@ Return exactly:
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.recipe-generator__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.ai-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
 .recipe-generator__title {
   font-size: 2.5rem;
   color: #2c3e50;
@@ -521,31 +535,6 @@ Return exactly:
   text-align: center;
   margin-top: 2rem;
 }
-
-/* .btn {
-  padding: 0.875rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-} */
-
-/* .btn-primary {
-  background: #4CAF50;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #43A047;
-  transform: translateY(-1px);
-}
-
-.btn-primary:disabled {
-  background: #9E9E9E;
-  cursor: not-allowed;
-} */
 
 .loading {
   display: flex;
@@ -674,20 +663,5 @@ Return exactly:
   font-style: italic;
   text-align: center;
   padding: 1rem;
-}
-
-.btn-secondary {
-  padding: 0.5rem 1rem;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: background-color 0.3s;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
 }
 </style>

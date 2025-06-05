@@ -4,14 +4,14 @@
   <div class="ingredients-container">
     <div class="ingredients-header">
       <h1>My Fridge</h1>
-      
+
       <router-link :to="{ name: 'new-ingredient' }" class="btn-primary">Add Ingredient</router-link>
     </div>
     <div class="search-form">
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="Search ingredients..." 
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search ingredients..."
           class="search-input"
         >
         <select v-model="selectedCategory" class="category-select">
@@ -80,7 +80,7 @@
     </div>
   </div>
   <div class="pagination-controls" v-if="ingredientsStore.totalPages > 1">
-    <button 
+    <button
       @click="updatePage(ingredientsStore.currentPage - 1)"
       :disabled="!ingredientsStore.previousPage"
       class="btn-page"
@@ -88,7 +88,7 @@
       Previous
     </button>
     <span class="page-info">Page {{ ingredientsStore.currentPage }} of {{ ingredientsStore.totalPages }}</span>
-    <button 
+    <button
       @click="updatePage(ingredientsStore.currentPage + 1)"
       :disabled="!ingredientsStore.nextPage"
       class="btn-page"
@@ -146,17 +146,17 @@ const updatePage = async (page: number) => {
 }
 
 const handleSearch = async () => {
-  console.log('Search triggered with:', { 
-    searchQuery: searchQuery.value, 
+  console.log('Search triggered with:', {
+    searchQuery: searchQuery.value,
     category: selectedCategory.value,
-    condition: selectedCondition.value 
+    condition: selectedCondition.value
   })
   const queryParams: Record<string, string> = {}
   if (searchQuery.value) queryParams.search = searchQuery.value
   if (selectedCategory.value) queryParams.category = selectedCategory.value
   if (selectedCondition.value) queryParams.condition = selectedCondition.value
   queryParams.page = '1' // Reset to first page on new search
-  
+
   console.log('Pushing route with params:', queryParams)
   await router.push({ query: queryParams })
   console.log('Fetching ingredients with params:', queryParams)
@@ -209,7 +209,7 @@ const getConditionText = (expirationDate: string) => {
   const today = new Date()
   const expDate = new Date(expirationDate)
   const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  
+
   if (daysUntilExpiration < 0) return 'Expired'
   if (daysUntilExpiration <= 3) return 'Expiring Soon'
   if (daysUntilExpiration <= 7) return 'Expiring This Week'
@@ -220,7 +220,7 @@ const getConditionClass = (expirationDate: string) => {
   const today = new Date()
   const expDate = new Date(expirationDate)
   const daysUntilExpiration = Math.ceil((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  
+
   if (daysUntilExpiration < 0) return 'condition-expired'
   if (daysUntilExpiration <= 3) return 'condition-warning'
   if (daysUntilExpiration <= 7) return 'condition-caution'
@@ -356,7 +356,7 @@ const getConditionClass = (expirationDate: string) => {
 
 .condition-warning {
   color: #fd7e14;
-  
+
   font-weight: bold;
 }
 
@@ -420,69 +420,67 @@ const getConditionClass = (expirationDate: string) => {
 
 .search-form {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: center;
-  flex: 1;
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
   margin-bottom: 2rem;
 }
 
 .search-input {
-  padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  flex: 1;
-  max-width: 300px;
-  transition: all 0.3s ease;
-  background-color: #f8f9fa;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  flex: 2;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .category-select,
 .condition-select {
-  padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  min-width: 150px;
-  background-color: #f8f9fa;
-  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  min-width: 140px;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .search-form button {
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
   font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  margin-left: 0.25rem;
 }
 
 .search-form .btn-primary {
-  background-color: #E1F5CB;
+  background: #E1F5CB;
   color: #2c3e50;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .search-form .btn-secondary {
   color: #2c3e50;
   border: 1px solid #2c3e50;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .search-form .btn-primary:hover {
-  background-color: #d4e9bc;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #d4e9bc;
+  color: #222;
 }
 
 .search-form .btn-secondary:hover {
+  background: #E1F5CB;
+  border-color: #E1F5CB;
   color: #2c3e50;
-  background-color: #E1F5CB;
-  border: 1px solid #E1F5CB;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-input:focus,
@@ -490,7 +488,76 @@ const getConditionClass = (expirationDate: string) => {
 .condition-select:focus {
   outline: none;
   border-color: #FFC07F;
-  box-shadow: 0 0 0 3px rgba(255, 192, 127, 0.2);
-  background-color: white;
+  box-shadow: 0 0 0 2px rgba(255,192,127,0.15);
+  background: #fff;
 }
-</style> 
+
+@media (max-width: 1024px) {
+  .ingredients-container {
+    padding: 0.5rem 1rem;
+  }
+  .search-form {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ingredients-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .ingredients-container {
+    padding: 0.5rem 0.5rem;
+  }
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem 0.5rem;
+  }
+  .search-input,
+  .category-select,
+  .condition-select {
+    min-width: 0;
+    width: 100%;
+  }
+  .search-form button {
+    width: 100%;
+    margin-left: 0;
+  }
+  .ingredients-table th,
+  .ingredients-table td {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .fridge-header {
+    height: 12vh;
+    background-size: cover;
+  }
+  .ingredients-header h1 {
+    font-size: 1.3rem;
+  }
+  .ingredients-table-container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .ingredients-table th,
+  .ingredients-table td {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
+  .pagination-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .btn-page {
+    width: 100%;
+  }
+}
+</style>
