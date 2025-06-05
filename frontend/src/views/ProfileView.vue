@@ -234,14 +234,14 @@ const saveAllergies = async () => {
 <style scoped>
 .background-container {
  padding: 2rem 1rem;
- background-color: #fdfaf6;
+ background-color: rgb(209, 245, 179);
  min-height: calc(100vh - 100px);
  display: flex;
  flex-direction: column;
  align-items: center;
- background-image: url("@/assets/images/profile_background.jpg");
- background-size: contain;
- background-position: top left;
+ background-image: url("@/assets/images/profile_background.png");
+ background-size: cover;
+ /* background-position: top left; */
  
 }
 
