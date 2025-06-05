@@ -119,7 +119,7 @@ label {
   width: 100%;
   padding: 0.75rem;
   background-color: #FFC07F;
-  color: black;
+  color: #5e4a0d;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -134,7 +134,7 @@ label {
 }
 
 .btn-primary:disabled {
-  background-color: #95a5a6;
+  background-color: #e2d1bf;
   cursor: not-allowed;
 }
 
