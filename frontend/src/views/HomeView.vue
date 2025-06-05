@@ -3,7 +3,6 @@ import { useUserStore } from '../stores/user'
 import { ref, onMounted, computed } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRecipesStore } from '@/stores/recipe'
-import axios from 'axios'
 
 const userStore = useUserStore()
 const ingredientsStore = useIngredientsStore()
