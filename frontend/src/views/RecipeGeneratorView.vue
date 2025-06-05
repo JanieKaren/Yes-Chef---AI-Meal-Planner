@@ -2,8 +2,8 @@
 <template>
   <div class="recipe-generator">
     <div class="recipe-generator__container">
-      <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
-        <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
+      <div class="recipe-generator__header">
+        <img :src="aiLogo" alt="AI Logo" class="ai-logo" />
         <h1 class="page-title">AI Recipe Generator</h1>
       </div>
       <p class="recipe-generator__instructions">
@@ -430,6 +430,20 @@ Return exactly:
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-generator__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.ai-logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 .recipe-generator__title {

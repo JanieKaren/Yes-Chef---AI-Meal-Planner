@@ -107,7 +107,7 @@ onMounted(() => {
         <div class="fridge-dashboard">
           <div class="fridge-header">
             <h3>Recent Ingredients</h3>
-            <span class="ingredient-count">{{ ingredients.length }} items</span>
+            <span class="ingredient-count">{{ ingredients.length }} item/s</span>
           </div>
           <div class="fridge-items">
             <div v-if="loading" class="loading">Loading ingredients...</div>
