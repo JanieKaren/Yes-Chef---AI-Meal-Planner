@@ -5,9 +5,8 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: 'https://yes-chef-uj7s.onrender.com/api/',
+  withCredentials: true
 });
-
-api.get('auth/user/');
 
 
 interface User {

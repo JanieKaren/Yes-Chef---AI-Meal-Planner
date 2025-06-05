@@ -145,6 +145,7 @@ CORS_ALLOWED_ORIGINS = [
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
+    "yes-chef-lovat.vercel.app",
 ]
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie
