@@ -244,7 +244,10 @@ const toggleDiet = (diet: string) => {
 }
 
 // Initialize user preferences
-onMounted(() => {
+onMounted(async () => {
+  // Fetch all non-expired ingredients
+  await ingredientsStore.fetchIngredients(1)
+  
   if (userStore.account) {
     // Add user's dietary preferences to the form
     form.diets = [...userStore.account.dietary_preferences]
