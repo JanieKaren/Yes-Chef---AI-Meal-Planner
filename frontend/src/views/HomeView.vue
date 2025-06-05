@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useUserStore } from '../stores/user'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useIngredientsStore } from '@/stores/ingredients'
 import axios from 'axios'
 
 const userStore = useUserStore()
-const ingredients = ref([])
+const ingredientsStore = useIngredientsStore()
+const ingredients = computed(() => ingredientsStore.ingredients)
 const loading = ref(true)
 
 const fetchIngredients = async () => {
