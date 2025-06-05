@@ -38,6 +38,8 @@ export const useUserStore = defineStore('user', {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
+          // Store authentication state
+          localStorage.setItem('isAuthenticated', 'true')
         }
       } catch (error) {
         console.error('Login failed:', error)
@@ -52,6 +54,8 @@ export const useUserStore = defineStore('user', {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
+          // Store authentication state
+          localStorage.setItem('isAuthenticated', 'true')
           return true
         }
         return false
@@ -67,6 +71,8 @@ export const useUserStore = defineStore('user', {
         this.user = null
         this.account = null
         this.isAuthenticated = false
+        // Clear authentication state
+        localStorage.removeItem('isAuthenticated')
       } catch (error) {
         console.error('Logout failed:', error)
         throw error
@@ -80,12 +86,21 @@ export const useUserStore = defineStore('user', {
           this.user = response.data.user
           this.account = response.data.account
           this.isAuthenticated = true
+          // Store authentication state
+          localStorage.setItem('isAuthenticated', 'true')
+        } else {
+          this.clearAuth()
         }
       } catch (error) {
-        this.user = null
-        this.account = null
-        this.isAuthenticated = false
+        this.clearAuth()
       }
+    },
+
+    clearAuth() {
+      this.user = null
+      this.account = null
+      this.isAuthenticated = false
+      localStorage.removeItem('isAuthenticated')
     },
 
     async updateDietaryPreferences(preferences: string[]) {

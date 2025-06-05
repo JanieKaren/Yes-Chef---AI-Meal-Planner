@@ -24,7 +24,9 @@ apiClient.interceptors.request.use(
       config.headers['X-CSRFToken'] = csrfToken
     }
 
-    // Add any other headers or modifications here
+    // Ensure credentials are included
+    config.withCredentials = true
+
     return config
   },
   (error) => {
@@ -34,7 +36,14 @@ apiClient.interceptors.request.use(
 
 // Add response interceptors
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Store CSRF token if it's in the response headers
+    const csrfToken = response.headers['x-csrftoken']
+    if (csrfToken) {
+      document.cookie = `csrftoken=${csrfToken}; path=/; SameSite=None; Secure`
+    }
+    return response
+  },
   (error) => {
     // Handle errors globally
     if (error.response) {
@@ -47,6 +56,11 @@ apiClient.interceptors.response.use(
         case 403:
           // Handle forbidden access
           console.error('Forbidden access. Please check your permissions.')
+          // Try to refresh CSRF token
+          const csrfToken = error.response.headers['x-csrftoken']
+          if (csrfToken) {
+            document.cookie = `csrftoken=${csrfToken}; path=/; SameSite=None; Secure`
+          }
           break
         case 404:
           // Handle not found errors
