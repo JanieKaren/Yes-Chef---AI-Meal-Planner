@@ -145,6 +145,7 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import { apiClient } from '@/services/api'
 
 const router = useRouter()
 const ingredientsStore = useIngredientsStore()
@@ -350,27 +351,16 @@ Return exactly:
 ]
 `.trim()
 
-
   try {
-    const DJANGO_BACKEND_URL = 'http://localhost:8000'
-    const res = await fetch(`${DJANGO_BACKEND_URL}/api/recipes/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
-        prompt: promptText,
-        max_tokens: 600,
-        temperature: 0.7,
-        top_p: 0.9
-      })
+    const response = await apiClient.post('/recipes/', {
+      model: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+      prompt: promptText,
+      max_tokens: 600,
+      temperature: 0.7,
+      top_p: 0.9
     })
 
-    if (!res.ok) {
-      const errText = await res.text()
-      throw new Error(`API Error ${res.status}: ${errText}`)
-    }
-
-    const data = await res.json()
+    const data = response.data
     const rawText: string = data.choices?.[0]?.text ?? data.result
     if (!rawText) {
       throw new Error('No response from Llama.')
@@ -396,23 +386,16 @@ Return exactly:
       ) {
         throw new Error(`Recipe #${idx + 1} is missing required fields.`)
       }
-
-      item.ingredients.forEach((ing: any, ingIdx: number) => {
-        if (typeof ing.name !== 'string' || typeof ing.quantity !== 'string') {
-          throw new Error(`Recipe #${idx + 1}, ingredient #${ingIdx + 1} has invalid format.`)
-        }
-
-        if (/[0-9]/.test(ing.name) || /[^a-zA-Z\s-]/.test(ing.name)) {
-          throw new Error(`Recipe #${idx + 1} contains invalid ingredient name: "${ing.name}". Ingredients must be real food items.`)
-        }
-      })
     })
 
+    // Store the recipes in localStorage
     localStorage.setItem('generatedRecipes', JSON.stringify(parsed))
-    router.push({ name: 'generated-recipes' })
-  } catch (err: any) {
-    console.error(err)
-    errorMessage.value = err.message || 'Unknown generation error'
+    
+    // Navigate to the generated recipes page
+    router.push('/generated-recipes')
+  } catch (error) {
+    console.error('Error generating recipes:', error)
+    errorMessage.value = error instanceof Error ? error.message : 'Failed to generate recipes. Please try again.'
   } finally {
     loading.value = false
   }
