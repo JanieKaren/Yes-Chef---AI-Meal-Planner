@@ -570,8 +570,8 @@ onMounted(() => {
       padding: 0.5rem;
       min-height: unset;
     }
-    .ai-generator-section {
-      padding: 1rem 0;
+    .ai-generator-section, .cookbook, .fridge-section {
+      padding: 2rem 0;
       align-items: center;
       text-align: center;
     }
@@ -590,7 +590,7 @@ onMounted(() => {
       height: 120px;
     }
     .fridge-dashboard, .recipes-dashboard {
-      padding: 0.25rem;
+      padding: 1rem;
       margin-top: 1rem;
     }
     .recipe-content {
