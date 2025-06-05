@@ -47,7 +47,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     // Store CSRF token from response headers if present
-    const csrfToken = response.headers['x-csrftoken']
+    const csrfToken = response.headers['x-csrftoken'] || response.data?.csrfToken
     if (csrfToken) {
       document.cookie = `csrftoken=${csrfToken}; path=/; secure; samesite=none`
     }
@@ -66,7 +66,15 @@ apiClient.interceptors.response.use(
         console.error('Forbidden access. Please check your permissions.')
         // Try to refresh CSRF token
         try {
-          await apiClient.get('/auth/csrf/')
+          const response = await apiClient.get('/auth/csrf/')
+          const csrfToken = response.data?.csrfToken
+          if (csrfToken) {
+            document.cookie = `csrftoken=${csrfToken}; path=/; secure; samesite=none`
+            // Retry the original request
+            const config = error.config
+            config.headers['X-CSRFToken'] = csrfToken
+            return apiClient(config)
+          }
         } catch (refreshError) {
           console.error('Failed to refresh CSRF token:', refreshError)
         }

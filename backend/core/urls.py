@@ -14,6 +14,7 @@ urlpatterns = [
     path('auth/login/', views.login_view, name='login'),
     path('auth/logout/', views.logout_view, name='logout'),
     path('auth/user/', views.user_view, name='user'),
+    path('auth/csrf/', views.csrf_token, name='csrf-token'),
     path('ingredients/', views.ingredient_list, name='ingredient-list'),
     path('ingredients/<int:pk>/', views.ingredient_detail, name='ingredient-detail'),
     path('save-recipe/', views.recipe, name='save-recipe'),

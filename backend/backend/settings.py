@@ -140,6 +140,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
     "https://yes-chef-lovat.vercel.app",
+    "https://yes-chef-uj7s.onrender.com",
 ]
 
 # Additional CORS settings
@@ -170,6 +171,7 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
     "https://yes-chef-lovat.vercel.app",
+    "https://yes-chef-uj7s.onrender.com",
 ]
 CSRF_COOKIE_SAMESITE = 'None'  # Required for cross-origin requests
 CSRF_COOKIE_SECURE = True  # Required when SameSite is None

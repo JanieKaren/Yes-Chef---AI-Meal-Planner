@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from rest_framework.pagination import PageNumberPagination
 from django.utils import timezone
 from datetime import timedelta
+from django.middleware.csrf import get_token
 
 # Create your views here.
 
@@ -301,3 +302,12 @@ def recipe_detail(request, pk):
     elif request.method == 'DELETE':
         recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def csrf_token(request):
+    """
+    Get CSRF token for the current session.
+    """
+    token = get_token(request)
+    return Response({'csrfToken': token})

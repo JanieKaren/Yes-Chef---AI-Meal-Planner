@@ -64,6 +64,8 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async addIngredient(ingredient: Omit<Ingredient, 'id'>) {
       try {
+        // Get CSRF token before making the request
+        await apiClient.get('/auth/csrf/')
         const response = await apiClient.post('/ingredients/', ingredient)
         this.ingredients.push(response.data)
         return true
@@ -75,6 +77,8 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async updateIngredient(id: number, ingredient: Partial<Ingredient>) {
       try {
+        // Get CSRF token before making the request
+        await apiClient.get('/auth/csrf/')
         const response = await apiClient.patch(`/ingredients/${id}/`, ingredient)
         const index = this.ingredients.findIndex(i => i.id === id)
         if (index !== -1) {
@@ -89,6 +93,8 @@ export const useIngredientsStore = defineStore('ingredients', {
 
     async deleteIngredient(id: number) {
       try {
+        // Get CSRF token before making the request
+        await apiClient.get('/auth/csrf/')
         await apiClient.delete(`/ingredients/${id}/`)
         this.ingredients = this.ingredients.filter(i => i.id !== id)
         return true
