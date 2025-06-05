@@ -139,13 +139,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
-    "yes-chef-lovat.vercel.app",
+    "https://yes-chef-lovat.vercel.app",
 ]
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
-    "yes-chef-lovat.vercel.app",
+    "https://yes-chef-lovat.vercel.app",
 ]
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie

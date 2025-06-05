@@ -1,13 +1,5 @@
 import { defineStore } from 'pinia'
 import { apiClient } from '@/api' // Import the configured apiClient instance
-import axios from 'axios'
-
-
-const api = axios.create({
-  baseURL: 'https://yes-chef-uj7s.onrender.com/api/',
-  withCredentials: true
-});
-
 
 interface User {
   id: number
@@ -41,7 +33,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     async login(username: string, password: string) {
       try {
-        const response = await api.post('/auth/login/', { username, password })
+        const response = await apiClient.post('/auth/login/', { username, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
@@ -55,7 +47,7 @@ export const useUserStore = defineStore('user', {
 
     async register(firstname: string, lastname: string, username: string, email: string, password: string): Promise<boolean> {
       try {
-        const response = await api.post('/auth/register/', { firstname,lastname,username, email, password })
+        const response = await apiClient.post('/auth/register/', { firstname, lastname, username, email, password })
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
@@ -69,10 +61,9 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-
     async logout() {
       try {
-        await api.post('/auth/logout/')
+        await apiClient.post('/auth/logout/')
         this.user = null
         this.account = null
         this.isAuthenticated = false
@@ -84,7 +75,7 @@ export const useUserStore = defineStore('user', {
 
     async checkAuth() {
       try {
-        const response = await api.get('/auth/user/')
+        const response = await apiClient.get('/auth/user/')
         if (response.data.user && response.data.account) {
           this.user = response.data.user
           this.account = response.data.account
@@ -100,7 +91,7 @@ export const useUserStore = defineStore('user', {
     async updateDietaryPreferences(preferences: string[]) {
       if (!this.account) return false;
       try {
-        const response = await api.post(`/accounts/${this.account.id}/update_dietary_preferences/`, {
+        const response = await apiClient.post(`/accounts/${this.account.id}/update_dietary_preferences/`, {
           dietary_preferences: preferences
         })
         this.account = response.data
@@ -114,7 +105,7 @@ export const useUserStore = defineStore('user', {
     async updateAllergies(allergies_list: string[]) {
       if (!this.account) return false;
       try {
-        const response = await api.post(`/accounts/${this.account.id}/update_allergies/`, {
+        const response = await apiClient.post(`/accounts/${this.account.id}/update_allergies/`, {
           allergies: allergies_list
         })
         return true
@@ -124,11 +115,10 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-
     async updateFridgeInventory(inventory: string[]) {
       if (!this.account) return false;
       try {
-        const response = await api.post(`/accounts/${this.account.id}/update_fridge_inventory/`, {
+        const response = await apiClient.post(`/accounts/${this.account.id}/update_fridge_inventory/`, {
           fridge_inventory: inventory
         })
         this.account = response.data
@@ -142,7 +132,7 @@ export const useUserStore = defineStore('user', {
     async updateUserInfo(updatedInfo: Partial<User>) {
       if (!this.user) return null
       try {
-        const response = await api.put(`/users/${this.user.id}/`, updatedInfo)
+        const response = await apiClient.put(`/users/${this.user.id}/`, updatedInfo)
         this.user = response.data
         return this.user
       } catch (error) {
@@ -150,6 +140,5 @@ export const useUserStore = defineStore('user', {
         throw error
       }
     }
-
   }
 }) 

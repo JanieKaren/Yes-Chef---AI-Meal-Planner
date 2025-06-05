@@ -130,12 +130,13 @@ const handleRegister = async () => {
   min-height: calc(100vh - 100px);
   background-image: url("@/assets/images/landing-bg.png");
   background-size: cover;
+  padding: 1rem;
 }
 
 .register-form {
   background-color: white;
-  padding: 3rem;
-  margin: 2rem 9rem;
+  padding: 2rem;
+  margin: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -215,5 +216,40 @@ label {
 
 .login-link a:hover {
   text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .register-container {
+    justify-content: center;
+  }
+  
+  .register-form {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .register-form {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-control {
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .form-group {
+    margin-bottom: 0.3rem;
+  }
 }
 </style>
