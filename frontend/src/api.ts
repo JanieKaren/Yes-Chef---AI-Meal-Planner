@@ -7,15 +7,24 @@ export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    // Add any other default headers here
   },
-  withCredentials: true // If using cookies for authentication
+  withCredentials: true // Enable sending cookies with requests
 })
 
 // Add request interceptors
 apiClient.interceptors.request.use(
   (config) => {
-    // You can modify requests here (e.g., add auth tokens)
+    // Get CSRF token from cookie
+    const csrfToken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1]
+
+    if (csrfToken) {
+      config.headers['X-CSRFToken'] = csrfToken
+    }
+
+    // Add any other headers or modifications here
     return config
   },
   (error) => {
@@ -32,9 +41,16 @@ apiClient.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           // Handle unauthorized access
+          console.error('Unauthorized access. Please log in.')
+          // You might want to redirect to login page or clear user state
+          break
+        case 403:
+          // Handle forbidden access
+          console.error('Forbidden access. Please check your permissions.')
           break
         case 404:
           // Handle not found errors
+          console.error('Resource not found.')
           break
         // Add other cases as needed
       }
