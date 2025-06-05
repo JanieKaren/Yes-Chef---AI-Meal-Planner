@@ -6,7 +6,9 @@
     <div class="page-container">
       <div class="top-bar">
         <h1 class="page-title">Recipe Book</h1>
-        <button class="btn-generate">Generate Recipe</button>
+        <router-link to="/recipe-generator" class="btn-primary">
+          Generate a Recipe
+        </router-link>
       </div>
 
       <!-- Search and Filter Controls -->
@@ -27,9 +29,6 @@
       <div v-else class="card-grid">
         <div v-if="recipes.length === 0" class="no-data">
           <p>No recipes have been saved yet.</p>
-          <router-link to="/recipe-generator" class="btn-primary">
-            Generate a Recipe
-          </router-link>
         </div>
 
         <div v-else v-for="recipe in recipes" :key="recipe.title" class="recipe-card">
@@ -119,15 +118,6 @@ onMounted(() => {
   font-size: 2rem;
   font-weight: bold;
   color: #333;
-}
-
-.btn-generate {
-  background-color: #fcbf49;
-  border: none;
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .controls {
