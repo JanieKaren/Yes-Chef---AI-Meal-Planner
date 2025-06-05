@@ -45,8 +45,8 @@
           <div class="card-header">
             <h3>{{ recipe.title }}</h3>
             <div class="card-actions">
-              <button 
-                @click="toggleFavorite(recipe.id)" 
+              <button
+                @click="toggleFavorite(recipe.id)"
                 class="icon-button"
                 aria-label="Toggle favorite"
               >
@@ -64,29 +64,6 @@
                     stroke-linejoin="round"
                     stroke-width="1.5"
                     d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                  />
-                </svg>
-              </button>
-
-              <button 
-                @click="deleteRecipe(recipe.id)" 
-                class="icon-button"
-                aria-label="Delete recipe"  
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  stroke="#444"  
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="20"  
-                  height="20"
-                  class="trash-icon"  
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
                   />
                 </svg>
               </button>
@@ -112,7 +89,31 @@
             </ol>
           </div>
 
-         
+          <!-- Delete button at the bottom -->
+          <div class="card-bottom">
+            <button
+              @click="deleteRecipe(recipe.id)"
+              class="icon-button"
+              aria-label="Delete recipe"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="#444"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                class="trash-icon"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -324,7 +325,7 @@ const filteredRecipes = computed(() => {
   border: none;
   cursor: pointer;
   padding-left: 5px;
-  
+
 }
 
 .icon-button svg {
@@ -382,5 +383,13 @@ const filteredRecipes = computed(() => {
 .icon-button:active .trash-icon {
   stroke: #c1121f;  /* Darker red on click */
   transform: scale(0.95);
+}
+
+.card-bottom {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 0.5rem;
 }
 </style>
