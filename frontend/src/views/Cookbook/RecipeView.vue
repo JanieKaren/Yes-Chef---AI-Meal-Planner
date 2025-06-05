@@ -25,8 +25,8 @@
           <option value="Favorites">Favorites</option>
         </select>
 
-        <button class="btn-filter" @click="applyFilters">Search</button>
-        <button class="btn-clear" @click="clearFilters">Show All</button>
+        <button class="btn-primary" @click="applyFilters">Search</button>
+        <button class="btn-secondary" @click="clearFilters">Show All</button>
       </div>
 
       <div v-if="loading" class="loading">Loading…</div>
@@ -115,16 +115,16 @@
 
       <!-- Pagination Controls -->
       <div class="pagination" v-if="recipes.length > 0">
-        <button 
-          class="pagination-btn" 
+        <button
+          class="pagination-btn"
           :disabled="currentPage === 1"
           @click="changePage(currentPage - 1)"
         >
           Previous
         </button>
         <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button 
-          class="pagination-btn" 
+        <button
+          class="pagination-btn"
           :disabled="currentPage === totalPages"
           @click="changePage(currentPage + 1)"
         >
@@ -167,7 +167,7 @@ onMounted(() => {
 
 const updateURL = () => {
   const query: Record<string, string> = {}
-  
+
   if (currentPage.value > 1) query.page = currentPage.value.toString()
   if (searchQuery.value) query.search = searchQuery.value
   if (filterType.value === 'Favorites') query.favorite = 'true'
@@ -273,35 +273,41 @@ const deleteRecipe = async (id: number) => {
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-}
-
-.btn-filter {
-  background-color: #4CAF50;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-filter:hover {
-  background-color: #43A047;
-}
-
-.btn-clear {
-  background-color: #6c757d;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-clear:hover {
-  background-color: #5a6268;
   font-family: inherit;
+}
+
+.controls button {
+  border-radius: 12px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  margin-left: 0.25rem;
+}
+
+.controls .btn-primary {
+  background: #E1F5CB;
+  color: #2c3e50;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.controls .btn-primary:hover {
+  background: #d4e9bc;
+  color: #222;
+}
+
+.controls .btn-secondary {
+  color: #2c3e50;
+  border: 1px solid #2c3e50;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.controls .btn-secondary:hover {
+  background: #E1F5CB;
+  border-color: #E1F5CB;
+  color: #2c3e50;
 }
 
 .card-grid {
