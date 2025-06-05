@@ -33,28 +33,19 @@
 
         <div v-else v-for="recipe in recipes" :key="recipe.title" class="recipe-card">
           <div class="card-header">
-            <h3>{{ recipe.title }}</h3>
-            <div class="card-actions">
-              <button @click="toggleFavorite(recipe.id)" class="icon-button">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  :fill="recipe.favorite ? '#e63946' : 'none'"
-                  :stroke="recipe.favorite ? '#e63946' : '#444'"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 21C12 21 4 13.5 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 4.01 13.5 5.09C14.09 4.01 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 13.5 15 21 15 21H12Z"
-                  />
-                </svg>
+            <h3 class="title-with-fav">
+              {{ recipe.title }}
+              <button
+                @click="toggleFavorite(recipe.id)"
+                class="favorite-btn"
+                :aria-label="recipe.favorite ? 'Unfavorite' : 'Favorite'"
+              >
+                <i
+                  :class="['fa', recipe.favorite ? 'fa-heart' : 'fa-heart-o']"
+                  :style="{ color: recipe.favorite ? '#e63946' : '#444' }"
+                ></i>
               </button>
-
-              <button @click="deleteRecipe(recipe.id)" class="icon-button">🗑️</button>
-            </div>
+            </h3>
           </div>
           <p>{{ recipe.description }}</p>
 
@@ -76,7 +67,7 @@
             </ol>
           </div>
 
-         
+          <button @click="deleteRecipe(recipe.id)" class="delete-btn"><i class="material-icons">delete</i></button>
         </div>
       </div>
     </div>
@@ -252,4 +243,34 @@ const deleteRecipe = async (id: number) => {
   border-radius: 4px;
 }
 
+.title-with-fav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.favorite-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-left: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.delete-btn {
+  font-size: 24px;
+  margin-top: auto;
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #7c8585;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
 </style>

@@ -2,10 +2,10 @@
 <template>
   <div class="recipe-generator">
     <div class="recipe-generator__container">
-     <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
-    <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
-    <h1 class="page-title">AI Recipe Generator</h1>
-  </div>
+      <div style="display: flex; align-items: center;justify-content:center ;gap: 10px;">
+        <img :src="aiLogo" alt="AI Logo" style="width: 50px; height: 50px;">
+        <h1 class="page-title">AI Recipe Generator</h1>
+      </div>
       <p class="recipe-generator__instructions">
         Create delicious recipes based on your preferences and available ingredients.
       </p>
@@ -14,9 +14,9 @@
         <div class="recipe-form__grid">
           <div class="form-group">
             <label for="type">Recipe Type</label>
-            <select 
-              id="type" 
-              v-model="form.type" 
+            <select
+              id="type"
+              v-model="form.type"
               required
               class="form-control"
             >
@@ -28,9 +28,9 @@
 
           <div class="form-group">
             <label for="cuisine">Cuisine</label>
-            <select 
-              id="cuisine" 
-              v-model="form.cuisine" 
+            <select
+              id="cuisine"
+              v-model="form.cuisine"
               required
               class="form-control"
             >
@@ -42,9 +42,9 @@
 
           <div class="form-group">
             <label for="time">Time It Takes</label>
-            <select 
-              id="time" 
-              v-model="form.time" 
+            <select
+              id="time"
+              v-model="form.time"
               required
               class="form-control"
             >
@@ -56,9 +56,9 @@
 
           <div class="form-group">
             <label for="style">Nutritional Style</label>
-            <select 
-              id="style" 
-              v-model="form.style" 
+            <select
+              id="style"
+              v-model="form.style"
               required
               class="form-control"
             >
@@ -97,8 +97,8 @@
         </div>
 
         <div class="form-actions">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             class="btn btn-primary"
             :disabled="loading || !isFormValid"
           >
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import aiLogo from '@/assets/images/artificial-intelligence.png'
+import aiLogo from '@/assets/images/logo-1.png'
 import { reactive, ref, computed } from 'vue'
 import { useIngredientsStore } from '@/stores/ingredients'
 import { useRouter } from 'vue-router'
@@ -238,8 +238,8 @@ IMPORTANT RULES:
 3. If you need an ingredient not in the list, skip that recipe and create a different one
 4. Each ingredient name must be a real, valid food item
 
-Produce exactly three distinct recipe objects. 
-**Output must be valid JSON ONLY**—an array of three items. 
+Produce exactly three distinct recipe objects.
+**Output must be valid JSON ONLY**—an array of three items.
 Each item must have exactly these keys:
   • "title"  : string
   • "description" : string (a brief one sentence summary)
@@ -248,7 +248,7 @@ Each item must have exactly these keys:
     – "quantity": string (amount in cups, grams, etc.; approximate is fine as long as it does not exceed what you have)
   • "steps"  : an array of strings
 
-Do NOT include any extra words, numbering, markdown, or commentary. 
+Do NOT include any extra words, numbering, markdown, or commentary.
 Return exactly:
 [
   {
@@ -347,7 +347,7 @@ Return exactly:
         if (typeof ing.name !== 'string' || typeof ing.quantity !== 'string') {
           throw new Error(`Recipe #${idx + 1}, ingredient #${ingIdx + 1} has invalid format.`)
         }
-        
+
         if (/[0-9]/.test(ing.name) || /[^a-zA-Z\s-]/.test(ing.name)) {
           throw new Error(`Recipe #${idx + 1} contains invalid ingredient name: "${ing.name}". Ingredients must be real food items.`)
         }
