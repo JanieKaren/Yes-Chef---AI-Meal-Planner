@@ -91,13 +91,13 @@ h1{
 }
 
 .btn-primary {
-  background-color: #FFC07F;
+  background-color: #497817;
   color: white;
   border-radius: 100px;
 }
 
 .btn-primary:hover {
-  background-color: #f3a150;
+  background-color: #73BC24;
 }
 
 .btn-primary:disabled {
