@@ -10,6 +10,11 @@
         Create delicious recipes based on your preferences and available ingredients.
       </p>
 
+      <div v-if="!hasIngredients" class="warning-message">
+        <p>⚠️ You don't have any ingredients in your fridge yet.</p>
+        <router-link to="/fridge" class="btn btn-secondary">Add Ingredients</router-link>
+      </div>
+
       <form class="recipe-form" @submit.prevent="onGenerate">
         <div class="recipe-form__grid">
           <div class="form-group">
@@ -197,6 +202,10 @@ const goodIngredientsList = computed(() => {
     .join(', ')
 })
 
+const hasIngredients = computed(() => {
+  return ingredientsStore.ingredients.length > 0
+})
+
 // Methods
 const getConditionText = (expirationDate: string) => {
   const today = new Date()
@@ -220,6 +229,17 @@ const toggleDiet = (diet: string) => {
 
 async function onGenerate() {
   errorMessage.value = ''
+  
+  if (!hasIngredients.value) {
+    errorMessage.value = 'Please add some ingredients to your fridge first. You can add ingredients from the "My Fridge" page.'
+    return
+  }
+
+  if (goodIngredientsList.value === '') {
+    errorMessage.value = 'You don\'t have any non-expired ingredients. Please add some fresh ingredients to your fridge first.'
+    return
+  }
+
   loading.value = true
 
   const promptText = `
@@ -547,5 +567,31 @@ Return exactly:
   .recipe-form__grid {
     grid-template-columns: 1fr;
   }
+}
+
+.warning-message {
+  background: #FFF3CD;
+  border: 1px solid #FFE69C;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.warning-message p {
+  color: #856404;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
 }
 </style>
