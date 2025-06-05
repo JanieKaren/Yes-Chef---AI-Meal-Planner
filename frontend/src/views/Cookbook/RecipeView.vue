@@ -21,12 +21,12 @@
         />
 
         <select class="dropdown" v-model="filterType">
-          <option disabled selected>Type</option>
-          <option>All</option>
-          <option>Favorites</option>
+          <option value="All">All</option>
+          <option value="Favorites">Favorites</option>
         </select>
 
-        <button class="btn-filter">Filter</button>
+        <button class="btn-filter" @click="applyFilters">Search</button>
+        <button class="btn-clear" @click="clearFilters">Show All</button>
       </div>
 
       <div v-if="loading" class="loading">Loading…</div>
@@ -34,14 +34,10 @@
       <!-- Recipe Cards -->
       <div v-else class="card-grid">
         <div v-if="recipes.length === 0" class="no-data">
-          <p>No recipes have been saved yet.</p>
+          <p>No recipes found.</p>
         </div>
 
-        <div v-if="filteredRecipes.length === 0" class="no-data">
-          <p>No favorite recipes yet.</p>
-        </div>
-
-        <div v-else v-for="recipe in filteredRecipes" :key="recipe.title" class="recipe-card">
+        <div v-else v-for="recipe in recipes" :key="recipe.title" class="recipe-card">
           <div class="card-header">
             <h3>{{ recipe.title }}</h3>
             <div class="card-actions">
@@ -116,50 +112,108 @@
           </div>
         </div>
       </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination" v-if="recipes.length > 0">
+        <button 
+          class="pagination-btn" 
+          :disabled="currentPage === 1"
+          @click="changePage(currentPage - 1)"
+        >
+          Previous
+        </button>
+        <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button 
+          class="pagination-btn" 
+          :disabled="currentPage === totalPages"
+          @click="changePage(currentPage + 1)"
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed,ref } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRecipesStore } from '@/stores/recipe'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
+const router = useRouter()
 const recipesStore = useRecipesStore()
 
 // Computed values from the Pinia store
 const recipes = computed(() => recipesStore.recipes)
 const loading = computed(() => recipesStore.loading)
+const currentPage = ref(1)
+const totalPages = ref(1)
+const searchQuery = ref('')
+const filterType = ref('All')
 
+// Initialize from URL parameters
 onMounted(() => {
-  recipesStore.fetchRecipes()
+  const page = Number(route.query.page) || 1
+  const search = route.query.search as string || ''
+  const favorite = route.query.favorite === 'true'
+
+  currentPage.value = page
+  searchQuery.value = search
+  filterType.value = favorite ? 'Favorites' : 'All'
+
+  fetchRecipes()
 })
+
+const updateURL = () => {
+  const query: Record<string, string> = {}
+  
+  if (currentPage.value > 1) query.page = currentPage.value.toString()
+  if (searchQuery.value) query.search = searchQuery.value
+  if (filterType.value === 'Favorites') query.favorite = 'true'
+
+  router.replace({ query })
+}
+
+const fetchRecipes = async () => {
+  await recipesStore.fetchRecipes({
+    page: currentPage.value,
+    search: searchQuery.value,
+    favorite: filterType.value === 'Favorites' ? true : undefined
+  })
+  totalPages.value = recipesStore.totalPages
+  updateURL()
+}
+
+const applyFilters = () => {
+  currentPage.value = 1
+  fetchRecipes()
+}
+
+const clearFilters = () => {
+  searchQuery.value = ''
+  filterType.value = 'All'
+  currentPage.value = 1
+  fetchRecipes()
+}
+
+const changePage = async (page: number) => {
+  currentPage.value = page
+  await fetchRecipes()
+}
 
 function toggleFavorite(id: number) {
   recipesStore.toggleFavorite(id)
 }
 
 const deleteRecipe = async (id: number) => {
-  if (confirm('Are you sure you want to delete this ingredient?')) {
+  if (confirm('Are you sure you want to delete this recipe?')) {
     const success = await recipesStore.deleteRecipe(id)
     if (!success) {
       alert('Failed to delete recipe.')
     }
   }
 }
-
-const searchQuery = ref('')
-const filterType = ref('All')
-
-const filteredRecipes = computed(() => {
-  return recipes.value.filter(recipe => {
-    const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesType =
-      filterType.value === 'All' ||
-      (filterType.value === 'Favorites' && (recipe as any).favorite)
-
-    return matchesSearch && matchesType
-  })
-})
 </script>
 
 
@@ -221,11 +275,31 @@ const filteredRecipes = computed(() => {
 }
 
 .btn-filter {
-  background-color: #cbe5c9;
+  background-color: #4CAF50;
   border: none;
   border-radius: 8px;
   padding: 0.5rem 1rem;
+  color: white;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-filter:hover {
+  background-color: #43A047;
+}
+
+.btn-clear {
+  background-color: #6c757d;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-clear:hover {
+  background-color: #5a6268;
 }
 
 .card-grid {
@@ -391,5 +465,36 @@ const filteredRecipes = computed(() => {
   justify-content: flex-end;
   align-items: center;
   padding-top: 0.5rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn:not(:disabled):hover {
+  background-color: #f0f0f0;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #666;
 }
 </style>

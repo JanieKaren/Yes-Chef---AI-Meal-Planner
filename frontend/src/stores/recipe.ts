@@ -22,6 +22,10 @@ interface RecipesState {
   recipes: Recipe[]
   loading: boolean
   error: string | null
+  currentPage: number
+  totalPages: number
+  nextPage: number | null
+  previousPage: null
 }
 
 // Optional: for protected routes
@@ -44,15 +48,29 @@ export const useRecipesStore = defineStore('recipes', {
   state: (): RecipesState => ({
     recipes: [],
     loading: false,
-    error: null
+    error: null,
+    currentPage: 1,
+    totalPages: 1,
+    nextPage: null,
+    previousPage: null
   }),
 
   actions: {
-    async fetchRecipes() {
+    async fetchRecipes(params: { page?: number; search?: string; favorite?: boolean } = {}) {
       this.loading = true
       try {
-        const response = await axios.get('/api/save-recipe/')
-        this.recipes = response.data
+        const queryParams = new URLSearchParams({
+          ...(params.page && { page: params.page.toString() }),
+          ...(params.search && { search: params.search }),
+          ...(params.favorite !== undefined && { favorite: params.favorite.toString() })
+        })
+
+        const response = await axios.get(`/api/save-recipe/?${queryParams.toString()}`)
+        this.recipes = response.data.results
+        this.currentPage = response.data.current_page
+        this.totalPages = response.data.num_pages
+        this.nextPage = response.data.next_page
+        this.previousPage = response.data.previous_page
         this.error = null
       } catch (error) {
         console.error('Failed to fetch recipes:', error)

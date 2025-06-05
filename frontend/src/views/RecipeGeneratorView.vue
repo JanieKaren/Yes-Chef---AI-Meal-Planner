@@ -621,12 +621,7 @@ Return exactly:
   background: #6c757d;
   color: white;
   text-decoration: none;
-  display: inline-block;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-}
+} */
 
 .dietary-info {
   background: #f8f9fa;

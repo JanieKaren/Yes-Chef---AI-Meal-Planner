@@ -234,8 +234,29 @@ def recipe(request):
     if request.method == 'GET':
         # Filter recipes by current user
         recipes = Recipe.objects.filter(user=request.user)
-        serializer = RecipeSerializer(recipes, many=True)
-        return Response(serializer.data)
+        # Apply search filter
+        search_query = request.GET.get('search')
+        if search_query:
+            recipes = recipes.filter(title__icontains=search_query)
+        
+        # Apply favorite filter
+        favorite = request.GET.get('favorite')
+        if favorite:
+            recipes = recipes.filter(favorite=True)
+        
+        paginator = Paginator(recipes, 9)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        serializer = RecipeSerializer(page_obj, many=True)
+        return Response({
+            'count': paginator.count,
+            'num_pages': paginator.num_pages,
+            'current_page': page_obj.number,
+            'next_page': page_obj.next_page_number() if page_obj.has_next() else None,
+            'previous_page': page_obj.previous_page_number() if page_obj.has_previous() else None,
+            'results': serializer.data,
+        })
 
     elif request.method == 'POST':
         serializer = RecipeSerializer(data=request.data)
