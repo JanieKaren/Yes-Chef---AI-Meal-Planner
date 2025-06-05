@@ -135,7 +135,7 @@ The backend exposes RESTful endpoints for:
 
 ### 🧑‍💻 Cabusor
 
----
+-Collaborated to Ai Recipe Generator
 
 ### 🧑‍💻 Cerio
 
