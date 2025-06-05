@@ -33,7 +33,9 @@ Never lose a great recipe to cluttered notes or screenshots again.
 
 🎥 **Demo Video:** _[Insert video link here]_
 
-🔗 **Explore Yes, Chef:** _[Insert live site or repo link here]_
+🔗 **Explore Yes, Chef:** https://yes-chef-lovat.vercel.app
+
+💻 **Source Code:** https://github.com/JanieKaren/Yes-Chef---AI-Meal-Planner.git
 
 ---
 
