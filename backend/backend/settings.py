@@ -142,14 +142,42 @@ CORS_ALLOWED_ORIGINS = [
     "https://yes-chef-lovat.vercel.app",
 ]
 
+# Additional CORS settings
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",  # Vue.js development server
     "https://yes-chef-lovat.vercel.app",
 ]
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'None'  # Required for cross-origin requests
+CSRF_COOKIE_SECURE = True  # Required when SameSite is None
 CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read the CSRF cookie
-SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False  # Use cookies instead of sessions for CSRF
+CSRF_COOKIE_NAME = 'csrftoken'  # Match the cookie name expected by the frontend
+
+# Session settings
+SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-origin requests
+SESSION_COOKIE_SECURE = True  # Required when SameSite is None
 SESSION_COOKIE_HTTPONLY = True
 
 # REST Framework settings
