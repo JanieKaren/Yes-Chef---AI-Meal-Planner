@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # recipes_api/views.py
-
+import os
 import requests
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -9,8 +9,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RecipeRequestSerializer
 
-# Hard-coded Groq key (not recommended in production):
-GROQ_API_KEY = "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"
+#Groq key to be fetched on render
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise ImproperlyConfigured("Missing GROQ_API_KEY environment variable")
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
